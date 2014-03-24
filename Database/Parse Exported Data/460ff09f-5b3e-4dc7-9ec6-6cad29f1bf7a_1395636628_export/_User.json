@@ -1,0 +1,1219 @@
+{ "results": [
+	{
+        "TutorialRatingScreen_3": true,
+        "TutorialSeen_FirstRating0": true,
+        "TutorialSeen_FirstRating3": true,
+        "TutorialSeen_FirstRating4": true,
+        "authData": {
+            "facebook": {
+                "access_token": "CAAJYTvfy5YUBADV4F44hpVZBDxLC9HolQZChjle12V2JCFULL2VrnTuvaLpuG1iIDX4w0C3DqSGt3NaZCUrpLyZBkndhfIqx97pVRqZAm2LVZBHD5PMpe14scvK1uD1sT4Bt5BZAo3ZCmPZCR62uS6UxJtltofdWpgZB24RAzNfJuWqy7jHeNwKh0zaZBZBoSqNfFMGVU4GDTlUPWoDB0QXAPRbu",
+                "expiration_date": "2014-05-13T15:42:15.854Z",
+                "id": "1319889098"
+            }
+        },
+        "bcryptPassword": "$2a$10$OqnpvNPk6krB/xY8/bFcCOp8bGJdKcTbkSxlGh5KXchpafEbsTxeW",
+        "createdAt": "2014-03-14T15:42:18.038Z",
+        "facebookID": "1319889098",
+        "facebookUsername": "chip.mcdermott.3",
+        "friends": [
+            {
+                "__type": "Pointer",
+                "className": "_User",
+                "objectId": "vKkkvxrlJ6"
+            },
+            {
+                "__type": "Pointer",
+                "className": "_User",
+                "objectId": "DZCF8Eb0A3"
+            },
+            {
+                "__type": "Pointer",
+                "className": "_User",
+                "objectId": "n4pTyC5KCp"
+            },
+            {
+                "__type": "Pointer",
+                "className": "_User",
+                "objectId": "bbpMXr9v9H"
+            }
+        ],
+        "name": "Chip McDermott",
+        "objectId": "JxLTH7qQWN",
+        "profilePicture": {
+            "__type": "File",
+            "name": "6dbed672-2202-4e2c-a3db-2cd6e0f46f18-profile.jpg",
+            "url": "http://files.parse.com/460ff09f-5b3e-4dc7-9ec6-6cad29f1bf7a/6dbed672-2202-4e2c-a3db-2cd6e0f46f18-profile.jpg"
+        },
+        "pushEnabled": true,
+        "pushWatchlistEnabled": true,
+        "sessionToken": "wi1kes0ug4rl3daye8alnqs5x",
+        "updatedAt": "2014-03-14T16:00:09.674Z",
+        "username": "panf1uqsuqrd5v3qpdo7tl4zy"
+    },
+	{
+        "TutorialRatingScreen_1": true,
+        "TutorialRatingScreen_3": true,
+        "TutorialScreen_Filters": true,
+        "TutorialSeen_FirstRating0": true,
+        "TutorialSeen_FirstRating1": true,
+        "TutorialSeen_FirstRating3": true,
+        "TutorialSeen_FirstRating4": true,
+        "bcryptPassword": "$2a$10$dnYG1zcNqlqldosTX0pMN.Z2EGducnA0HEvwJ7HbClFlQfxkgYl8i",
+        "createdAt": "2014-03-14T19:21:25.977Z",
+        "email": "anthonymorrell@cox.net",
+        "name": "Anthony M",
+        "objectId": "nZf9UpRPZw",
+        "pushEnabled": true,
+        "pushWatchlistEnabled": true,
+        "sessionToken": "qsrhqnjgozgc9rc785oemh96i",
+        "updatedAt": "2014-03-14T19:28:36.378Z",
+        "username": "anthonymorrell@cox.net"
+    },
+	{
+        "TutorialRatingScreen_1": true,
+        "TutorialRatingScreen_2": true,
+        "TutorialRatingScreen_3": true,
+        "TutorialScreen_Filters": true,
+        "TutorialScreen_Info": true,
+        "TutorialScreen_RatingTiles_0": true,
+        "TutorialSeen_FirstRating0": true,
+        "TutorialSeen_FirstRating1": true,
+        "TutorialSeen_FirstRating2": true,
+        "TutorialSeen_FirstRating3": true,
+        "TutorialSeen_FirstRating4": true,
+        "bcryptPassword": "$2a$10$WT2SCDZvnPU9vUxLJGGucumUXSlMdIzfDYpUObOIaj7CbKhNHL9UO",
+        "createdAt": "2014-03-14T19:19:49.798Z",
+        "email": "austinfickman@gmail.com",
+        "name": "Austin Fickman",
+        "objectId": "LPZwPLr0NG",
+        "pushEnabled": true,
+        "pushWatchlistEnabled": true,
+        "sessionToken": "8zzjndntto8osynp666tz0vej",
+        "updatedAt": "2014-03-14T19:38:16.724Z",
+        "username": "austinfickman@gmail.com"
+    },
+	{
+        "TutorialRatingScreen_1": true,
+        "TutorialRatingScreen_2": true,
+        "TutorialRatingScreen_3": true,
+        "TutorialScreen_Filters": true,
+        "TutorialScreen_Info": true,
+        "TutorialScreen_RatingTiles_0": true,
+        "TutorialSeen_FirstRating0": true,
+        "TutorialSeen_FirstRating1": true,
+        "TutorialSeen_FirstRating2": true,
+        "TutorialSeen_FirstRating3": true,
+        "TutorialSeen_FirstRating4": true,
+        "bcryptPassword": "$2a$10$OhqkAlUl8DAzbm1cAhEP9e2fRWH0uC134yLAsgiq2hbJ7tZKS2aYa",
+        "createdAt": "2014-03-14T16:04:11.847Z",
+        "email": "chip@eworksinc.com",
+        "name": "Chip McDermott",
+        "objectId": "VuYp7n1jfq",
+        "pushEnabled": true,
+        "pushWatchlistEnabled": true,
+        "sessionToken": "vhgbgjl8hx7d68cs62zkblpnz",
+        "updatedAt": "2014-03-14T19:38:19.789Z",
+        "username": "chip@eworksinc.com"
+    },
+	{
+        "TutorialScreen_Filters": true,
+        "TutorialScreen_Info": true,
+        "TutorialSeen_FirstRating4": true,
+        "bcryptPassword": "$2a$10$YJdQLMUUmgZax1YIB5w9quRHeMtf/2FY/2g8A0RuOLAPtZuxegDky",
+        "createdAt": "2014-03-05T15:10:07.643Z",
+        "email": "abby@stutsmansoft.com",
+        "name": "Abby Stutsman",
+        "objectId": "hMvWL1dQnO",
+        "pushEnabled": true,
+        "pushWatchlistEnabled": true,
+        "sessionToken": "yw4792ide9mc2ip7wm4ymle1d",
+        "updatedAt": "2014-03-16T02:16:02.119Z",
+        "username": "abby@stutsmansoft.com"
+    },
+	{
+        "TutorialRatingScreen_3": true,
+        "TutorialScreen_Filters": true,
+        "TutorialScreen_Info": true,
+        "TutorialScreen_Locked": true,
+        "TutorialScreen_RatingTiles_0": true,
+        "TutorialScreen_RatingTiles_1": true,
+        "TutorialSeen_FirstRating3": true,
+        "TutorialSeen_FirstRating4": true,
+        "bcryptPassword": "$2a$10$XmoZnJy8qpGaJPSEzzJpveoVmOMCWB2H89/.RRDKY2s.9xGkxYmCO",
+        "createdAt": "2014-03-16T15:38:43.897Z",
+        "email": "dereknew@stutsmansoft.com",
+        "name": "Derek New",
+        "objectId": "VnkdPVzkxf",
+        "pushEnabled": true,
+        "pushWatchlistEnabled": true,
+        "sessionToken": "nc7b63z05t5gbstvxmakqbhq2",
+        "updatedAt": "2014-03-16T16:00:59.829Z",
+        "username": "dereknew@stutsmansoft.com"
+    },
+	{
+        "TutorialSeen_FirstRating4": true,
+        "bcryptPassword": "$2a$10$ZetcxxSU3eKqAC.2BcAiH.f1y5urv6hPxnjzwSpNPJFj6cn9MCRQG",
+        "createdAt": "2014-03-16T17:41:47.357Z",
+        "email": "tiberius@stutsmansoft.com",
+        "name": "Tiberius Stutsman",
+        "objectId": "yV13UbZDVG",
+        "profilePicture": {
+            "__type": "File",
+            "name": "b3079bae-a03a-4a0e-8cff-871b5183dc55-profile.jpg",
+            "url": "http://files.parse.com/460ff09f-5b3e-4dc7-9ec6-6cad29f1bf7a/b3079bae-a03a-4a0e-8cff-871b5183dc55-profile.jpg"
+        },
+        "pushEnabled": true,
+        "pushWatchlistEnabled": true,
+        "sessionToken": "dk2i4a5xft69lf7enko2kt9da",
+        "updatedAt": "2014-03-16T17:43:19.898Z",
+        "username": "tiberius@stutsmansoft.com"
+    },
+	{
+        "TutorialScreen_Info": true,
+        "TutorialSeen_FirstRating4": true,
+        "bcryptPassword": "$2a$10$Ol9bPo3Sk41mlXQjNnnFue5Njp5CdnJ6SDpUi1aa6BLzkEAoyvZje",
+        "createdAt": "2014-03-16T18:35:56.181Z",
+        "email": "testbug@stutsmansoft.com",
+        "name": "Derek TEstbug",
+        "objectId": "GQAkWqLIFk",
+        "pushEnabled": true,
+        "pushWatchlistEnabled": true,
+        "sessionToken": "2to2rgdfiuqok8du5colcw9wf",
+        "updatedAt": "2014-03-16T18:36:48.808Z",
+        "username": "testbug@stutsmansoft.com"
+    },
+	{
+        "TutorialScreen_Filters": true,
+        "TutorialScreen_Info": true,
+        "TutorialSeen_FirstRating0": true,
+        "TutorialSeen_FirstRating4": true,
+        "bcryptPassword": "$2a$10$R3UQgH6QZJNusBPZFyOKCeEBxU.An81dJaGvF9zimkCwR/kZWRSzO",
+        "createdAt": "2014-03-16T21:58:17.273Z",
+        "email": "testnewbie@stutsmansoft.com",
+        "name": "Test Newbie",
+        "objectId": "TkG8IImPdy",
+        "profilePicture": {
+            "__type": "File",
+            "name": "133cafe3-a99c-485e-ade4-8bea71083bdd-profile.jpg",
+            "url": "http://files.parse.com/460ff09f-5b3e-4dc7-9ec6-6cad29f1bf7a/133cafe3-a99c-485e-ade4-8bea71083bdd-profile.jpg"
+        },
+        "pushEnabled": true,
+        "pushWatchlistEnabled": true,
+        "sessionToken": "ztlx9zsnmsc1kmtx274yxpd7y",
+        "updatedAt": "2014-03-16T22:03:50.393Z",
+        "username": "testnewbie@stutsmansoft.com"
+    },
+	{
+        "TutorialSeen_FirstRating4": true,
+        "bcryptPassword": "$2a$10$btd4YMAoDLHCiMks3.lvR.CE3i8Hn5hrQTiqsl0kBGw0PkOMIQRCi",
+        "createdAt": "2014-03-16T18:40:07.225Z",
+        "email": "test2222@stutsmansoft.com",
+        "name": "Test2",
+        "objectId": "t3hxcqsKtS",
+        "profilePicture": {
+            "__type": "File",
+            "name": "611d7ee6-6900-46cc-a71a-45f13c6addd1-profile.jpg",
+            "url": "http://files.parse.com/460ff09f-5b3e-4dc7-9ec6-6cad29f1bf7a/611d7ee6-6900-46cc-a71a-45f13c6addd1-profile.jpg"
+        },
+        "pushEnabled": true,
+        "pushWatchlistEnabled": true,
+        "sessionToken": "j5uvjneb4js6jwrclrnvq2f6e",
+        "updatedAt": "2014-03-16T23:14:37.696Z",
+        "username": "test2222@stutsmansoft.com"
+    },
+	{
+        "TutorialRatingScreen_2": true,
+        "TutorialRatingScreen_3": true,
+        "TutorialScreen_CritterFriends": true,
+        "TutorialScreen_Filters": true,
+        "TutorialScreen_Info": true,
+        "TutorialScreen_Locked": true,
+        "TutorialScreen_RatingTiles_0": true,
+        "TutorialSeen_FirstRating0": true,
+        "TutorialSeen_FirstRating2": true,
+        "TutorialSeen_FirstRating3": true,
+        "TutorialSeen_FirstRating4": true,
+        "authData": {
+            "facebook": {
+                "access_token": "CAAJYTvfy5YUBAMrZAZAodSeUWx9FMD1atE4JqazIEqwubZCR1hWq7UGun9OcSTrrB1m46AgizceSNtEUbC6rOC1oiJ8QGMxd1aPxdHcfuOW9ZAd1s5AWPgYYiowirwvwYpCK497FGOhVANVZC0JSkBEZAE13RvJuVp21o2UZCVMhcCcc8rHTlHCTSXXy3ZANTP4CniLR1ZCjcIQZDZD",
+                "expiration_date": "2014-05-20T13:46:41.106Z",
+                "id": "762268591"
+            }
+        },
+        "bcryptPassword": "$2a$10$NBDLVygPvr4LhihLEoF2DOudXklmM.AVh0jKuuPxD8ioBMXZVZnmC",
+        "createdAt": "2014-03-06T23:48:06.865Z",
+        "facebookID": "762268591",
+        "facebookUsername": "guardians611",
+        "friends": [
+            {
+                "__type": "Pointer",
+                "className": "_User",
+                "objectId": "bbpMXr9v9H"
+            },
+            {
+                "__type": "Pointer",
+                "className": "_User",
+                "objectId": "JxLTH7qQWN"
+            },
+            {
+                "__type": "Pointer",
+                "className": "_User",
+                "objectId": "BD2jLG8CiW"
+            }
+        ],
+        "name": "Eric Gonzales",
+        "objectId": "vKkkvxrlJ6",
+        "profilePicture": {
+            "__type": "File",
+            "name": "bae514ea-b3a5-4dbd-9716-059222fe7c6a-profile.jpg",
+            "url": "http://files.parse.com/460ff09f-5b3e-4dc7-9ec6-6cad29f1bf7a/bae514ea-b3a5-4dbd-9716-059222fe7c6a-profile.jpg"
+        },
+        "pushEnabled": true,
+        "pushWatchlistEnabled": true,
+        "sessionToken": "uy2ls6r3ka1vlqgvu1kvmpjet",
+        "updatedAt": "2014-03-21T20:56:28.645Z",
+        "username": "pdsu7jukan2egt0ilfu5pw9y5"
+    },
+	{
+        "bcryptPassword": "$2a$10$cAmNvPx0pwHhjZORTAmlxuyJce2Jq0wRmX6Y76QDEBZktKB3VvKgq",
+        "createdAt": "2014-03-05T20:46:39.220Z",
+        "email": "ben@testingtester.com",
+        "name": "Ben Test",
+        "objectId": "QW1OKEIr5K",
+        "pushEnabled": true,
+        "pushWatchlistEnabled": true,
+        "sessionToken": "97rlgo5l70yqe1u53bw5bl8lg",
+        "updatedAt": "2014-03-05T20:46:39.220Z",
+        "username": "ben@testingtester.com"
+    },
+	{
+        "bcryptPassword": "$2a$10$a8w1Bu7ufbDjCZJmrz6ioukRVbWl0N.SWAsvmDUaGYGlXZspkc3qm",
+        "createdAt": "2014-03-05T20:48:52.045Z",
+        "email": "terry@testy.com",
+        "name": "Test1984",
+        "objectId": "DyHugofuk3",
+        "pushEnabled": true,
+        "pushWatchlistEnabled": true,
+        "sessionToken": "kpq1ue958b499nadnq1u00hju",
+        "updatedAt": "2014-03-05T20:48:52.045Z",
+        "username": "terry@testy.com"
+    },
+	{
+        "bcryptPassword": "$2a$10$2G6MyMKBjDfiyQr1TgrApOK.qVG.v3mTPWRB0jK1tKfQ3ge9032QW",
+        "createdAt": "2014-03-06T02:05:22.801Z",
+        "email": "timmy@stutsmansoft.com",
+        "name": "Timmy Stutsman",
+        "objectId": "unwGqnhDMK",
+        "pushEnabled": true,
+        "pushWatchlistEnabled": true,
+        "sessionToken": "krhlu5l7lermnavre83evkwe5",
+        "updatedAt": "2014-03-06T02:05:22.801Z",
+        "username": "timmy@stutsmansoft.com"
+    },
+	{
+        "bcryptPassword": "$2a$10$GYyWG69gZ2AOdFAkvuiVT.h6Hday61SJ5gdSSUgqhK1ojXnG9o1Wy",
+        "createdAt": "2014-03-06T02:53:19.306Z",
+        "email": "bbtestqwerty@hotmail.com",
+        "name": "Bbtesterbb",
+        "objectId": "zQrIl0l0od",
+        "pushEnabled": true,
+        "pushWatchlistEnabled": true,
+        "sessionToken": "ihc9fuktu6roki6c9juwrv7fj",
+        "updatedAt": "2014-03-06T02:53:19.306Z",
+        "username": "bbtestqwerty@hotmail.com"
+    },
+	{
+        "bcryptPassword": "$2a$10$5CqP.fq308EIyFQ/m32XL.poFlY8ylDRB32BbjmMREx/HSXo6xlHO",
+        "createdAt": "2014-03-06T03:36:01.320Z",
+        "email": "upcomingonly@stutsmansoft.com",
+        "name": "Upcoming Only",
+        "objectId": "i1HSvkwVUj",
+        "pushEnabled": true,
+        "pushWatchlistEnabled": true,
+        "sessionToken": "oslcl5bwbqftsc337jatk09j8",
+        "updatedAt": "2014-03-06T03:36:01.320Z",
+        "username": "upcomingonly@stutsmansoft.com"
+    },
+	{
+        "bcryptPassword": "$2a$10$RMHbqQ3NulA/p3kpLL5DReMAWeY4ex1IlCFMXRs3sN5HpphaIRO8.",
+        "createdAt": "2014-03-06T05:54:50.603Z",
+        "email": "new@stutsmansoft.com",
+        "name": "New User",
+        "objectId": "HmqFGKXm1g",
+        "pushEnabled": true,
+        "pushWatchlistEnabled": true,
+        "sessionToken": "avhxrj6auir9olarc6ynau0c9",
+        "updatedAt": "2014-03-06T05:54:50.603Z",
+        "username": "new@stutsmansoft.com"
+    },
+	{
+        "bcryptPassword": "$2a$10$Jjzc8hffS6d8hAJb.PQCFu7qVjaNdlPeAF7zZuPBCtT4bo.Ql2s6y",
+        "createdAt": "2014-03-06T06:03:20.401Z",
+        "email": "new2@stutsmansoft.com",
+        "name": "New User",
+        "objectId": "nxsCg5RrgW",
+        "pushEnabled": true,
+        "pushWatchlistEnabled": true,
+        "sessionToken": "977be1stwq6y56yv177cd2eku",
+        "updatedAt": "2014-03-06T06:03:20.401Z",
+        "username": "new2@stutsmansoft.com"
+    },
+	{
+        "bcryptPassword": "$2a$10$svkv9e4GfTipDof1fG3t3OlX7ydCS4CBbCDKfX1cjBjQ3V2ogbK1i",
+        "createdAt": "2014-03-06T06:24:10.134Z",
+        "email": "new3@stutsmansoft.com",
+        "name": "New 3",
+        "objectId": "KkkIcix0s8",
+        "pushEnabled": true,
+        "pushWatchlistEnabled": true,
+        "sessionToken": "ail2zdjms628xh5gwdqp4d3jb",
+        "updatedAt": "2014-03-06T06:24:10.134Z",
+        "username": "new3@stutsmansoft.com"
+    },
+	{
+        "TutorialRatingScreen_1": true,
+        "TutorialRatingScreen_2": true,
+        "TutorialRatingScreen_3": true,
+        "TutorialScreen_CritterFriends": true,
+        "TutorialScreen_Filters": true,
+        "TutorialScreen_Notifications": true,
+        "TutorialSeen_FirstRating0": true,
+        "TutorialSeen_FirstRating1": true,
+        "TutorialSeen_FirstRating2": true,
+        "TutorialSeen_FirstRating3": true,
+        "TutorialSeen_FirstRating4": true,
+        "bcryptPassword": "$2a$10$8XbtJ/BFhZVKUSBpvEuA/eIUpD7/C6mZyqeFJxaU5lwFWPaGkMXou",
+        "createdAt": "2014-03-03T18:44:27.835Z",
+        "email": "derek2@stutsmansoft.com",
+        "friends": [
+            {
+                "__type": "Pointer",
+                "className": "_User",
+                "objectId": "SLMW4rF7Od"
+            }
+        ],
+        "name": "Derek Stutsman2",
+        "objectId": "9mEDR5y6Sy",
+        "pushEnabled": true,
+        "pushWatchlistEnabled": true,
+        "sessionToken": "2uh22bwa8w9ispoxzfbzuyped",
+        "updatedAt": "2014-03-10T01:40:17.125Z",
+        "username": "derek2@stutsmansoft.com"
+    },
+	{
+        "TutorialScreen_Info": true,
+        "TutorialScreen_Locked": true,
+        "TutorialSeen_FirstRating4": true,
+        "bcryptPassword": "$2a$10$YKs1Es27zJsNtQdu8DLuH.zFmGTDERs8uYefP89un7hxuy1w05Wf2",
+        "createdAt": "2014-03-10T01:42:19.064Z",
+        "email": "derek3@stutsmansoft.com",
+        "name": "Derek Stutsman 3",
+        "objectId": "P9myNVwiEg",
+        "pushEnabled": true,
+        "pushWatchlistEnabled": true,
+        "sessionToken": "fvzuaex5ia7t76cygzlj4lu7b",
+        "updatedAt": "2014-03-10T03:38:51.063Z",
+        "username": "derek3@stutsmansoft.com"
+    },
+	{
+        "TutorialRatingScreen_1": true,
+        "TutorialRatingScreen_2": true,
+        "TutorialRatingScreen_3": true,
+        "TutorialScreen_CritterFriends": true,
+        "TutorialScreen_Filters": true,
+        "TutorialScreen_Info": true,
+        "TutorialScreen_Locked": true,
+        "TutorialScreen_Notifications": true,
+        "TutorialScreen_RatingTiles_0": true,
+        "TutorialScreen_RatingTiles_1": true,
+        "TutorialSeen_FirstRating0": true,
+        "TutorialSeen_FirstRating1": true,
+        "TutorialSeen_FirstRating2": true,
+        "TutorialSeen_FirstRating3": true,
+        "TutorialSeen_FirstRating4": true,
+        "authData": {
+            "facebook": {
+                "access_token": "CAAJYTvfy5YUBAMuZBYf0HWGTIe7WZAXQH3139MV618105Ye4xk8epyCBrnTAxBBeuastVLSw3GZChSZCCGNnmRyYoXsuztnfUIZBRYoY3EHGjztZC5PEqEZAWpgZCNFLvfNd2fMIIEhIaEDaGaZCjXsMSgxduR5DxZAqsbl58Fd6PCgpZBQQXSvcGmDhlbCZBZCXmg47zlLsiP0ldrYFKGalZABZBTKyeQLAKwZAAWMZD",
+                "expiration_date": "2014-05-20T05:10:06.245Z",
+                "id": "1215872807"
+            }
+        },
+        "bcryptPassword": "$2a$10$68j7oplu6NhymP85G0tYLOQkTmyzk72N8d9R8N0SFh9W7R/QFjzXe",
+        "createdAt": "2014-03-03T04:02:48.439Z",
+        "email": "derekstutsman@me.com",
+        "facebookID": "1215872807",
+        "facebookUsername": "derekstutsman",
+        "friends": [
+            {
+                "__type": "Pointer",
+                "className": "_User",
+                "objectId": "RB9s05pzSg"
+            },
+            {
+                "__type": "Pointer",
+                "className": "_User",
+                "objectId": "9mEDR5y6Sy"
+            },
+            {
+                "__type": "Pointer",
+                "className": "_User",
+                "objectId": "SPrnZjx55G"
+            }
+        ],
+        "name": "Derek Stutsman",
+        "objectId": "SLMW4rF7Od",
+        "profilePicture": {
+            "__type": "File",
+            "name": "8f9f3dcf-e1ac-404b-9c74-b6f6c0006ee6-profile.jpg",
+            "url": "http://files.parse.com/460ff09f-5b3e-4dc7-9ec6-6cad29f1bf7a/8f9f3dcf-e1ac-404b-9c74-b6f6c0006ee6-profile.jpg"
+        },
+        "pushEnabled": true,
+        "pushWatchlistEnabled": true,
+        "sessionToken": "60bp00inmjsq4h2w61axloenp",
+        "updatedAt": "2014-03-22T06:10:09.595Z",
+        "username": "n9b4emhi33tgwn4ibu26md012"
+    },
+	{
+        "TutorialRatingScreen_2": true,
+        "TutorialRatingScreen_3": true,
+        "TutorialScreen_CritterFriends": true,
+        "TutorialScreen_Filters": true,
+        "TutorialScreen_Info": true,
+        "TutorialScreen_Locked": true,
+        "TutorialSeen_FirstRating0": true,
+        "TutorialSeen_FirstRating2": true,
+        "TutorialSeen_FirstRating3": true,
+        "TutorialSeen_FirstRating4": true,
+        "authData": {
+            "facebook": {
+                "access_token": "CAAJYTvfy5YUBAAWqD7tKsgbQfAaFFV6vFkXPzHk6lRtP40ZAGsPZCnYcGcNqZABzvNa8H7gaRLj16LgzUt95dcNXgVgs5TISLPvK7LktWKABlcxkIwdcnZALtb1Smhgm3dRyKw7cjPhyvmcqSrBVOm3lrmDCE9rMW5HbrTqlfegf5n3VgBInY0tuiLlOGmxqzHrRw0ZC2xgZDZD",
+                "expiration_date": "2014-05-13T15:32:02.115Z",
+                "id": "1132668926"
+            }
+        },
+        "bcryptPassword": "$2a$10$WKWQ3xgoARMwBoeLYHkWIecJ.FA7eBooYi/2CMygd9S1YMoNudGAq",
+        "createdAt": "2014-03-14T15:32:06.251Z",
+        "facebookID": "1132668926",
+        "facebookUsername": "carmellarodriguezhardy",
+        "friends": [
+            {
+                "__type": "Pointer",
+                "className": "_User",
+                "objectId": "bbpMXr9v9H"
+            },
+            {
+                "__type": "Pointer",
+                "className": "_User",
+                "objectId": "DZCF8Eb0A3"
+            }
+        ],
+        "name": "Carmella Rodriguez Hardy",
+        "objectId": "DBxrf6jaQ1",
+        "profilePicture": {
+            "__type": "File",
+            "name": "ded88d37-9d61-4fc9-a900-c312a19a705e-profile.jpg",
+            "url": "http://files.parse.com/460ff09f-5b3e-4dc7-9ec6-6cad29f1bf7a/ded88d37-9d61-4fc9-a900-c312a19a705e-profile.jpg"
+        },
+        "pushEnabled": true,
+        "pushWatchlistEnabled": true,
+        "sessionToken": "3tctau07psp740ej41qd3l1v3",
+        "updatedAt": "2014-03-14T19:12:48.890Z",
+        "username": "bfl2fcmwtfdtfo3iu5jhvzomy"
+    },
+	{
+        "TutorialRatingScreen_1": true,
+        "TutorialRatingScreen_2": true,
+        "TutorialRatingScreen_3": true,
+        "TutorialScreen_CritterFriends": true,
+        "TutorialScreen_Filters": true,
+        "TutorialScreen_Info": true,
+        "TutorialScreen_RatingTiles_0": true,
+        "TutorialScreen_RatingTiles_1": true,
+        "TutorialSeen_FirstRating0": true,
+        "TutorialSeen_FirstRating1": true,
+        "TutorialSeen_FirstRating2": true,
+        "TutorialSeen_FirstRating3": true,
+        "TutorialSeen_FirstRating4": true,
+        "bcryptPassword": "$2a$10$Hxfex2v6obpf/YNJSLfLJeQMZiLZf29G539Cz3awU5UjbAefM33XO",
+        "createdAt": "2014-03-14T19:19:25.107Z",
+        "email": "a.couse@hotmail.com",
+        "name": "Andrew",
+        "objectId": "OB28sn0EUn",
+        "pushEnabled": true,
+        "pushWatchlistEnabled": true,
+        "sessionToken": "39g26iwgq6o0k78is2sqlqwvr",
+        "updatedAt": "2014-03-14T19:27:25.156Z",
+        "username": "a.couse@hotmail.com"
+    },
+	{
+        "TutorialRatingScreen_1": true,
+        "TutorialRatingScreen_2": true,
+        "TutorialRatingScreen_3": true,
+        "TutorialScreen_CritterFriends": true,
+        "TutorialScreen_Info": true,
+        "TutorialScreen_Locked": true,
+        "TutorialScreen_RatingTiles_1": true,
+        "TutorialSeen_FirstRating0": true,
+        "TutorialSeen_FirstRating1": true,
+        "TutorialSeen_FirstRating2": true,
+        "TutorialSeen_FirstRating3": true,
+        "TutorialSeen_FirstRating4": true,
+        "bcryptPassword": "$2a$10$iwE7bq9LJQDeylHglkKTnusRT4.XTdPBiUTGcIB/xHbC7hEy54QhS",
+        "createdAt": "2014-03-14T19:20:09.655Z",
+        "email": "swimmer2919@gmail.com",
+        "name": "Griffin Knutson",
+        "objectId": "VZcYjIIIHy",
+        "pushEnabled": true,
+        "pushWatchlistEnabled": true,
+        "sessionToken": "ylwub3obwqgunc37m0fj7lkdh",
+        "updatedAt": "2014-03-14T19:26:45.136Z",
+        "username": "swimmer2919@gmail.com"
+    },
+	{
+        "TutorialRatingScreen_1": true,
+        "TutorialRatingScreen_2": true,
+        "TutorialScreen_CritterFriends": true,
+        "TutorialScreen_Filters": true,
+        "TutorialScreen_Info": true,
+        "TutorialScreen_RatingTiles_0": true,
+        "TutorialScreen_RatingTiles_1": true,
+        "TutorialSeen_FirstRating0": true,
+        "TutorialSeen_FirstRating1": true,
+        "TutorialSeen_FirstRating2": true,
+        "TutorialSeen_FirstRating3": true,
+        "TutorialSeen_FirstRating4": true,
+        "bcryptPassword": "$2a$10$TBZ0dJR6QE3aKOc6675qaug8r5GIonULYAw6ANh6LCDZm.BovgpLy",
+        "createdAt": "2014-03-14T19:19:31.455Z",
+        "email": "nolansdeli15@gmail.com",
+        "name": "Nolan",
+        "objectId": "mCtEQeQWWV",
+        "pushEnabled": true,
+        "pushWatchlistEnabled": true,
+        "sessionToken": "8f4yvjzu894688q1r2yn9iw8b",
+        "updatedAt": "2014-03-14T19:27:23.451Z",
+        "username": "nolansdeli15@gmail.com"
+    },
+	{
+        "TutorialRatingScreen_1": true,
+        "TutorialRatingScreen_2": true,
+        "TutorialRatingScreen_3": true,
+        "TutorialScreen_Filters": true,
+        "TutorialScreen_Locked": true,
+        "TutorialScreen_RatingTiles_0": true,
+        "TutorialSeen_FirstRating1": true,
+        "TutorialSeen_FirstRating2": true,
+        "TutorialSeen_FirstRating3": true,
+        "TutorialSeen_FirstRating4": true,
+        "bcryptPassword": "$2a$10$h59IIIhzFivlRbevRrQC..Wov25VreKuRbwjSKyARX5SUvqzd1VdO",
+        "createdAt": "2014-03-14T19:20:32.213Z",
+        "email": "mewguy@gmail.com",
+        "name": "Michael Beu",
+        "objectId": "rtKougcm0T",
+        "pushEnabled": true,
+        "pushWatchlistEnabled": true,
+        "sessionToken": "x6vu1duzohk8cnygu75atabzp",
+        "updatedAt": "2014-03-14T19:35:42.057Z",
+        "username": "mewguy@gmail.com"
+    },
+	{
+        "TutorialRatingScreen_1": true,
+        "TutorialRatingScreen_2": true,
+        "TutorialRatingScreen_3": true,
+        "TutorialScreen_CritterFriends": true,
+        "TutorialScreen_Filters": true,
+        "TutorialScreen_Info": true,
+        "TutorialScreen_Locked": true,
+        "TutorialScreen_RatingTiles_0": true,
+        "TutorialSeen_FirstRating0": true,
+        "TutorialSeen_FirstRating1": true,
+        "TutorialSeen_FirstRating2": true,
+        "TutorialSeen_FirstRating3": true,
+        "TutorialSeen_FirstRating4": true,
+        "authData": {
+            "facebook": {
+                "access_token": "CAAJYTvfy5YUBAGjDjxj4utXrIK1UaRO3XYqN1AAxibmJNctad8sRNAvZBm3j8GVYPw3VlMfFUq5UAte7ZARpRNZBvkBb8nqgDZCC5OptFHyXRznol8lvwlruchQhdzK0FpufSUDioxTC5yJTYVm2ZCeOZALpRJ3iP53oJwQBvdPafH7gQNDyT0e7L3ZCmpbVmQuoKJgNQWDTQZDZD",
+                "expiration_date": "2014-05-18T03:53:10.56Z",
+                "id": "502553227"
+            }
+        },
+        "bcryptPassword": "$2a$10$rreWCxxqgJl0B5FH1u16K.LeiHQ0bUKEl6DrVTm7RSw/hnsk1.vqS",
+        "createdAt": "2014-03-13T21:31:02.867Z",
+        "facebookID": "502553227",
+        "facebookUsername": "pearltingtingho",
+        "friends": [
+            {
+                "__type": "Pointer",
+                "className": "_User",
+                "objectId": "bbpMXr9v9H"
+            },
+            {
+                "__type": "Pointer",
+                "className": "_User",
+                "objectId": "DBxrf6jaQ1"
+            },
+            {
+                "__type": "Pointer",
+                "className": "_User",
+                "objectId": "JxLTH7qQWN"
+            }
+        ],
+        "name": "Pearl Ting Ting Ho",
+        "objectId": "DZCF8Eb0A3",
+        "profilePicture": {
+            "__type": "File",
+            "name": "7ac4bde6-e00d-4107-bda7-ab6938bbaa4b-profile.jpg",
+            "url": "http://files.parse.com/460ff09f-5b3e-4dc7-9ec6-6cad29f1bf7a/7ac4bde6-e00d-4107-bda7-ab6938bbaa4b-profile.jpg"
+        },
+        "pushEnabled": true,
+        "pushWatchlistEnabled": true,
+        "sessionToken": "vwzafhfmsred4gp234wz3easo",
+        "updatedAt": "2014-03-22T16:53:44.228Z",
+        "username": "idlt3c3oaial75hgy537bz64"
+    },
+	{
+        "TutorialScreen_Info": true,
+        "TutorialScreen_Locked": true,
+        "TutorialSeen_FirstRating0": true,
+        "TutorialSeen_FirstRating4": true,
+        "bcryptPassword": "$2a$10$PogU12CkoKiNKbSgS8a02O/QZqKz9hSsnvMdN9B8Ee.csloU8OZv.",
+        "createdAt": "2014-03-16T16:32:42.194Z",
+        "email": "derektesb@stutsmansoft.com",
+        "name": "Test Blanks",
+        "objectId": "4K0rHzoCaI",
+        "pushEnabled": true,
+        "pushWatchlistEnabled": true,
+        "sessionToken": "10jl0onnox8mw1a31rtfg50d",
+        "updatedAt": "2014-03-16T16:37:36.434Z",
+        "username": "derektesb@stutsmansoft.com"
+    },
+	{
+        "bcryptPassword": "$2a$10$mW5GKRZo0mHIZ2MQM9aZ2.czy4LHtii3ovK5A3yBS46.KWAQMzJpq",
+        "createdAt": "2014-03-16T17:44:27.472Z",
+        "email": "to@stutsmansoft.com",
+        "name": "Ti Stutsman",
+        "objectId": "oKyHT8MCJn",
+        "pushEnabled": true,
+        "pushWatchlistEnabled": true,
+        "sessionToken": "oc97317kiwu6kq35haxv5y4ml",
+        "updatedAt": "2014-03-16T17:44:27.472Z",
+        "username": "to@stutsmansoft.com"
+    },
+	{
+        "TutorialRatingScreen_3": true,
+        "TutorialSeen_FirstRating0": true,
+        "TutorialSeen_FirstRating3": true,
+        "bcryptPassword": "$2a$10$dPD3MxsRSIaD8ONKPP2tMeADjRct/dLTwGUczHRsEbXS1wCviU/DW",
+        "createdAt": "2014-03-14T19:21:06.968Z",
+        "email": "daniel.black101@gmail.com",
+        "name": "Daniel",
+        "objectId": "sGE7USwW3M",
+        "pushEnabled": true,
+        "pushWatchlistEnabled": true,
+        "sessionToken": "thnphyqte95dnzdvwca02jhmx",
+        "updatedAt": "2014-03-17T02:26:36.398Z",
+        "username": "daniel.black101@gmail.com"
+    },
+	{
+        "TutorialRatingScreen_1": true,
+        "TutorialRatingScreen_3": true,
+        "TutorialScreen_CritterFriends": true,
+        "TutorialScreen_Filters": true,
+        "TutorialScreen_Info": true,
+        "TutorialScreen_Locked": true,
+        "TutorialScreen_Notifications": true,
+        "TutorialScreen_RatingTiles_0": true,
+        "TutorialScreen_RatingTiles_1": true,
+        "TutorialSeen_FirstRating0": true,
+        "TutorialSeen_FirstRating1": true,
+        "TutorialSeen_FirstRating3": true,
+        "TutorialSeen_FirstRating4": true,
+        "authData": {
+            "facebook": {
+                "access_token": "CAAJYTvfy5YUBAE4mV3KSPcmG2jZBpRNxERpFZCRQLNO3NJKBQesA2cyFCeD1Lmd18ZAnAPmIHgwg2rrlD2H8EULxNRVPW0n5VD5FnxDJAzDpmaoYxwZAB1ZB6Ktsxp1udSB7oLLQX7BKARpuhiZBZARhKZAa1qFZCtCrhVKouUJm910IR35XS7J9arVvhQNrb3iI0OXaBYbVNDwZDZD",
+                "expiration_date": "2014-05-20T16:15:55.37Z",
+                "id": "1025466516"
+            }
+        },
+        "bcryptPassword": "$2a$10$GUnansXEMQrC.Ot6Db5MOOBREEgbPeRDeHBlgLt5cvJ91Kes2Z52O",
+        "createdAt": "2014-03-03T18:24:03.843Z",
+        "facebookID": "1025466516",
+        "facebookUsername": "dicapite",
+        "friends": [
+            {
+                "__type": "Pointer",
+                "className": "_User",
+                "objectId": "BD2jLG8CiW"
+            },
+            {
+                "__type": "Pointer",
+                "className": "_User",
+                "objectId": "SLMW4rF7Od"
+            },
+            {
+                "__type": "Pointer",
+                "className": "_User",
+                "objectId": "PsTjSoyBxg"
+            }
+        ],
+        "ignores": [],
+        "name": "Dan DiCapite",
+        "objectId": "RB9s05pzSg",
+        "profilePicture": {
+            "__type": "File",
+            "name": "4395543e-4c50-4ad6-b0dc-261dbe300ddb-profile.jpg",
+            "url": "http://files.parse.com/460ff09f-5b3e-4dc7-9ec6-6cad29f1bf7a/4395543e-4c50-4ad6-b0dc-261dbe300ddb-profile.jpg"
+        },
+        "pushEnabled": true,
+        "pushWatchlistEnabled": true,
+        "sessionToken": "hqd48q46oqbbciwtnx1y7csje",
+        "updatedAt": "2014-03-21T16:16:18.270Z",
+        "username": "vlg79xb3emscdyh7956xopvrn"
+    },
+	{
+        "TutorialRatingScreen_1": true,
+        "TutorialRatingScreen_2": true,
+        "TutorialRatingScreen_3": true,
+        "TutorialScreen_CritterFriends": true,
+        "TutorialScreen_Filters": true,
+        "TutorialScreen_Info": true,
+        "TutorialScreen_Locked": true,
+        "TutorialScreen_RatingTiles_0": true,
+        "TutorialSeen_FirstRating0": true,
+        "TutorialSeen_FirstRating1": true,
+        "TutorialSeen_FirstRating2": true,
+        "TutorialSeen_FirstRating3": true,
+        "TutorialSeen_FirstRating4": true,
+        "bcryptPassword": "$2a$10$rjUJLOu7zgh24g2ZgpDZ9Or4hsZEwfErvc9klDhUhIgCcVqU.laYe",
+        "createdAt": "2014-03-17T01:18:25.207Z",
+        "email": "derektesting314@stutsmansoft.com",
+        "friends": [
+            {
+                "__type": "Pointer",
+                "className": "_User",
+                "objectId": "bbpMXr9v9H"
+            },
+            {
+                "__type": "Pointer",
+                "className": "_User",
+                "objectId": "DZCF8Eb0A3"
+            },
+            {
+                "__type": "Pointer",
+                "className": "_User",
+                "objectId": "vKkkvxrlJ6"
+            }
+        ],
+        "ignores": [
+            {
+                "__type": "Pointer",
+                "className": "_User",
+                "objectId": "RB9s05pzSg"
+            }
+        ],
+        "name": "Derek Testing",
+        "objectId": "BD2jLG8CiW",
+        "profilePicture": {
+            "__type": "File",
+            "name": "4f819b28-4d42-4bc2-b01e-58f2f2f51719-profile.jpg",
+            "url": "http://files.parse.com/460ff09f-5b3e-4dc7-9ec6-6cad29f1bf7a/4f819b28-4d42-4bc2-b01e-58f2f2f51719-profile.jpg"
+        },
+        "pushEnabled": true,
+        "pushWatchlistEnabled": true,
+        "sessionToken": "awf9x0k6dug9no4fpvmk3kbfe",
+        "updatedAt": "2014-03-18T14:31:56.790Z",
+        "username": "derektesting314@stutsmansoft.com"
+    },
+	{
+        "TutorialRatingScreen_1": true,
+        "TutorialRatingScreen_2": true,
+        "TutorialScreen_Info": true,
+        "TutorialSeen_FirstRating0": true,
+        "TutorialSeen_FirstRating1": true,
+        "TutorialSeen_FirstRating2": true,
+        "TutorialSeen_FirstRating4": true,
+        "bcryptPassword": "$2a$10$hYwPY48s1eshifGX3eXH5.FOOomEtL4aZicJWoH5hLDpAV.Cf8hmm",
+        "createdAt": "2014-03-19T19:24:43.217Z",
+        "email": "ronshome@eworksinc.com",
+        "name": "Ron Shame",
+        "objectId": "SzH79GlNQz",
+        "pushEnabled": true,
+        "pushWatchlistEnabled": true,
+        "sessionToken": "ykbfz7f5evghney3lqancdor1",
+        "updatedAt": "2014-03-19T19:30:15.499Z",
+        "username": "ronshome@eworksinc.com"
+    },
+	{
+        "TutorialRatingScreen_1": true,
+        "TutorialRatingScreen_2": true,
+        "TutorialRatingScreen_3": true,
+        "TutorialScreen_Filters": true,
+        "TutorialScreen_Info": true,
+        "TutorialScreen_Locked": true,
+        "TutorialScreen_RatingTiles_0": true,
+        "TutorialScreen_RatingTiles_1": true,
+        "TutorialSeen_FirstRating0": true,
+        "TutorialSeen_FirstRating1": true,
+        "TutorialSeen_FirstRating2": true,
+        "TutorialSeen_FirstRating3": true,
+        "TutorialSeen_FirstRating4": true,
+        "bcryptPassword": "$2a$10$3JmCzJnF4bd/iepBxk9VueNYsqLJN71OHjosc6XqcpX/OtZGQo5P2",
+        "createdAt": "2014-03-19T22:12:28.658Z",
+        "email": "vicbeach.jb@gmail.com",
+        "name": "Vicbeach.jb@gmail.com",
+        "objectId": "k05CqeysiC",
+        "pushEnabled": true,
+        "pushWatchlistEnabled": true,
+        "sessionToken": "n77zeq1gk69w4qmywirnczfbr",
+        "updatedAt": "2014-03-19T22:48:52.079Z",
+        "username": "vicbeach.jb@gmail.com"
+    },
+	{
+        "TutorialRatingScreen_3": true,
+        "TutorialScreen_CritterFriends": true,
+        "TutorialScreen_Filters": true,
+        "TutorialSeen_FirstRating3": true,
+        "TutorialSeen_FirstRating4": true,
+        "authData": {
+            "facebook": {
+                "access_token": "CAAJYTvfy5YUBABEaztZBjUAomT5wuyZCbMgyEwtotmpJqDryTfGzY1VZBkKZBaDAbPwWG3GeZAm1NmttEHvR3rDuT3KvXGth1pquLICo2I868PkLIbw511nFSSUoro54Wk23eQsS2phQnMnU3fZCp4CR5BqaGJNJ3ky5m47tZCZCJBPGNSERvCIxXhOZCRCY0R13Y69rs2Xtn0GALWToVx7Pw",
+                "expiration_date": "2014-05-18T22:11:55.246Z",
+                "id": "1679213460"
+            }
+        },
+        "bcryptPassword": "$2a$10$d8tsUA9bWL8dA.q8eLfiw.VhpdgFG8KVrgbLgdWurSeU82nSJed8i",
+        "createdAt": "2014-03-19T22:12:00.140Z",
+        "facebookID": "1679213460",
+        "facebookUsername": "classicvanderz",
+        "friends": [
+            {
+                "__type": "Pointer",
+                "className": "_User",
+                "objectId": "JxLTH7qQWN"
+            }
+        ],
+        "name": "Willem Vanderveen",
+        "objectId": "wAajcnfv1l",
+        "profilePicture": {
+            "__type": "File",
+            "name": "0972db6e-ca53-4592-b912-b76a7fadc1df-profile.jpg",
+            "url": "http://files.parse.com/460ff09f-5b3e-4dc7-9ec6-6cad29f1bf7a/0972db6e-ca53-4592-b912-b76a7fadc1df-profile.jpg"
+        },
+        "sessionToken": "skwx11guw2g7nncfa4ec6y2th",
+        "updatedAt": "2014-03-20T17:29:59.418Z",
+        "username": "8v9840u5x87t6nhx2o90t1x7b"
+    },
+	{
+        "TutorialRatingScreen_1": true,
+        "TutorialRatingScreen_2": true,
+        "TutorialRatingScreen_3": true,
+        "TutorialScreen_Info": true,
+        "TutorialScreen_Locked": true,
+        "TutorialScreen_RatingTiles_0": true,
+        "TutorialSeen_FirstRating1": true,
+        "TutorialSeen_FirstRating2": true,
+        "TutorialSeen_FirstRating3": true,
+        "TutorialSeen_FirstRating4": true,
+        "authData": {
+            "facebook": {
+                "access_token": "CAAJYTvfy5YUBAJyq1kKrGQgQMDZC7p2nlFCOgEv07Q6y2SvM77xiVimuzz61EmBJ8soDFjSBAZBjsBigcZCpqwJLty368UjY6uecr9plu5CGB4Ei11djN72KoU4nsYMgWBg1ubaCj2zhSwWoP1vsCYUDv907fU8hUBdQZCBfvGR1ZAvu4GwzOnA7AXHtCgP8Y1QX9udrywJPCjQVviv7e",
+                "expiration_date": "2014-05-19T00:50:47.298Z",
+                "id": "10201254"
+            }
+        },
+        "bcryptPassword": "$2a$10$NWph8/Y6cLv4AX9KipbbauWBpGMqbsvK6fczdkA8A.khItlJG8VR2",
+        "createdAt": "2014-03-20T00:50:45.505Z",
+        "facebookID": "10201254",
+        "facebookUsername": "whoisdrewtodd",
+        "friends": [
+            {
+                "__type": "Pointer",
+                "className": "_User",
+                "objectId": "n4pTyC5KCp"
+            }
+        ],
+        "name": "Drew Todd",
+        "objectId": "Su8xmcCzPQ",
+        "profilePicture": {
+            "__type": "File",
+            "name": "d6a148d8-90cc-472e-9b5c-4ba799f3f4fc-profile.jpg",
+            "url": "http://files.parse.com/460ff09f-5b3e-4dc7-9ec6-6cad29f1bf7a/d6a148d8-90cc-472e-9b5c-4ba799f3f4fc-profile.jpg"
+        },
+        "pushEnabled": true,
+        "pushWatchlistEnabled": true,
+        "sessionToken": "sss1q2fkue90ccynpvv6a7plc",
+        "updatedAt": "2014-03-20T21:15:21.095Z",
+        "username": "lkpw6n889a8fj4e9jedo7nyec"
+    },
+	{
+        "TutorialRatingScreen_1": true,
+        "TutorialRatingScreen_3": true,
+        "TutorialScreen_Filters": true,
+        "TutorialScreen_Info": true,
+        "TutorialSeen_FirstRating0": true,
+        "TutorialSeen_FirstRating1": true,
+        "TutorialSeen_FirstRating3": true,
+        "TutorialSeen_FirstRating4": true,
+        "bcryptPassword": "$2a$10$QlcecgE692G4uvnUnX/gj.b1IordIYBy7o.yBPO6j797dwdVJivky",
+        "createdAt": "2014-03-20T16:49:18.520Z",
+        "email": "test@tests.vom",
+        "name": "Eric Test",
+        "objectId": "1XjBuFIYuL",
+        "pushEnabled": true,
+        "pushWatchlistEnabled": true,
+        "sessionToken": "s4n7iny2a152o8g6pw9d0t4jd",
+        "updatedAt": "2014-03-20T16:54:34.041Z",
+        "username": "test@tests.vom"
+    },
+	{
+        "TutorialRatingScreen_1": true,
+        "TutorialRatingScreen_2": true,
+        "TutorialRatingScreen_3": true,
+        "TutorialScreen_Filters": true,
+        "TutorialScreen_RatingTiles_0": true,
+        "TutorialSeen_FirstRating1": true,
+        "TutorialSeen_FirstRating2": true,
+        "TutorialSeen_FirstRating3": true,
+        "TutorialSeen_FirstRating4": true,
+        "bcryptPassword": "$2a$10$19jve9h4po54MfOZQKlP4O2v5hDhJ1yg09VAthKyzymwvmnYhJ/Ee",
+        "createdAt": "2014-03-20T17:42:32.122Z",
+        "email": "test@test.com",
+        "name": "Joe Blogs",
+        "objectId": "uN7QnMTBD6",
+        "pushEnabled": true,
+        "pushWatchlistEnabled": true,
+        "sessionToken": "80rp0xc0ki9ve2mwyn9442ill",
+        "updatedAt": "2014-03-20T17:45:18.245Z",
+        "username": "test@test.com"
+    },
+	{
+        "TutorialRatingScreen_2": true,
+        "TutorialScreen_Filters": true,
+        "TutorialSeen_FirstRating2": true,
+        "TutorialSeen_FirstRating4": true,
+        "bcryptPassword": "$2a$10$.cSBPCBsyoR7TKsxM49c.eioASI1SUwlDhzyT0JKjuzEyYDbU193m",
+        "createdAt": "2014-03-21T13:11:43.162Z",
+        "email": "logjam@stutsmansoft.com",
+        "friends": [
+            {
+                "__type": "Pointer",
+                "className": "_User",
+                "objectId": "BD2jLG8CiW"
+            },
+            {
+                "__type": "Pointer",
+                "className": "_User",
+                "objectId": "RB9s05pzSg"
+            },
+            {
+                "__type": "Pointer",
+                "className": "_User",
+                "objectId": "wAajcnfv1l"
+            }
+        ],
+        "name": "Testing Logjam",
+        "objectId": "PsTjSoyBxg",
+        "pushEnabled": true,
+        "pushWatchlistEnabled": true,
+        "sessionToken": "qm5bjr8vcq625sa7aymr94ylm",
+        "updatedAt": "2014-03-21T13:14:52.280Z",
+        "username": "logjam@stutsmansoft.com"
+    },
+	{
+        "TutorialRatingScreen_1": true,
+        "TutorialRatingScreen_2": true,
+        "TutorialRatingScreen_3": true,
+        "TutorialScreen_CritterFriends": true,
+        "TutorialScreen_Filters": true,
+        "TutorialScreen_Info": true,
+        "TutorialScreen_Locked": true,
+        "TutorialScreen_Notifications": true,
+        "TutorialScreen_RatingTiles_0": true,
+        "TutorialScreen_RatingTiles_1": true,
+        "TutorialSeen_FirstRating0": true,
+        "TutorialSeen_FirstRating1": true,
+        "TutorialSeen_FirstRating2": true,
+        "TutorialSeen_FirstRating3": true,
+        "TutorialSeen_FirstRating4": true,
+        "authData": {
+            "facebook": {
+                "access_token": "CAAJYTvfy5YUBACsFjvK3KJYZBONXCZAM9sd7SUFKFCKOF6MdtfANx4CCpIV8baVkN1OtZCZA4uSZCRfY1ZBnFmv3IJ8vvh6nvMsWVjjvVh4xPqyug8efXxnMPbZBg2SIZAOslaru7OwszPK0mwLeW8QMw1AMtiOfqVvH7exRwZCdZCUVMkVpxPbOjdp200ecoNZCZC6xTZCwhbRDRGQZDZD",
+                "expiration_date": "2014-05-20T17:01:54.929Z",
+                "id": "510538416"
+            }
+        },
+        "bcryptPassword": "$2a$10$jQh0FasUUZey6CINPj2xoOLMZNErpnEXqC87zKn.Rah5ffCNVBNNe",
+        "createdAt": "2014-03-05T20:30:40.489Z",
+        "email": "benjaminthomasbyrne@me.com",
+        "facebookID": "510538416",
+        "facebookUsername": "benjamin.byrne1",
+        "friends": [
+            {
+                "__type": "Pointer",
+                "className": "_User",
+                "objectId": "vKkkvxrlJ6"
+            },
+            {
+                "__type": "Pointer",
+                "className": "_User",
+                "objectId": "DZCF8Eb0A3"
+            },
+            {
+                "__type": "Pointer",
+                "className": "_User",
+                "objectId": "DBxrf6jaQ1"
+            },
+            {
+                "__type": "Pointer",
+                "className": "_User",
+                "objectId": "JxLTH7qQWN"
+            },
+            {
+                "__type": "Pointer",
+                "className": "_User",
+                "objectId": "BD2jLG8CiW"
+            },
+            {
+                "__type": "Pointer",
+                "className": "_User",
+                "objectId": "SLMW4rF7Od"
+            },
+            {
+                "__type": "Pointer",
+                "className": "_User",
+                "objectId": "Su8xmcCzPQ"
+            },
+            {
+                "__type": "Pointer",
+                "className": "_User",
+                "objectId": "n4pTyC5KCp"
+            },
+            {
+                "__type": "Pointer",
+                "className": "_User",
+                "objectId": "RB9s05pzSg"
+            },
+            {
+                "__type": "Pointer",
+                "className": "_User",
+                "objectId": "SPrnZjx55G"
+            },
+            {
+                "__type": "Pointer",
+                "className": "_User",
+                "objectId": "SzH79GlNQz"
+            },
+            {
+                "__type": "Pointer",
+                "className": "_User",
+                "objectId": "1XjBuFIYuL"
+            }
+        ],
+        "name": "Benjamin Byrne",
+        "objectId": "bbpMXr9v9H",
+        "profilePicture": {
+            "__type": "File",
+            "name": "5de87521-f3ff-40c9-a08d-4f1038121bce-profile.jpg",
+            "url": "http://files.parse.com/460ff09f-5b3e-4dc7-9ec6-6cad29f1bf7a/5de87521-f3ff-40c9-a08d-4f1038121bce-profile.jpg"
+        },
+        "pushEnabled": true,
+        "pushWatchlistEnabled": true,
+        "sessionToken": "562op6ags1letuf34ihu7g3t4",
+        "updatedAt": "2014-03-22T01:34:50.180Z",
+        "username": "rbd2rfsupyfbf14e7wcqbvrsx"
+    },
+	{
+        "TutorialRatingScreen_1": true,
+        "TutorialRatingScreen_2": true,
+        "TutorialRatingScreen_3": true,
+        "TutorialScreen_CritterFriends": true,
+        "TutorialScreen_Filters": true,
+        "TutorialScreen_Info": true,
+        "TutorialScreen_Locked": true,
+        "TutorialScreen_Notifications": true,
+        "TutorialScreen_RatingTiles_0": true,
+        "TutorialSeen_FirstRating0": true,
+        "TutorialSeen_FirstRating1": true,
+        "TutorialSeen_FirstRating2": true,
+        "TutorialSeen_FirstRating3": true,
+        "TutorialSeen_FirstRating4": true,
+        "bcryptPassword": "$2a$10$f.J5hxOgoWrnUGskN2w4s.ORZQfAH3VsVsfmY/ImYfGPKWjvWRSFK",
+        "createdAt": "2014-03-06T20:40:55.345Z",
+        "email": "bean@gmail.com",
+        "friends": [
+            {
+                "__type": "Pointer",
+                "className": "_User",
+                "objectId": "bbpMXr9v9H"
+            }
+        ],
+        "name": "Bean",
+        "objectId": "SPrnZjx55G",
+        "profilePicture": {
+            "__type": "File",
+            "name": "101bdb5f-9266-4846-a0b5-7c3b1b2c671e-profile.jpg",
+            "url": "http://files.parse.com/460ff09f-5b3e-4dc7-9ec6-6cad29f1bf7a/101bdb5f-9266-4846-a0b5-7c3b1b2c671e-profile.jpg"
+        },
+        "pushEnabled": true,
+        "pushWatchlistEnabled": true,
+        "sessionToken": "u1vsxb3mohhrd478ay991q3ob",
+        "updatedAt": "2014-03-21T18:59:38.006Z",
+        "username": "bean@gmail.com"
+    },
+	{
+        "TutorialRatingScreen_1": true,
+        "TutorialRatingScreen_2": true,
+        "TutorialRatingScreen_3": true,
+        "TutorialScreen_CritterFriends": true,
+        "TutorialScreen_Filters": true,
+        "TutorialScreen_Info": true,
+        "TutorialScreen_Locked": true,
+        "TutorialScreen_Notifications": true,
+        "TutorialScreen_RatingTiles_0": true,
+        "TutorialScreen_RatingTiles_1": true,
+        "TutorialSeen_FirstRating0": true,
+        "TutorialSeen_FirstRating1": true,
+        "TutorialSeen_FirstRating2": true,
+        "TutorialSeen_FirstRating3": true,
+        "TutorialSeen_FirstRating4": true,
+        "authData": {
+            "facebook": {
+                "access_token": "CAAJYTvfy5YUBAMubwDrbPLMEh7w9RZASTkeLUJkKZAuodZAZA6dgZBZCsSRQ4pUhLfmkL1e8hMDXyk2ZCkB2MjLBWJAZAWhtoWRA4FFYqLLbrHrizEx9bn4fjfnFIKHfGMhKJ3ZBTtb9icORWSD5ELqus4P3P1Ud5vDgTEONYr6bh3EBzROwaxF5BPYCypighUcW3ZCbWlYsPjTlV3QjZCZAroIX",
+                "expiration_date": "2014-05-18T21:38:14.561Z",
+                "id": "740756962"
+            }
+        },
+        "bcryptPassword": "$2a$10$I7sFvgiyTI0/aRdDu/5Dcukbdst/14K0aM4CJpRGfsp9QbLz8.VBa",
+        "createdAt": "2014-03-13T09:49:11.023Z",
+        "facebookID": "740756962",
+        "facebookUsername": "therealAK1",
+        "friends": [
+            {
+                "__type": "Pointer",
+                "className": "_User",
+                "objectId": "JxLTH7qQWN"
+            },
+            {
+                "__type": "Pointer",
+                "className": "_User",
+                "objectId": "Su8xmcCzPQ"
+            },
+            {
+                "__type": "Pointer",
+                "className": "_User",
+                "objectId": "bbpMXr9v9H"
+            }
+        ],
+        "name": "Aaron Krinsky",
+        "objectId": "n4pTyC5KCp",
+        "profilePicture": {
+            "__type": "File",
+            "name": "36926983-eeb3-48ea-bf38-c8f1cd32d356-profile.jpg",
+            "url": "http://files.parse.com/460ff09f-5b3e-4dc7-9ec6-6cad29f1bf7a/36926983-eeb3-48ea-bf38-c8f1cd32d356-profile.jpg"
+        },
+        "pushEnabled": true,
+        "pushWatchlistEnabled": true,
+        "sessionToken": "azd568xteyqabqpajlw0354n0",
+        "updatedAt": "2014-03-22T14:51:56.807Z",
+        "username": "qft8ewx9o3qo4nnco9zukqz4w"
+    }
+] }
