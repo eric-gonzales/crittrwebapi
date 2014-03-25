@@ -29,7 +29,6 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`CRUser` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `hashed_id` VARCHAR(45) NULL,
   `username` VARCHAR(255) NOT NULL,
   `password_hash` VARCHAR(45) NULL,
   `email` VARCHAR(255) NOT NULL,
@@ -41,8 +40,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`CRUser` (
   PRIMARY KEY (`id`),
   INDEX `email_idx` (`email` ASC),
   INDEX `facebook_id_idx` (`facebook_id` ASC),
-  INDEX `username_idx` (`username` ASC),
-  INDEX `user_hash_idx` (`hashed_id` ASC))
+  INDEX `username_idx` (`username` ASC))
 ENGINE = InnoDB;
 
 
@@ -99,7 +97,6 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`CRMovie` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `hashed_id` VARCHAR(45) NULL,
   `rotten_tomatoes_id` VARCHAR(45) NOT NULL,
   `itunes_id` VARCHAR(45) NULL,
   `imdb_id` VARCHAR(45) NULL,
@@ -114,8 +111,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`CRMovie` (
   `priority` INT NULL,
   `created` DATETIME NOT NULL,
   `modified` DATETIME NOT NULL,
-  PRIMARY KEY (`id`),
-  INDEX `movie_hash_idx` (`hashed_id` ASC))
+  PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 
 
@@ -124,7 +120,6 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`CRRating` (
   `int` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `hashed_id` VARCHAR(45) NULL,
   `user_id` INT UNSIGNED NOT NULL,
   `movie_id` INT UNSIGNED NOT NULL,
   `notified_box_office` TINYINT(1) NOT NULL DEFAULT 0,
@@ -135,7 +130,6 @@ CREATE TABLE IF NOT EXISTS `mydb`.`CRRating` (
   PRIMARY KEY (`int`),
   INDEX `fk_CRRating_CRUser1_idx` (`user_id` ASC),
   INDEX `fk_CRRating_CRMovie1_idx` (`movie_id` ASC),
-  INDEX `rating_hash_idx` (`hashed_id` ASC),
   CONSTRAINT `fk_CRRating_CRUser1`
     FOREIGN KEY (`user_id`)
     REFERENCES `mydb`.`CRUser` (`id`)
@@ -154,7 +148,6 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`CRNotification` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `hashed_id` VARCHAR(45) NULL,
   `notification_type` VARCHAR(45) NOT NULL,
   `from_user_id` INT UNSIGNED NOT NULL,
   `to_user_id` INT UNSIGNED NOT NULL,
@@ -167,7 +160,6 @@ CREATE TABLE IF NOT EXISTS `mydb`.`CRNotification` (
   INDEX `fk_CRNotification_CRUser1_idx` (`from_user_id` ASC),
   INDEX `fk_CRNotification_CRUser2_idx` (`to_user_id` ASC),
   INDEX `fk_CRNotification_CRRating1_idx` (`rating_id` ASC),
-  INDEX `note_hash_idx` (`hashed_id` ASC),
   CONSTRAINT `fk_CRNotification_CRUser1`
     FOREIGN KEY (`from_user_id`)
     REFERENCES `mydb`.`CRUser` (`id`)
