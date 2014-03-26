@@ -27,10 +27,10 @@ class Init_model extends CI_Model {
 		);
 		
 		$result = array(
-			'url_newaccount' => $config['base_url'].'user/signup',
-			'url_facebook' => $config['base_url'].'user/facebook',
-			'url_login' => $config['base_url'].'user/login',
-			'url_resetpassword' => $config['base_url'].'user/reset'
+			'url_newaccount' => $this->config->item('base_url').'user/signup',
+			'url_facebook' => $this->config->item('base_url').'user/facebook',
+			'url_login' => $this->config->item('base_url').'user/login',
+			'url_resetpassword' => $this->config->item('base_url').'user/reset'
 		);
 		
 		$chk_stmt = $this->db->get_where('CRDevice',array('device_vendor_id' => $data['device_vendor_id']), 1);
