@@ -15,6 +15,6 @@ class Init extends CI_Controller{
 		$data['message'] = $this->init_model->getMessage();
 		$data['result'] = $this->init_model->getResult();
 		
-		$this->load->view('init_response', $data);
+		$this->load->view('standard_response', $data);
 	}
 }
