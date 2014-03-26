@@ -1,5 +1,4 @@
-<?php
-abstract class CR_Model extends CI_Model{
+<?php class CR_Model extends CI_Model{
 	/**
      * Default constructor
      * @param void
@@ -12,7 +11,7 @@ abstract class CR_Model extends CI_Model{
 		$this->result = array();
 	}
 	
-	abstract public function process(){}
+	public function process(){}
 	
 	public function setResult($result){
 		$this->result = $result;
