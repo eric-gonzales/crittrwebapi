@@ -10,8 +10,14 @@ class User extends CI_Controller{
 	
 	//Create new Account
 	function signup(){
+		$this->load->model('user_model');
+		$this->init_model->signup();
 		
+		$data['status'] = $this->init_model->getStatus();
+		$data['message'] = $this->init_model->getMessage();
+		$data['result'] = $this->init_model->getResult();
 		
+		$this->load->view('standard_response', $data);
 	}
 	
 	//Login or Create New Account via Facebook

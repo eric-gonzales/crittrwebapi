@@ -17,7 +17,24 @@ class User_model extends CR_Model {
 		parent::__construct();
 	}
 	
-	public function signup(){}
+	public function signup(){
+		//first we check if the email is already in use
+		$chk_stmt = $this->db->get_where('CRUser',array('email' => $_POST['email']), 1);
+		
+		if($chk_stmt->num_rows() == 0){
+			//create new entry in CRUser table
+			$this->db->set('created', 'NOW()', FALSE);
+			$this->db->set('username', $_POST['username']);
+			$this->db->set('password_hash', $_POST['password']);
+			$this->db->set('email', $_POST['email']);
+			$this->db->insert('CRUser');
+		}
+		else{
+			//return error code
+			$this->setStatus(1);
+			$this->setMessage('Error: email is already in use.');
+		}
+	}
 	
 	//Login or Create New Account via Facebook
 	public function facebook(){}
