@@ -25,21 +25,17 @@ class Init_model extends CR_Model {
 			'url_resetpassword' => $this->config->item('base_url').'user/reset'
 		));
 		
-		//array: (key) database column => (value) post var
-		$data = array(
-			'appID' => $_POST['appID'],
-			'appName' => $_POST['appName'],
-			'appVersion' => $_POST['appVersion'],
-			'device_vendor_id' => $_POST['deviceID']
-		);
-		
 		//first we check if the device exists.
-		$chk_stmt = $this->db->get_where('CRDevice',array('device_vendor_id' => $data['device_vendor_id']), 1);
+		$chk_stmt = $this->db->get_where('CRDevice',array('device_vendor_id' => $_POST['deviceID']), 1);
 		
 		//if the device does not exist in the DB, we will add an entry with the data above
 		if($chk_stmt->num_rows() == 0){
-			$data['created'] = date('Y-m-d H:i:s',time());
-			$this->db->insert('CRDevice', $data);
+			$this->db->set('created', 'NOW()', FALSE);
+			$this->db->set('appID', $_POST['appID']);
+			$this->db->set('appName', $_POST['appName']);
+			$this->db->set('appVersion', $_POST['appVersion']);
+			$this->db->set('device_vender_id', $_POST['deviceID']);
+			$this->db->insert('CRDevice');
 		}
 	}
 }
