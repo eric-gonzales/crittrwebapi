@@ -24,7 +24,7 @@ class Init_model extends CI_Model {
 	 * @return $result array Key/value pairs to be sent as response
 	 */
 	public function getResult(){
-		//post data
+		//array: (key) database column => (value) post var
 		$data = array(
 			'appID' => $_POST['appID'],
 			'appName' => $_POST['appName'],
@@ -45,6 +45,7 @@ class Init_model extends CI_Model {
 		
 		//if the device does not exist in the DB, we will add an entry with the data above
 		if($chk_stmt->num_rows() == 0){
+			//TODO: configure s.t. when data is inserted, the "created" column automatically updates with the timestamp.
 			$this->db->insert('CRDevice', $data);
 		}
 		
