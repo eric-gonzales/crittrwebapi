@@ -1,3 +1,6 @@
 <?php
-$response = json_encode($result);
-echo $response;
+$response['status'] = $status;
+$response['message'] = $message;
+$response['result'] = $result;
+
+echo json_encode($response);

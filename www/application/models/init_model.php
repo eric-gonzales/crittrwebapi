@@ -15,29 +15,26 @@ class Init_model extends CI_Model {
      */
 	public function __construct(){
 		parent::__construct();
+		$this->status = 0;
+		$this->message = '';
+		$this->result = array();
 	}
 	
-	
-	/**
-	 * Returns result with a list of all the endpoints we will use when not logged in 
-	 * @param void
-	 * @return $result array Key/value pairs to be sent as response
-	 */
-	public function getResult(){
+	public function process(){
+		//our result payload
+		$this->setResult(array(
+			'url_newaccount' => $this->config->item('base_url').'user/signup',
+			'url_facebook' => $this->config->item('base_url').'user/facebook',
+			'url_login' => $this->config->item('base_url').'user/login',
+			'url_resetpassword' => $this->config->item('base_url').'user/reset'
+		));
+		
 		//array: (key) database column => (value) post var
 		$data = array(
 			'appID' => $_POST['appID'],
 			'appName' => $_POST['appName'],
 			'appVersion' => $_POST['appVersion'],
 			'device_vendor_id' => $_POST['deviceID']
-		);
-		
-		//our result payload
-		$result = array(
-			'url_newaccount' => $this->config->item('base_url').'user/signup',
-			'url_facebook' => $this->config->item('base_url').'user/facebook',
-			'url_login' => $this->config->item('base_url').'user/login',
-			'url_resetpassword' => $this->config->item('base_url').'user/reset'
 		);
 		
 		//first we check if the device exists.
@@ -48,10 +45,30 @@ class Init_model extends CI_Model {
 			//TODO: configure s.t. when data is inserted, the "created" column automatically updates with the timestamp.
 			$this->db->insert('CRDevice', $data);
 		}
-		
-		//finally return the result
-		return $result;
-		
+	}
+
+	public function setResult($result){
+		$this->result = $result;
+	}
+	
+	public function setMessage($message){
+		$this->message = $message;
+	}
+	
+	public function setStatus($status){
+		$this->status = $status;
+	}
+	
+	public function getResult(){
+		return $this->result;
+	}
+	
+	public function getMessage(){
+		return $this->message;
+	}
+	
+	public function getStatus(){
+		return $this->status;
 	}
 	
 	

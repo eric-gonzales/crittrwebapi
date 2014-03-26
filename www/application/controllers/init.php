@@ -9,6 +9,10 @@ class Init extends CI_Controller{
 	function index(){
 		$this->load->model('init_model');
 		
+		$this->init_model->process();
+		
+		$data['status'] = $this->init_model->getStatus();
+		$data['message'] = $this->init_model->getMessage();
 		$data['result'] = $this->init_model->getResult();
 		
 		$this->load->view('init_response', $data);
