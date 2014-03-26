@@ -5,7 +5,7 @@
  * @copyright 2014 Critter
  */
  
-class Init_model extends CI_Model {
+class Init_model extends CR_Model {
 	
 	/**
      * Default constructor
