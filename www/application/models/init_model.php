@@ -6,7 +6,6 @@
  */
  
 class Init_model extends CR_Model {
-	
 	/**
      * Default constructor
      * @param void
@@ -15,9 +14,6 @@ class Init_model extends CR_Model {
      */
 	public function __construct(){
 		parent::__construct();
-		$this->status = 0;
-		$this->message = '';
-		$this->result = array();
 	}
 	
 	public function process(){
@@ -46,30 +42,4 @@ class Init_model extends CR_Model {
 			$this->db->insert('CRDevice', $data);
 		}
 	}
-
-	public function setResult($result){
-		$this->result = $result;
-	}
-	
-	public function setMessage($message){
-		$this->message = $message;
-	}
-	
-	public function setStatus($status){
-		$this->status = $status;
-	}
-	
-	public function getResult(){
-		return $this->result;
-	}
-	
-	public function getMessage(){
-		return $this->message;
-	}
-	
-	public function getStatus(){
-		return $this->status;
-	}
-	
-	
 }
