@@ -7,6 +7,7 @@ class Authenticator{
 		$headerVerify = $headers['critter-verify'];
 		$test = sha1($critterDevice.CRITTER_SECRET);
 		if($headerVerify != $test){
+			header('HTTP/1.0 403 Forbidden');
 			die();
 		}
 	}
