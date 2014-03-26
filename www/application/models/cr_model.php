@@ -1,4 +1,9 @@
 <?php class CR_Model extends CI_Model{
+	
+	private $status;
+	private $message;
+	private $result;
+	
 	/**
      * Default constructor
      * @param void
@@ -6,9 +11,9 @@
      * @access public 
      */
 	public function __construct(){
-		$this->status = 0;
-		$this->message = '';
-		$this->result = array();
+		$this->setStatus(0);
+		$this->setMessage('');
+		$this->setResult(array());
 	}
 	
 	public function process(){}
