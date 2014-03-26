@@ -15,16 +15,32 @@ class Init_model extends CI_Model {
      */
 	public function __construct(){
 		parent::__construct();
-		echo '<pre>';
-		print_r($_POST);
 	}
 	
-	public function getData(){
-		$query = $this->db->get('CRUser');
-		if($query->num_rows() > 0){
-			return $query->result();
+	public function getResult(){
+		
+		$data = array(
+			'appID' => $_POST['appID'],
+			'appName' => $_POST['appName'],
+			'appVersion' => $_POST['appVersion'],
+			'device_vendor_id' => $_POST['deviceID']
+		);
+		
+		$result = array(
+			'url_newaccount' => 'https://api.crittermovies.com/user/signup',
+			'url_facebook' => 'https://api.crittermovies.com/user/facebook',
+			'url_login' => 'https://api.crittermovies.com/user/login',
+			'url_resetpassword' => 'https://api.crittermovies.com/user/reset'
+		);
+		
+		$chk_stmt = $this->db->get_where('CRDevice',array('device_vendor_id' => $data['device_vendor_id'], 1));
+		
+		if($chk_stmt->num_rows() == 0){
+			$this->db->insert('CRDevice', $data);
 		}
-		else{}
+		
+		return $result;
+		
 	}
 	
 	
