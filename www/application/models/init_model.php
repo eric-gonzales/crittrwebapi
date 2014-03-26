@@ -38,7 +38,7 @@ class Init_model extends CR_Model {
 		
 		//if the device does not exist in the DB, we will add an entry with the data above
 		if($chk_stmt->num_rows() == 0){
-			//TODO: configure s.t. when data is inserted, the "created" column automatically updates with the timestamp.
+			$data['created'] = date('Y-m-d H:i:s',time());
 			$this->db->insert('CRDevice', $data);
 		}
 	}
