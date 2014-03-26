@@ -1,3 +1,2 @@
 <?php
-echo '<pre>';
-print_r($result);
+$response = json_encode($result);
