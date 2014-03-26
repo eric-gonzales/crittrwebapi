@@ -9,7 +9,10 @@ class User extends CI_Controller{
 	function index(){}
 	
 	//Create new Account
-	function signup(){}
+	function signup(){
+		
+		
+	}
 	
 	//Login or Create New Account via Facebook
 	function facebook(){}
