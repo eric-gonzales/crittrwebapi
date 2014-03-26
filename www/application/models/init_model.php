@@ -24,7 +24,7 @@ class Init_model extends CI_Model {
 	 * @return $result array Key/value pairs to be sent as response
 	 */
 	public function getResult(){
-		
+		//post data
 		$data = array(
 			'appID' => $_POST['appID'],
 			'appName' => $_POST['appName'],
@@ -32,6 +32,7 @@ class Init_model extends CI_Model {
 			'device_vendor_id' => $_POST['deviceID']
 		);
 		
+		//our result payload
 		$result = array(
 			'url_newaccount' => $this->config->item('base_url').'user/signup',
 			'url_facebook' => $this->config->item('base_url').'user/facebook',
@@ -39,12 +40,15 @@ class Init_model extends CI_Model {
 			'url_resetpassword' => $this->config->item('base_url').'user/reset'
 		);
 		
+		//first we check if the device exists.
 		$chk_stmt = $this->db->get_where('CRDevice',array('device_vendor_id' => $data['device_vendor_id']), 1);
 		
+		//if the device does not exist in the DB, we will add an entry with the data above
 		if($chk_stmt->num_rows() == 0){
 			$this->db->insert('CRDevice', $data);
 		}
 		
+		//finally return the result
 		return $result;
 		
 	}

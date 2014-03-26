@@ -1,4 +1,9 @@
 <?php
+/**
+ * Init Controller
+ * @author Eric Gonzales <eric@crittermovies.com>
+ * @copyright 2014 Critter
+ */
 
 class Init extends CI_Controller{
 	function index(){
