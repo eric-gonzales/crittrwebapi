@@ -1,9 +1,13 @@
 <?php
 class Authenticator{
 	public function auth(){
-		$auth_flag = 0;
+		define('CRITTER_SECRET', 'p0^:22MJQ4OkR6235w2+');
 		$headers = getallheaders();
-		echo '<pre>';
-		print_r($headers);
+		$critterDevice = $headers['critter-device'];
+		$headerVerify = $headers['critter-verify'];
+		$test = sha1($critterDevice.CRITTER_SECRET);
+		if($headerVerify != $test){
+			die();
+		}
 	}
 }
