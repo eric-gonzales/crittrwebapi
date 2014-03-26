@@ -34,7 +34,7 @@ class Init_model extends CR_Model {
 			$this->db->set('appID', $_POST['appID']);
 			$this->db->set('appName', $_POST['appName']);
 			$this->db->set('appVersion', $_POST['appVersion']);
-			$this->db->set('device_vender_id', $_POST['deviceID']);
+			$this->db->set('device_vendor_id', $_POST['deviceID']);
 			$this->db->insert('CRDevice');
 		}
 	}
