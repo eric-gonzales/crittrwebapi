@@ -10,7 +10,14 @@
 |
 */
 
+$hook['pre_system'] = array(
+	'class' => 'Authenticator',
+	'function' => 'auth',
+	'filename' => 'authenticator.php',
+	'filepath' => 'hooks',
+	'params' => array()
 
+);
 
 /* End of file hooks.php */
 /* Location: ./application/config/hooks.php */
