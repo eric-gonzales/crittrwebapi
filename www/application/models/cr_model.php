@@ -1,4 +1,6 @@
-<?php class CR_Model extends CI_Model{
+<?php 
+
+class CR_Model extends CI_Model{
 	
 	private $status;
 	private $message;
@@ -11,6 +13,7 @@
      * @access public 
      */
 	public function __construct(){
+		header('Content-Type: application/json');
 		$this->setStatus(0);
 		$this->setMessage('');
 		$this->setResult(array());
