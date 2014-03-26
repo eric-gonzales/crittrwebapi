@@ -33,7 +33,7 @@ class Init_model extends CI_Model {
 			'url_resetpassword' => 'https://api.crittermovies.com/user/reset'
 		);
 		
-		$chk_stmt = $this->db->get_where('CRDevice',array('device_vendor_id' => $data['device_vendor_id'], 1));
+		$chk_stmt = $this->db->get_where('CRDevice',array('device_vendor_id' => $data['device_vendor_id']), 1);
 		
 		if($chk_stmt->num_rows() == 0){
 			$this->db->insert('CRDevice', $data);
