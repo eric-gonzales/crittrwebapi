@@ -17,6 +17,12 @@ class Init_model extends CI_Model {
 		parent::__construct();
 	}
 	
+	
+	/**
+	 * Returns result with a list of all the endpoints we will use when not logged in 
+	 * @param void
+	 * @return $result array Key/value pairs to be sent as response
+	 */
 	public function getResult(){
 		
 		$data = array(
