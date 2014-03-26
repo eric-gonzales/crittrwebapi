@@ -18,6 +18,7 @@ class Init_model extends CI_Model {
 		
 		$query = $this->db->get('CRUser');
 		if($query->num_rows() > 0){
+			print_r($query->result());
 			return $query->result();
 		}
 		else{}
