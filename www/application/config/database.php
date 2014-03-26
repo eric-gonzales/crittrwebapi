@@ -48,10 +48,10 @@
 $active_group = 'default';
 $active_record = TRUE;
 
-$db['default']['hostname'] = 'localhost';
-$db['default']['username'] = '';
-$db['default']['password'] = '';
-$db['default']['database'] = '';
+$db['default']['hostname'] = 'mydb.convjtlfhxmu.us-west-2.rds.amazonaws.com';
+$db['default']['username'] = 'critteruser';
+$db['default']['password'] = 'Tbr6m52l56}n~bb';
+$db['default']['database'] = 'mydb';
 $db['default']['dbdriver'] = 'mysql';
 $db['default']['dbprefix'] = '';
 $db['default']['pconnect'] = TRUE;

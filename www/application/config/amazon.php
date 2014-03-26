@@ -1,5 +1,5 @@
 <?php
 
-	$config['aws_key'] = 'YOUR_AMAZON_KEY_HERE';
-	$config['aws_secret'] = 'YOUR_AMAZON_KEY_HERE';	
+	$config['aws_key'] = 'AKIAJQDQVFIMNW44HQ4Q';
+	$config['aws_secret'] = 'xiVMB067h21Y75kIAa6rvUhjViUNtbYC1zPGe6le';	
 ?>	
