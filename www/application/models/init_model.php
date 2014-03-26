@@ -16,7 +16,7 @@ class Init_model extends CI_Model {
 	public function __construct(){
 		parent::__construct();
 		
-		
+		error_log('called');
 	}
 	
 	public function getData(){
