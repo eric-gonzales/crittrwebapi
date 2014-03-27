@@ -54,7 +54,7 @@ class User_model extends CR_Model {
 		
 		if($chk_stmt->num_rows() == 0){
 			//get hashed password
-			$hashedPassword = hash('sha512', hashids_encrypt($_POST['password'], base64_encode($this->config->item('server_secret')), 10));
+			$hashedPassword = $this->hash($_POST['password']);
 			
 			//create new entry in CRUser table
 			$this->db->set('created', 'NOW()', FALSE);
@@ -87,8 +87,16 @@ class User_model extends CR_Model {
 			$this->setMessage('Error: email does not exist.');
 		}
 		else{
-			echo '<pre>';
-			print_r($chk_stmt->result());
+			$cr_user = $chk_stmt->result();
+			$hashedPassword = $this->hash($_POST['password']);
+			if($hashedPassword == $cr_user->password_hash){
+				$this->defaultResult($userID);
+			}
+			else{
+				//return error code
+				$this->setStatus(1);
+				$this->setMessage('Error: invalid credentials');
+			}
 		}
 	}
 	
@@ -103,4 +111,9 @@ class User_model extends CR_Model {
 	
 	//Remove Friend
 	public function removefriend(){}
+	
+	//Hash
+	private function hash($string){
+		return hash('sha512', hashids_encrypt($string, base64_encode($this->config->item('server_secret')), 10));
+	}
 }
