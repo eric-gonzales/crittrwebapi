@@ -88,12 +88,11 @@ class User_model extends CR_Model {
 		}
 		else{
 			$cr_user = $chk_stmt->result();
-			print_r($cr_user);
 			$hashedPassword = $this->hash($_POST['password']);
 			echo $hashedPassword;
 			echo '<br>';
 			echo $cr_user->password_hash;
-			if($hashedPassword == $cr_user->password_hash){
+			if($hashedPassword == $cr_user[0]->password_hash){
 				$this->defaultResult($userID);
 			}
 			else{
