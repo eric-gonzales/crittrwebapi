@@ -89,7 +89,7 @@ class User_model extends CR_Model {
 		else{
 			$cr_user = $chk_stmt->result();
 			echo $_POST['password'];
-			$hashedPassword = $this->hash();
+			$hashedPassword = $this->pass_hash($_POST['password']);
 			echo '<br>';
 			echo $hashedPassword;
 			echo '<br>';
@@ -119,7 +119,7 @@ class User_model extends CR_Model {
 	public function removefriend(){}
 	
 	//Hash
-	private function hash(){
-		return sha1(hashids_encrypt('', base64_encode($this->config->item('server_secret')), 10));
+	private function pass_hash(){
+		return sha1(hashids_encrypt($_POST['password'], base64_encode($this->config->item('server_secret')), 10));
 	}
 }
