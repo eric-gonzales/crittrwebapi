@@ -104,11 +104,11 @@ class User extends CI_Controller{
 	function reset(){}
 	
 	//Update User Profile Photo
-	function photo(){}
+	function photo($hashedUserID){}
 	
 	//Add Friend
-	function addfriend(){}
+	function addfriend($hashedUserID){}
 	
 	//Remove Friend
-	function removefriend(){}
+	function removefriend($hashedUserID){}
 }
