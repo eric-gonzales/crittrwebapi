@@ -90,7 +90,7 @@ class User_model extends CR_Model {
 			$cr_user = $chk_stmt->result();
 			echo '<br>';
 			echo $_POST['password'];
-			$hashedPassword = hashids_encrypt($_POST['password'], base64_encode($this->config->item('server_secret')), 10);
+			$hashedPassword = hashids_encrypt($_POST['password']);
 			echo '<br>';
 			echo $hashedPassword;
 			echo '<br>';
