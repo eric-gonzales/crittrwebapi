@@ -4,6 +4,9 @@ class Authenticator{
 	 * Method used for authentication
 	 */
 	public function auth(){
+		
+		define('CRITTER_SECRET', 'ff8347fskjqd823e2dh2fds');
+		
 		$headers = getallheaders();
 		if(empty($headers)){
 			$this->fail();
@@ -11,8 +14,8 @@ class Authenticator{
 		
 		$critterDevice = $headers['critter-device'];
 		$headerVerify = $headers['critter-verify'];
-		$shared = $this->config->item('shared_secret');
-		$test = sha1($critterDevice.$shared);
+		
+		$test = sha1($critterDevice.CRITTER_SECRET);
 		
 		//if the hash doesn't match up or the critter-device header is empty
 		if($headerVerify != $test || empty($critterDevice)){
