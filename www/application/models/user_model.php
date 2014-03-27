@@ -78,13 +78,25 @@ class User_model extends CR_Model {
 			//grab the user id from the last insert
 			$userID = $this->db->insert_id();
 			
-			//CRDeviceUser table linking
+			//get headers
 			$headers = getallheaders();
-			$this->db->set('device_id', $headers['critter-device']);
-			$this->db->set('user_id', $userID);
-			$this->db->insert('CRDeviceUser');
+			//First, select id from CRDevice where device_vendor_id = critter-device
+			$this->db->select('id');
+			$query = $this->db->get_where('CRDevice', array('device_vendor_id' => $headers['critter-device']), 1);
+			//if we have a match, lets insert a new record into the table
+			if($query->num_rows > 0){
+				$row = $query->row();
+				$this->db->set('device_id', $row->id);
+				$this->db->set('user_id', $userID);
+				$this->db->insert('CRDeviceUser');
+			}
+			else{
+				//return error code
+				$this->setStatus(1);
+				$this->setMessage('Error: device could not be found.');
+			}
 			
-			//generate the default result
+			//finally, generate the default result
 			$this->defaultResult($userID);
 		}
 		else{
