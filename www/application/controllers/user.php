@@ -114,8 +114,7 @@ class User extends CI_Controller{
 		else{
 			$cr_user = $chk_stmt->row();
 			//check if token is already generated for this user_id. 
-			$this->db->select('DATEDIFF(NOW(),created)');
-			$chk_tkn_stmt = $this->db->get_where('CREmailToken',array('user_id' => $cr_user->id), 1);
+			$chk_tkn_stmt = $this->db->get_where('CREmailToken',array('user_id' => $cr_user->id, 'created <= DATE_ADD(NOW(),INTERVAL 7 DAYS)'), 1);
 			if($chk_tkn_stmt->num_rows() > 0){
 				$tkn = $chk_tkn_stmt->row();
 				echo '<pre>';
