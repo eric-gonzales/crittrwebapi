@@ -90,7 +90,7 @@ class User_model extends CR_Model {
 			$cr_user = $chk_stmt->row();
 			$hashedPassword = $this->hash($_POST['password']);
 			if($hashedPassword == $cr_user->password_hash){
-				$this->defaultResult($userID);
+				$this->defaultResult($cr_user->id);
 			}
 			else{
 				//return error code
