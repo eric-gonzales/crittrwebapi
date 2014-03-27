@@ -111,6 +111,17 @@ $autoload['language'] = array();
 
 $autoload['model'] = array('cr_model');
 
+/*
+| -------------------------------------------------------------------
+|  Auto-load Sparks
+| -------------------------------------------------------------------
+| Prototype:
+|
+|	$autoload['sparks'] = array('sk-hashids/1.0.5');
+|
+*/
+
+$autoload['sparks'] = array('sk-hashids/1.0.5');
 
 /* End of file autoload.php */
 /* Location: ./application/config/autoload.php */
