@@ -87,15 +87,9 @@ class User_model extends CR_Model {
 			$this->setMessage('Error: email does not exist.');
 		}
 		else{
-			$cr_user = $chk_stmt->result();
-			echo '<br>';
+			$cr_user = $chk_stmt->row();
 			$hashedPassword = $this->hash($_POST['password']);
-			echo '<br>';
-			echo $hashedPassword;
-			echo '<br>';
-			echo $cr_user[0]->password_hash;
-			echo '<hr>';
-			if($hashedPassword == $cr_user[0]->password_hash){
+			if($hashedPassword == $cr_user->password_hash){
 				//$this->defaultResult($userID);
 			}
 			else{
