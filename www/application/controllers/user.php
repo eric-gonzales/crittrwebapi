@@ -6,14 +6,12 @@
  */
 
 class User extends CI_Controller{
-	function __construct(){
-		$this->load->model('user_model');
-	}
-	
 	function index(){}
 	
 	//Create new Account
 	function signup(){
+		$this->load->model('user_model');
+		
 		//first we check if the email is already in use
 		$chk_stmt = $this->db->get_where('CRUser',array('email' => $this->input->post('email')), 1);
 		
@@ -66,7 +64,9 @@ class User extends CI_Controller{
 	function facebook(){}
 	
 	//Login
-	function login(){		
+	function login(){
+		$this->load->model('user_model');
+				
 		$this->db->select('id, password_hash');
 		//look for matching email in CRUser table
 		$chk_stmt = $this->db->get_where('CRUser',array('email' => $this->input->post('email')), 1);
