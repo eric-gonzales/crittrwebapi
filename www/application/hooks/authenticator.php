@@ -11,7 +11,8 @@ class Authenticator{
 		
 		$critterDevice = $headers['critter-device'];
 		$headerVerify = $headers['critter-verify'];
-		$test = sha1($critterDevice.$this->config->item('shared_secret'));
+		$shared = $this->config->item('shared_secret');
+		$test = sha1($critterDevice.$shared);
 		
 		//if the hash doesn't match up or the critter-device header is empty
 		if($headerVerify != $test || empty($critterDevice)){
