@@ -82,7 +82,7 @@ class User_model extends CR_Model {
 			$headers = getallheaders();
 			$this->db->set('device_id', $headers['critter-device']);
 			$this->db->set('user_id', $userID);
-			$this->db->insert('CRDevice');
+			$this->db->insert('CRDeviceUser');
 			
 			//generate the default result
 			$this->defaultResult($userID);
