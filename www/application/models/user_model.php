@@ -25,6 +25,8 @@ class User_model extends CR_Model {
 			//create new entry in CRUser table
 			$this->db->set('created', 'NOW()', FALSE);
 			$this->db->set('username', $_POST['username']);
+			$this->load->spark('sk-hashids/1.0.5');
+			echo hashids_encrypt(1234);
 			$this->db->set('password_hash', $_POST['password']);
 			$this->db->set('email', $_POST['email']);
 			$this->db->insert('CRUser');
