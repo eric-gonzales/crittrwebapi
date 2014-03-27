@@ -91,7 +91,7 @@ class User_model extends CR_Model {
 			echo '<br>';
 			$post_pass = $_POST['password'];
 			echo $post_pass;
-			$hashedPassword = hash('sha512', $post_pass);
+			$hashedPassword = sha1($post_pass);
 			echo '<br>';
 			echo $hashedPassword;
 			echo '<br>';
