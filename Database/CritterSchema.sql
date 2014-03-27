@@ -21,7 +21,8 @@ CREATE TABLE IF NOT EXISTS `mydb`.`CRDevice` (
   PRIMARY KEY (`id`),
   UNIQUE INDEX `device_vendor_id_UNIQUE` (`device_vendor_id` ASC),
   INDEX `push_idx` (`push_token` ASC))
-ENGINE = InnoDB;
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
@@ -41,7 +42,8 @@ CREATE TABLE IF NOT EXISTS `mydb`.`CRUser` (
   INDEX `email_idx` (`email` ASC),
   INDEX `facebook_id_idx` (`facebook_id` ASC),
   INDEX `username_idx` (`username` ASC))
-ENGINE = InnoDB;
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
@@ -63,7 +65,8 @@ CREATE TABLE IF NOT EXISTS `mydb`.`CRDeviceUser` (
     REFERENCES `mydb`.`CRUser` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
@@ -89,7 +92,8 @@ CREATE TABLE IF NOT EXISTS `mydb`.`CRFriends` (
     REFERENCES `mydb`.`CRUser` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
@@ -112,7 +116,8 @@ CREATE TABLE IF NOT EXISTS `mydb`.`CRMovie` (
   `created` DATETIME NOT NULL,
   `modified` DATETIME NOT NULL,
   PRIMARY KEY (`id`))
-ENGINE = InnoDB;
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
@@ -140,7 +145,8 @@ CREATE TABLE IF NOT EXISTS `mydb`.`CRRating` (
     REFERENCES `mydb`.`CRMovie` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
@@ -175,7 +181,8 @@ CREATE TABLE IF NOT EXISTS `mydb`.`CRNotification` (
     REFERENCES `mydb`.`CRRating` (`int`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
@@ -205,7 +212,8 @@ CREATE TABLE IF NOT EXISTS `mydb`.`CRPushNotification` (
     REFERENCES `mydb`.`CRNotification` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
