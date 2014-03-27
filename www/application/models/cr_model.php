@@ -13,7 +13,7 @@ class CR_Model extends CI_Model{
      * @access public 
      */
 	public function __construct(){
-		header('Content-Type: application/json');
+		$this->output->set_content_type('application/json');
 		$this->setStatus(0);
 		$this->setMessage('');
 		$this->setResult(array());
