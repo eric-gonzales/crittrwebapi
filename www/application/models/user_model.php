@@ -24,7 +24,7 @@ class User_model extends CR_Model {
 		
 		if($chk_stmt->num_rows() == 0){
 			//get hashed password
-			$hashedPassword = hash('sha256', hashids_encrypt($_POST['password'], base64_encode($this->config->item('shared_secret')), 10));
+			$hashedPassword = hash('sha512', hashids_encrypt($_POST['password'], base64_encode($this->config->item('shared_secret')), 10));
 			
 			//create new entry in CRUser table
 			$this->db->set('created', 'NOW()', FALSE);
