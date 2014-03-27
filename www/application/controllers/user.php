@@ -101,7 +101,7 @@ class User extends CI_Controller{
 	}
 	
 	//Reset Lost Password
-	function reset(){
+	function reset($hashedUserID = '', $token = ''){
 		$this->db->select('id');
 		//look for matching email in CRUser table
 		$chk_stmt = $this->db->get_where('CRUser',array('email' => $this->input->post('email')), 1);
