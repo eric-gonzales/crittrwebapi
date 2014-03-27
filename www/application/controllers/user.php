@@ -130,6 +130,12 @@ class User extends CI_Controller{
 				$this->db->insert('CREmailToken');
 			}
 		}
+		
+		$data['status'] = $this->user_model->getStatus();
+		$data['message'] = $this->user_model->getMessage();
+		$data['result'] = $this->user_model->getResult();
+		
+		$this->load->view('standard_response', $data);
 	}
 	
 	//Update User Profile Photo
