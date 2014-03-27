@@ -22,17 +22,13 @@ class User_model extends CR_Model {
 		$chk_stmt = $this->db->get_where('CRUser',array('email' => $_POST['email']), 1);
 		
 		
-		echo $this->config->item('shared_secret');
 		if($chk_stmt->num_rows() == 0){
 			//get hashed password
-			
-			
-			
-			
+			$hashedPassword = hashids_encrypt($_POST['password'], $this->config->item('shared_secret'), 10);
 			//create new entry in CRUser table
 			$this->db->set('created', 'NOW()', FALSE);
 			$this->db->set('username', $_POST['username']);
-			$this->db->set('password_hash', $_POST['password']);
+			$this->db->set('password_hash', $hashedPassword);
 			$this->db->set('email', $_POST['email']);
 			$this->db->insert('CRUser');
 		}
