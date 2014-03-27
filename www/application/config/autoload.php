@@ -122,7 +122,7 @@ $autoload['model'] = array('cr_model');
 |
 */
 
-$autoload['sparks'] = array('sk-hashids/1.0.5');
+$autoload['sparks'] = array('sk-hashids/1.0.5', 'phpass/1.0.0');
 
 /* End of file autoload.php */
 /* Location: ./application/config/autoload.php */
