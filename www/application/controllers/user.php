@@ -11,11 +11,11 @@ class User extends CI_Controller{
 	//Create new Account
 	function signup(){
 		$this->load->model('user_model');
-		$this->init_model->signup();
+		$this->user_model->signup();
 		
-		$data['status'] = $this->init_model->getStatus();
-		$data['message'] = $this->init_model->getMessage();
-		$data['result'] = $this->init_model->getResult();
+		$data['status'] = $this->user_model->getStatus();
+		$data['message'] = $this->user_model->getMessage();
+		$data['result'] = $this->user_model->getResult();
 		
 		$this->load->view('standard_response', $data);
 	}
@@ -24,7 +24,16 @@ class User extends CI_Controller{
 	function facebook(){}
 	
 	//Login
-	function login(){}
+	function login(){
+		$this->load->model('user_model');
+		$this->user_model->login();
+		
+		$data['status'] = $this->user_model->getStatus();
+		$data['message'] = $this->user_model->getMessage();
+		$data['result'] = $this->user_model->getResult();
+		
+		$this->load->view('standard_response', $data);
+	}
 	
 	//Reset Lost Password
 	function reset(){}
