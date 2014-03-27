@@ -21,14 +21,18 @@ class User_model extends CR_Model {
 		//get the hashed user id
 		$hashedUserID = hashids_encrypt($userID);
 		
+		//fetch photo url from database
 		$this->db->select('photo_url');
 		$query = $this->db->get_where('CRUser', array('id' => $userID), 1);
 		$imageURL = '';
 		if($query->num_rows > 0){
 			$row = $query->row();
-			$imageURL = $row->photo_url;
+			if(!empty($row->photo_url)){
+				$imageURL = $row->photo_url;
+			}
 		}
 		
+		//set result
 		$this->setResult(array(
 			'image_url' => $imageURL,
 			'friends' => '',
