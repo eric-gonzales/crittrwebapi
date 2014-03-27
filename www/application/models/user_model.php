@@ -172,8 +172,4 @@ class User_model extends CR_Model {
 	//Remove Friend
 	public function removefriend(){}
 	
-	//Hash
-	private function hash($string){
-		return sha1($string.base64_encode($this->config->item('server_secret')));
-	}
 }
