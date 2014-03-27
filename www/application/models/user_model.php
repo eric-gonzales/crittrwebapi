@@ -118,6 +118,6 @@ class User_model extends CR_Model {
 	
 	//Hash
 	private function hash($string){
-		return hash('sha512', hashids_encrypt($string, base64_encode($this->config->item('server_secret')), 10));
+		return hash('sha256', hashids_encrypt($string, base64_encode($this->config->item('server_secret')), 10));
 	}
 }
