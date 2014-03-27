@@ -114,21 +114,26 @@ class User extends CI_Controller{
 		else{
 			$cr_user = $chk_stmt->row();
 			//check if token is already generated for this user_id. 
-			$this->db->select('((created + INTERVAL 7 DAY) > NOW()) as not_expired');
 			$chk_tkn_stmt = $this->db->get_where('CREmailToken',array('user_id' => $cr_user->id), 1);
-			$tkn = $chk_tkn_stmt->row();
-			if($chk_tkn_stmt->num_rows() > 0 && !$tkn->not_expired){
-				//return error code
-				$this->user_model->setStatus(1);
-				$this->user_model->setMessage('Error: token has already been generated for this email or is expired.');	
+			if($chk_tkn_stmt->num_rows() > 0){
+				$tkn = $chk_tkn_stmt->row();
+				
+				//check if token is expired
+				if(strtotime($tkn->created) > (time()+60*60*24*7)){
+					//if token expired, generate new email token
+					$this->user_model->setID($cr_user->id);
+					$this->user_model->newEmailToken();
+				}
+				else{
+					//return error code
+					$this->user_model->setStatus(1);
+					$this->user_model->setMessage('Error: token has already been generated or is expired');
+				}	
 			}
 			else{
-				$this->load->helper('string');
-				//generate email token
-				$this->db->set('created', 'NOW()', FALSE);
-				$this->db->set('token', random_string('unique'));
-				$this->db->set('user_id', $cr_user->id);
-				$this->db->insert('CREmailToken');
+				//if no token exists, generate email token
+				$this->user_model->setID($cr_user->id);
+				$this->user_model->newEmailToken();
 			}
 		}
 		

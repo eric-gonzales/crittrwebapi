@@ -107,6 +107,17 @@ class User_model extends CR_Model {
 		}
 		$this->setFriends($friends);
 	}
+	
+	/*
+	 * Email token
+	 */
+	public function newEmailToken(){
+		$this->load->helper('string');
+		$this->db->set('created', 'NOW()', FALSE);
+		$this->db->set('token', random_string('unique'));
+		$this->db->set('user_id', $this->id);
+		$this->db->insert('CREmailToken');
+	}
 
 	public function setID($id){
 		$this->id = $id;
