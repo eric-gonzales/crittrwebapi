@@ -89,16 +89,16 @@ class User_model extends CR_Model {
 	//Signup
 	public function signup(){
 		//first we check if the email is already in use
-		$chk_stmt = $this->db->get_where('CRUser',array('email' => $_POST['email']), 1);
+		$chk_stmt = $this->db->get_where('CRUser',array('email' => $this->input->post('email')), 1);
 		
 		if($chk_stmt->num_rows() == 0){
 			//get hashed password
 			
 			//create new entry in CRUser table
 			$this->db->set('created', 'NOW()', FALSE);
-			$this->db->set('username', $_POST['username']);
-			$this->db->set('password_hash', $_POST['password']);
-			$this->db->set('email', $_POST['email']);
+			$this->db->set('username', $this->input->post('username'));
+			$this->db->set('password_hash', $this->input->post('password'));
+			$this->db->set('email', $this->input->post('email'));
 			$this->db->insert('CRUser');
 			
 			//grab the user id from the last insert
@@ -138,7 +138,7 @@ class User_model extends CR_Model {
 	//Login
 	public function login(){
 		//look for matching email in CRUser table
-		$chk_stmt = $this->db->get_where('CRUser',array('email' => $_POST['email']), 1);
+		$chk_stmt = $this->db->get_where('CRUser',array('email' => $this->input->post('email')), 1);
 		
 		if($chk_stmt->num_rows() == 0){
 			//return error code
@@ -147,7 +147,7 @@ class User_model extends CR_Model {
 		}
 		else{
 			$cr_user = $chk_stmt->row();
-			if($_POST['password'] == $cr_user->password_hash){
+			if($this->input->post('password') == $cr_user->password_hash){
 				$this->defaultResult($cr_user->id);
 			}
 			else{
