@@ -102,47 +102,61 @@ class User extends CI_Controller{
 	
 	//Reset Lost Password
 	function reset($hashedUserID = '', $token = ''){
-		$this->db->select('id');
-		//look for matching email in CRUser table
-		$chk_stmt = $this->db->get_where('CRUser',array('email' => $this->input->post('email')), 1);
-		
-		if($chk_stmt->num_rows() == 0){
-			//return error code
-			$this->user_model->setStatus(1);
-			$this->user_model->setMessage('Error: email does not exist.');
-		}
-		else{
-			$cr_user = $chk_stmt->row();
-			$this->db->order_by('created', 'desc');
-			//check if token is already generated for this user_id. 
-			$chk_tkn_stmt = $this->db->get_where('CREmailToken',array('user_id' => $cr_user->id), 1);
-			if($chk_tkn_stmt->num_rows() > 0){
-				$tkn = $chk_tkn_stmt->row();
-				
-				//check if token is expired
-				if(strtotime($tkn->created) < (time()-60*60*24*7)){
-					//if token expired, generate new email token
+		if(empty($hashedUserID) || empty($token)){
+			$this->db->select('id');
+			//look for matching email in CRUser table
+			$chk_stmt = $this->db->get_where('CRUser',array('email' => $this->input->post('email')), 1);
+			
+			if($chk_stmt->num_rows() == 0){
+				//return error code
+				$this->user_model->setStatus(1);
+				$this->user_model->setMessage('Error: email does not exist.');
+			}
+			else{
+				$cr_user = $chk_stmt->row();
+				$this->db->order_by('created', 'desc');
+				//check if token is already generated for this user_id. 
+				$chk_tkn_stmt = $this->db->get_where('CREmailToken',array('user_id' => $cr_user->id), 1);
+				if($chk_tkn_stmt->num_rows() > 0){
+					$tkn = $chk_tkn_stmt->row();
+					
+					//check if token is expired
+					if(strtotime($tkn->created) < (time()-60*60*24*7)){
+						//if token expired, generate new email token
+						$this->user_model->setID($cr_user->id);
+						$this->user_model->newEmailToken();
+					}
+					else{
+						//return error code
+						$this->user_model->setStatus(1);
+						$this->user_model->setMessage('Error: token has already been generated');
+					}	
+				}
+				else{
+					//if no token exists, generate email token
 					$this->user_model->setID($cr_user->id);
 					$this->user_model->newEmailToken();
 				}
-				else{
-					//return error code
-					$this->user_model->setStatus(1);
-					$this->user_model->setMessage('Error: token has already been generated');
-				}	
 			}
-			else{
-				//if no token exists, generate email token
-				$this->user_model->setID($cr_user->id);
-				$this->user_model->newEmailToken();
-			}
+			
+			$data['status'] = $this->user_model->getStatus();
+			$data['message'] = $this->user_model->getMessage();
+			$data['result'] = $this->user_model->getResult();
+			
+			$this->load->view('standard_response', $data);
 		}
-		
-		$data['status'] = $this->user_model->getStatus();
-		$data['message'] = $this->user_model->getMessage();
-		$data['result'] = $this->user_model->getResult();
-		
-		$this->load->view('standard_response', $data);
+		elseif(!empty($hashedUserID) && !empty($token)){
+			
+		}
+		else{
+			$this->user_model->setStatus(1);
+			$this->user_model->setMessage('Error: username or token empty.');
+			$data['status'] = $this->user_model->getStatus();
+			$data['message'] = $this->user_model->getMessage();
+			$data['result'] = $this->user_model->getResult();
+			
+			$this->load->view('standard_response', $data);
+		}
 	}
 	
 	//Update User Profile Photo
