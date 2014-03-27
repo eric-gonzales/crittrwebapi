@@ -76,7 +76,10 @@ class User extends CI_Controller{
 			$this->user_model->setMessage('Error: email does not exist.');
 		}
 		else{
+			//fetch the row
 			$cr_user = $chk_stmt->row();
+			
+			//check if credentials match
 			if($this->phpass->check($this->input->post('password'), $cr_user->password_hash)){
 				$this->user_model->setID($cr_user->id);
 				$this->user_model->defaultResult();
