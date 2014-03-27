@@ -55,12 +55,6 @@ class User extends CI_Controller{
 			$this->user_model->setStatus(1);
 			$this->user_model->setMessage('Error: email is already in use.');
 		}
-		
-		$data['status'] = $this->user_model->getStatus();
-		$data['message'] = $this->user_model->getMessage();
-		$data['result'] = $this->user_model->getResult();
-		
-		$this->load->view('standard_response', $data);
 	}
 	
 	//Login or Create New Account via Facebook
@@ -92,12 +86,6 @@ class User extends CI_Controller{
 				$this->user_model->setMessage('Error: invalid credentials');
 			}
 		}
-		
-		$data['status'] = $this->user_model->getStatus();
-		$data['message'] = $this->user_model->getMessage();
-		$data['result'] = $this->user_model->getResult();
-		
-		$this->load->view('standard_response', $data);
 	}
 	
 	//Reset Lost Password
@@ -137,12 +125,6 @@ class User extends CI_Controller{
 				$this->user_model->newEmailToken();
 			}
 		}
-		
-		$data['status'] = $this->user_model->getStatus();
-		$data['message'] = $this->user_model->getMessage();
-		$data['result'] = $this->user_model->getResult();
-		
-		$this->load->view('standard_response', $data);
 	}
 	
 	//Update User Profile Photo
@@ -184,14 +166,16 @@ class User extends CI_Controller{
 			$this->user_model->setStatus(1);
 			$this->user_model->setMessage('Error: friend id empty');
 		}
-		
+	}
+	
+	//Remove Friend
+	function removefriend($hashedUserID){}
+	
+	public function __call($name, $args){
 		$data['status'] = $this->user_model->getStatus();
 		$data['message'] = $this->user_model->getMessage();
 		$data['result'] = $this->user_model->getResult();
 		
 		$this->load->view('standard_response', $data);
 	}
-	
-	//Remove Friend
-	function removefriend($hashedUserID){}
 }
