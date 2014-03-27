@@ -32,6 +32,10 @@ class User_model extends CR_Model {
      * @access public 
      */
 	public function defaultResult(){
+		echo "<br>";
+		echo $this->getID();
+		echo "<br>";
+		
 		//get the hashed user id
 		$hashedUserID = hashids_encrypt($this->getID());
 		
