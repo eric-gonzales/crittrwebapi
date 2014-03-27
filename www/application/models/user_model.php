@@ -75,7 +75,16 @@ class User_model extends CR_Model {
 			$this->db->set('email', $_POST['email']);
 			$this->db->insert('CRUser');
 			
+			//grab the user id from the last insert
 			$userID = $this->db->insert_id();
+			
+			//CRDeviceUser table linking
+			$headers = getallheaders();
+			$this->db->set('device_id', $headers['critter-device']);
+			$this->db->set('user_id', $userID);
+			$this->db->insert('CRDevice');
+			
+			//generate the default result
 			$this->defaultResult($userID);
 		}
 		else{
