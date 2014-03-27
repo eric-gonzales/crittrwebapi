@@ -33,7 +33,7 @@ class User_model extends CR_Model {
      */
 	public function defaultResult(){
 		//get the hashed user id
-		$hashedUserID = hashids_encrypt($this->id);
+		$hashedUserID = hashids_encrypt($this->getID());
 		
 		//set result
 		$this->setResult(array(
