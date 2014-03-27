@@ -120,8 +120,6 @@ class User extends CI_Controller{
 				$tkn = $chk_tkn_stmt->row();
 				
 				//check if token is expired
-				
-				echo strtotime($tkn->created).' // '.(time()-60*60*24*7);
 				if(strtotime($tkn->created) < (time()-60*60*24*7)){
 					//if token expired, generate new email token
 					$this->user_model->setID($cr_user->id);
