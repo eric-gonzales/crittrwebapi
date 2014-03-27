@@ -89,8 +89,9 @@ class User_model extends CR_Model {
 		else{
 			$cr_user = $chk_stmt->result();
 			echo '<br>';
-			echo $_POST['password'];
-			$hashedPassword = hashids_encrypt($_POST['password']);
+			$post_pass = $_POST['password'];
+			echo $post_pass;
+			$hashedPassword = hashids_encrypt($post_pass);
 			echo '<br>';
 			echo $hashedPassword;
 			echo '<br>';
