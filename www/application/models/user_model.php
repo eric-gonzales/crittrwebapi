@@ -21,7 +21,7 @@ class User_model extends CR_Model {
 		//get the hashed user id
 		$hashedUserID = hashids_encrypt($userID);
 		
-		$this->db->select('image_url');
+		$this->db->select('photo_url');
 		$query = $this->db->get_where('CRUser', array('id' => $userID), 1);
 		$imageURL = '';
 		if($query->num_rows > 0){
