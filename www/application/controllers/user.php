@@ -149,7 +149,40 @@ class User extends CI_Controller{
 	function photo($hashedUserID){}
 	
 	//Add Friend
-	function addfriend($hashedUserID){}
+	function addfriend($hashedUserID){
+		//decrypt userID and friendID
+		$user_id = hashids_decrypt($hashedUserID);
+		$friend_id = hashids_decrypt($this->input->post('friendID'));
+		
+		//check if friend id is empty
+		if(!empty($friend_id)){
+			//check if user id exists
+			$chk_stmt = $this->db->get_where('CRUser',array('id' => $user_id), 1);
+			if($chk_stmt->num_rows() > 0){
+				//check if friend id exists
+				$friend_chk_stmt = $this->db->get_where('CRUser',array('id' => $friend_id), 1);
+				if($chk_stmt->num_rows() > 0){
+					//if both user and friend exists, let's make them friends
+					$this->db->set('created', 'NOW()', FALSE);
+					$this->db->set('user_id', $user_id);
+					$this->db->set('friend_id', $friend_id);
+					$this->db->insert('CRFriend');
+				}
+				else{
+					$this->user_model->setStatus(1);
+					$this->user_model->setMessage('Error: friend id not found');
+				}
+			}
+			else{
+				$this->user_model->setStatus(1);
+				$this->user_model->setMessage('Error: user not found');
+			}
+		}
+		else{
+			$this->user_model->setStatus(1);
+			$this->user_model->setMessage('Error: friend id empty');
+		}
+	}
 	
 	//Remove Friend
 	function removefriend($hashedUserID){}
