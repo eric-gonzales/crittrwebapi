@@ -25,7 +25,8 @@ class User_model extends CR_Model {
 		$query = $this->db->get_where('CRUser', array('id' => $userID), 1);
 		$imageURL = '';
 		if($query->num_rows > 0){
-			$imageURL = $query->row();
+			$row = $query->row();
+			$imageURL = $row->photo_url;
 		}
 		
 		$this->setResult(array(
