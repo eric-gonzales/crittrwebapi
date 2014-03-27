@@ -88,7 +88,7 @@ class User_model extends CR_Model {
 		}
 		else{
 			echo '<pre>';
-			print_r($chk_stmt);
+			print_r($chk_stmt->result());
 		}
 	}
 	
