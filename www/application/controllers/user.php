@@ -184,6 +184,12 @@ class User extends CI_Controller{
 			$this->user_model->setStatus(1);
 			$this->user_model->setMessage('Error: friend id empty');
 		}
+		
+		$data['status'] = $this->user_model->getStatus();
+		$data['message'] = $this->user_model->getMessage();
+		$data['result'] = $this->user_model->getResult();
+		
+		$this->load->view('standard_response', $data);
 	}
 	
 	//Remove Friend
