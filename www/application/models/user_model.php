@@ -22,7 +22,7 @@ class User_model extends CR_Model {
 		$chk_stmt = $this->db->get_where('CRUser',array('email' => $_POST['email']), 1);
 		
 		$this->load->spark('sk-hashids/1.0.5');
-		echo hashids_encrypt(1234);
+		echo hashids_encrypt(1252525252234);
 		
 		if($chk_stmt->num_rows() == 0){
 			//create new entry in CRUser table
