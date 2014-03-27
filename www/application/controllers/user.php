@@ -117,7 +117,7 @@ class User extends CI_Controller{
 			$this->db->select('((created + INTERVAL 7 DAY) > NOW()) as not_expired');
 			$chk_tkn_stmt = $this->db->get_where('CREmailToken',array('user_id' => $cr_user->id), 1);
 			$tkn = $chk_tkn_stmt->row();
-			if($chk_tkn_stmt->num_rows() > 0 && $tkn->not_expired){
+			if($chk_tkn_stmt->num_rows() > 0 && !$tkn->not_expired){
 				//return error code
 				$this->user_model->setStatus(1);
 				$this->user_model->setMessage('Error: token has already been generated for this email or is expired.');	
