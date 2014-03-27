@@ -17,10 +17,38 @@ class User_model extends CR_Model {
 		parent::__construct();
 	}
 	
+	public function defaultResult($userID){
+		$hashedUserID = hashids_encrypt($userID);
+		$this->setResult(array(
+			'image_url' => '',
+			'friends' => '',
+			'notifications' => '',
+			'url_profilephoto' => $this->config->item('base_url').'user/photo/'.$hashedUserID,
+			'url_addfriend' => $this->config->item('base_url').'user/addfriend/'.$hashedUserID,
+			'url_removefriend' => $this->config->item('base_url').'user/removefriend/'.$hashedUserID,
+			'url_sendnotification' => $this->config->item('base_url').'notification/send',
+			'url_clearnotification' => $this->config->item('base_url').'notification/viewed',
+			'url_unreadnotification' => $this->config->item('base_url').'notification/unread/'.$hashedUserID,
+			'url_updatepushtoken' => $this->config->item('base_url').'device/update',
+			'url_moviespriority' => $this->config->item('base_url').'movies/priority/'.$hashedUserID,
+			'url_moviesunrated' => $this->config->item('base_url').'movies/unreated/'.$hashedUserID,
+			'url_moviesboxoffice' => $this->config->item('base_url').'movies/boxoffice/'.$hashedUserID.'/Limit/CountryCode',
+			'url_moviesopening' => $this->config->item('base_url').'movies/opening/'.$hashedUserID.'/Limit/CountryCode',
+			'url_moviesupcoming' => $this->config->item('base_url').'movies/upcoming/'.$hashedUserID.'/Limit/Page/CountryCode',
+			'url_moviesnewreleasedvd' => $this->config->item('base_url').'movies/newreleasedvds/'.$hashedUserID.'/Limit/Page/CountryCode',
+			'url_moviescurrentdvd' => $this->config->item('base_url').'movies/currentdvds/'.$hashedUserID.'/Limit/Page/CountryCode',
+			'url_moviesupcomingdvd' => $this->config->item('base_url').'movies/upcomingdvds/'.$hashedUserID.'/Limit/Page/CountryCode',
+			'url_moviessearch' => $this->config->item('base_url').'movies/search/'.$hashedUserID.'/searchTerm/Limit/Page',
+			'url_ratingupdate' => $this->config->item('base_url').'ratings/update/'.$hashedUserID,
+			'url_ratingusermovie' => $this->config->item('base_url').'ratings',
+			'url_ratingallmovie' => $this->config->item('base_url').'ratings/'.$hashedUserID.'/hashedMovieID',
+			'url_ratingalluser' => $this->config->item('base_url').'ratings/user',
+		));
+	}
+	
 	public function signup(){
 		//first we check if the email is already in use
 		$chk_stmt = $this->db->get_where('CRUser',array('email' => $_POST['email']), 1);
-		
 		
 		if($chk_stmt->num_rows() == 0){
 			//get hashed password
@@ -32,6 +60,9 @@ class User_model extends CR_Model {
 			$this->db->set('password_hash', $hashedPassword);
 			$this->db->set('email', $_POST['email']);
 			$this->db->insert('CRUser');
+			
+			$userID = $this->db->insert_id();
+			$this->defaultResult($userID);
 		}
 		else{
 			//return error code
