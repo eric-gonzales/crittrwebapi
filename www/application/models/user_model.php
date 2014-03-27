@@ -21,9 +21,14 @@ class User_model extends CR_Model {
 		//first we check if the email is already in use
 		$chk_stmt = $this->db->get_where('CRUser',array('email' => $_POST['email']), 1);
 		
-		echo hashids_encrypt(125252533252234);
+		
 		
 		if($chk_stmt->num_rows() == 0){
+			//get hashed password
+			
+			echo $this->config->item('shared_secret');
+			
+			
 			//create new entry in CRUser table
 			$this->db->set('created', 'NOW()', FALSE);
 			$this->db->set('username', $_POST['username']);
