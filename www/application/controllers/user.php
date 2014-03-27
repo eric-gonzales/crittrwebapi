@@ -67,7 +67,7 @@ class User extends CI_Controller{
 	function login(){
 		$this->load->model('user_model');
 		
-		$this->db->select('password_hash');
+		$this->db->select('id', 'password_hash');
 		
 		//look for matching email in CRUser table
 		$chk_stmt = $this->db->get_where('CRUser',array('email' => $this->input->post('email')), 1);
@@ -80,6 +80,7 @@ class User extends CI_Controller{
 		else{
 			$cr_user = $chk_stmt->row();
 			if($this->phpass->check($this->input->post('password'), $cr_user->password_hash)){
+				$this->user_model->setID($cr_user->id);
 				$this->user_model->defaultResult();
 			}
 			else{
