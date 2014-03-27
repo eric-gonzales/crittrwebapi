@@ -167,6 +167,8 @@ class User extends CI_Controller{
 					$this->db->set('user_id', $user_id);
 					$this->db->set('friend_id', $friend_id);
 					$this->db->insert('CRFriends');
+					$this->user_model->setID($user_id);
+					$this->user_model->defaultResult();
 				}
 				else{
 					$this->user_model->setStatus(1);
