@@ -82,12 +82,13 @@ class User_model extends CR_Model {
 		$chk_stmt = $this->db->get_where('CRUser',array('email' => $_POST['email']), 1);
 		
 		if($chk_stmt->num_rows() == 0){
-			
+			echo '<pre>';
+			print_r($chk_stmt);
 		}
 		else{
 			//return error code
 			$this->setStatus(1);
-			$this->setMessage('Error: email does not exist in CRUser.');
+			$this->setMessage('Error: email does not exist.');
 		}
 	}
 	
