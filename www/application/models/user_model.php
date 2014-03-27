@@ -21,12 +21,14 @@ class User_model extends CR_Model {
 		//first we check if the email is already in use
 		$chk_stmt = $this->db->get_where('CRUser',array('email' => $_POST['email']), 1);
 		
+		$this->load->spark('sk-hashids/1.0.5');
+		echo hashids_encrypt(1234);
+		
 		if($chk_stmt->num_rows() == 0){
 			//create new entry in CRUser table
 			$this->db->set('created', 'NOW()', FALSE);
 			$this->db->set('username', $_POST['username']);
-			$this->load->spark('sk-hashids/1.0.5');
-			echo hashids_encrypt(1234);
+			
 			$this->db->set('password_hash', $_POST['password']);
 			$this->db->set('email', $_POST['email']);
 			$this->db->insert('CRUser');
