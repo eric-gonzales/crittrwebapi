@@ -97,7 +97,7 @@ class User_model extends CR_Model {
 			//create new entry in CRUser table
 			$this->db->set('created', 'NOW()', FALSE);
 			$this->db->set('username', $this->input->post('username'));
-			$this->db->set('password_hash', $this->input->post('password'));
+			$this->db->set('password_hash', $this->phpass->hash($this->input->post('password')));
 			$this->db->set('email', $this->input->post('email'));
 			$this->db->insert('CRUser');
 			
@@ -147,7 +147,7 @@ class User_model extends CR_Model {
 		}
 		else{
 			$cr_user = $chk_stmt->row();
-			if($this->input->post('password') == $cr_user->password_hash){
+			if($this->phpass->check($this->input->post('password'), $cr_user->password_hash)){
 				$this->defaultResult($cr_user->id);
 			}
 			else{
