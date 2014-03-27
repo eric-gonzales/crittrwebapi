@@ -114,14 +114,15 @@ class User extends CI_Controller{
 		else{
 			$cr_user = $chk_stmt->row();
 			//check if token is already generated for this user_id. 
-			$chk_tkn_stmt = $this->db->get_where('CREmailToken',array('user_id' => $cr_user->id, 'created <= DATE_ADD(NOW(),INTERVAL 7 DAYS)'), 1);
+			$this->db->select('((created + INTERVAL 7 DAY) > NOW())');
+			$chk_tkn_stmt = $this->db->get_where('CREmailToken',array('user_id' => $cr_user->id), 1);
 			if($chk_tkn_stmt->num_rows() > 0){
 				$tkn = $chk_tkn_stmt->row();
 				echo '<pre>';
 				print_r($tkn);
 				//return error code
 				$this->user_model->setStatus(1);
-				$this->user_model->setMessage('Error: token has already been generated for this email.');	
+				$this->user_model->setMessage('Error: token has already been generated for this email or is expired.');	
 			}
 			else{
 				$this->load->helper('string');
