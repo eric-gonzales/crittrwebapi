@@ -6,6 +6,15 @@
  */
  
 class User_model extends CR_Model {
+	private $id;
+	private $username;
+	private $email;
+	private $facebook_id;
+	private $full_name;
+	private $photo_url;
+	private $notifications;
+	private $friends;
+	
 	/**
      * Default constructor
      * @param void
@@ -22,47 +31,15 @@ class User_model extends CR_Model {
      * @return void
      * @access public 
      */
-	public function defaultResult($userID){
+	public function defaultResult(){
 		//get the hashed user id
-		$hashedUserID = hashids_encrypt($userID);
-		
-		//fetch photo url from database
-		$imageURL = '';
-		$this->db->select('photo_url');
-		$query = $this->db->get_where('CRUser', array('id' => $userID), 1);
-		if($query->num_rows > 0){
-			$row = $query->row();
-			if(!empty($row->photo_url)){
-				$imageURL = $row->photo_url;
-			}
-		}
-		
-		//fetch user's friends that aren't ignoring them
-		$friends = array(); //this will be a collection of friend ids
-		$this->db->select('friend_id');
-		$query = $this->db->get_where('CRFriends', array('user_id' => $userID, 'ignore' => 0));
-		if($query->num_rows > 0){
-			foreach($query->result() as $row){
-				$friends[] = $row->friend_id;
-			}
-		}
-		
-		//fetch unread user notifications
-		$notifications = array();
-		$this->db->select('id');
-		$this->db->order_by('created', 'desc'); //newest first
-		$query = $this->db->get_where('CRNotification', array('to_user_id' => $userID, 'is_viewed' => 0));
-		if($query->num_rows > 0){
-			foreach($query->result() as $row){
-				$notifications[] = $row->id;
-			}
-		}
+		$hashedUserID = hashids_encrypt($this->id);
 		
 		//set result
 		$this->setResult(array(
-			'image_url' => $imageURL,
-			'friends' => $friends,
-			'notifications' => $notifications,
+			'image_url' => $this->getPhotoURL(),
+			'friends' => $this->getFriends(),
+			'notifications' => $this->getNotifications(),
 			'url_profilephoto' => $this->config->item('base_url').'user/photo/'.$hashedUserID,
 			'url_addfriend' => $this->config->item('base_url').'user/addfriend/'.$hashedUserID,
 			'url_removefriend' => $this->config->item('base_url').'user/removefriend/'.$hashedUserID,
@@ -86,88 +63,112 @@ class User_model extends CR_Model {
 		));
 	}
 	
-	//Signup
-	public function signup(){
-		//first we check if the email is already in use
-		$chk_stmt = $this->db->get_where('CRUser',array('email' => $this->input->post('email')), 1);
-		
-		if($chk_stmt->num_rows() == 0){
-			//get hashed password
-			
-			//create new entry in CRUser table
-			$this->db->set('created', 'NOW()', FALSE);
-			$this->db->set('username', $this->input->post('username'));
-			$this->db->set('password_hash', $this->phpass->hash($this->input->post('password')));
-			$this->db->set('email', $this->input->post('email'));
-			$this->db->insert('CRUser');
-			
-			//grab the user id from the last insert
-			$userID = $this->db->insert_id();
-			
-			//get headers
-			$headers = getallheaders();
-			//First, select id from CRDevice where device_vendor_id = critter-device
-			$this->db->select('id');
-			$query = $this->db->get_where('CRDevice', array('device_vendor_id' => $headers['critter-device']), 1);
-			//if we have a match, lets insert a new record into the table
-			if($query->num_rows > 0){
-				$row = $query->row();
-				$this->db->set('device_id', $row->id);
-				$this->db->set('user_id', $userID);
-				$this->db->insert('CRDeviceUser');
-			}
-			else{
-				//return error code
-				$this->setStatus(1);
-				$this->setMessage('Error: device could not be found.');
-			}
-			
-			//finally, generate the default result
-			$this->defaultResult($userID);
-		}
-		else{
-			//return error code
-			$this->setStatus(1);
-			$this->setMessage('Error: email is already in use.');
-		}
-	}
-	
-	//Login or Create New Account via Facebook
-	public function facebook(){}
-	
-	//Login
-	public function login(){
-		//look for matching email in CRUser table
-		$chk_stmt = $this->db->get_where('CRUser',array('email' => $this->input->post('email')), 1);
-		
-		if($chk_stmt->num_rows() == 0){
-			//return error code
-			$this->setStatus(1);
-			$this->setMessage('Error: email does not exist.');
-		}
-		else{
-			$cr_user = $chk_stmt->row();
-			if($this->phpass->check($this->input->post('password'), $cr_user->password_hash)){
-				$this->defaultResult($cr_user->id);
-			}
-			else{
-				//return error code
-				$this->setStatus(1);
-				$this->setMessage('Error: invalid credentials');
+	/*
+	 * Fetch the photo_url
+	 */
+	public function fetchPhotoURL(){
+		$this->db->select('photo_url');
+		$query = $this->db->get_where('CRUser', array('id' => $this->id), 1);
+		if($query->num_rows > 0){
+			$row = $query->row();
+			if(!empty($row->photo_url)){
+				$this->setPhotoURL($row->photo_url);
 			}
 		}
 	}
 	
-	//Reset Lost Password
-	public function reset(){}
+	/*
+	 * Fetch unread notifications 
+	 */
+	public function fetchNotifications(){
+		$notifications = array();
+		$this->db->select('id');
+		$this->db->order_by('created', 'desc'); //newest first
+		$query = $this->db->get_where('CRNotification', array('to_user_id' => $this->id, 'is_viewed' => 0));
+		if($query->num_rows > 0){
+			foreach($query->result() as $row){
+				$notifications[] = $row->id;
+			}
+		}
+		$this->setNotifications($notifications);
+	}
 	
-	//Update User Profile Photo
-	public function photo(){}
+	/*
+	 * Fetch friends that aren't ignoring me
+	 */
+	public function fetchFriends(){
+		$friends = array();
+		$this->db->select('friend_id');
+		$query = $this->db->get_where('CRFriends', array('user_id' => $this->id, 'ignore' => 0));
+		if($query->num_rows > 0){
+			foreach($query->result() as $row){
+				$friends[] = $row->friend_id;
+			}
+		}
+		$this->setFriends($friends);
+	}
+
+	public function setID($id){
+		$this->id = $id;
+	}
 	
-	//Add Friend
-	public function addfriend(){}
+	public function getID(){
+		return $this->id;
+	}
 	
-	//Remove Friend
-	public function removefriend(){}
+	public function setUsername($username){
+		$this->username = $username;
+	}
 	
+	public function getUsername(){
+		return $this->username;
+	}
+	
+	public function setEmail($email){
+		$this->email = $email;
+	}
+	
+	public function getEmail(){
+		return $this->email;
+	}
+	
+	public function setFacebookID($facebook_id){
+		$this->facebook_id = $facebook_id;
+	}
+	
+	public function getFacebookID(){
+		return $this->facebook_id;
+	}
+	
+	public function setFullName($full_name){
+		$this->full_name = $full_name;
+	}
+	
+	public function getFullName(){
+		return $this->full_name;
+	}
+	
+	public function setPhotoURL($photo_url){
+		$this->photo_url = $photo_url;
+	}
+	
+	public function getPhotoURL(){
+		return $this->photo_url;
+	}
+	
+	public function setNotifications($notifications){
+		$this->notifications = $notifications;
+	}
+	
+	public function getNotifications(){
+		return $this->notifications;
+	}
+	
+	public function setFriends($friends){
+		$this->friends = $friends;
+	}
+	
+	public function getFriends(){
+		return $this->friends;
+	}
 }

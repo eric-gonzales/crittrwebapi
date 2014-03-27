@@ -11,7 +11,47 @@ class User extends CI_Controller{
 	//Create new Account
 	function signup(){
 		$this->load->model('user_model');
-		$this->user_model->signup();
+		
+		//first we check if the email is already in use
+		$chk_stmt = $this->db->get_where('CRUser',array('email' => $this->input->post('email')), 1);
+		
+		if($chk_stmt->num_rows() == 0){
+			//create new entry in CRUser table
+			$this->db->set('created', 'NOW()', FALSE);
+			$this->db->set('username', $this->input->post('username'));
+			$this->db->set('password_hash', $this->phpass->hash($this->input->post('password')));
+			$this->db->set('email', $this->input->post('email'));
+			$this->db->insert('CRUser');
+			
+			//grab the user id from the last insert
+			$this->user_model->setID($this->db->insert_id());
+			
+			//get headers
+			$headers = getallheaders();
+			//First, select id from CRDevice where device_vendor_id = critter-device
+			$this->db->select('id');
+			$query = $this->db->get_where('CRDevice', array('device_vendor_id' => $headers['critter-device']), 1);
+			//if we have a match, lets insert a new record into the table
+			if($query->num_rows > 0){
+				$row = $query->row();
+				$this->db->set('device_id', $row->id);
+				$this->db->set('user_id', $this->user_model->getID());
+				$this->db->insert('CRDeviceUser');
+			}
+			else{
+				//return error code
+				$this->user_model->setStatus(1);
+				$this->user_model->setMessage('Error: device could not be found.');
+			}
+			
+			//finally, generate the default result
+			$this->user_model->defaultResult();
+		}
+		else{
+			//return error code
+			$this->user_model->setStatus(1);
+			$this->user_model->setMessage('Error: email is already in use.');
+		}
 		
 		$data['status'] = $this->user_model->getStatus();
 		$data['message'] = $this->user_model->getMessage();
@@ -26,7 +66,28 @@ class User extends CI_Controller{
 	//Login
 	function login(){
 		$this->load->model('user_model');
-		$this->user_model->login();
+		
+		$this->db->select('password_hash');
+		
+		//look for matching email in CRUser table
+		$chk_stmt = $this->db->get_where('CRUser',array('email' => $this->input->post('email')), 1);
+		
+		if($chk_stmt->num_rows() == 0){
+			//return error code
+			$this->user_model->setStatus(1);
+			$this->user_model->setMessage('Error: email does not exist.');
+		}
+		else{
+			$cr_user = $chk_stmt->row();
+			if($this->phpass->check($this->input->post('password'), $cr_user->password_hash)){
+				$this->user_model->defaultResult();
+			}
+			else{
+				//return error code
+				$this->user_model->setStatus(1);
+				$this->user_model->setMessage('Error: invalid credentials');
+			}
+		}
 		
 		$data['status'] = $this->user_model->getStatus();
 		$data['message'] = $this->user_model->getMessage();
