@@ -27,9 +27,9 @@ class User_model extends CR_Model {
 		$hashedUserID = hashids_encrypt($userID);
 		
 		//fetch photo url from database
+		$imageURL = '';
 		$this->db->select('photo_url');
 		$query = $this->db->get_where('CRUser', array('id' => $userID), 1);
-		$imageURL = '';
 		if($query->num_rows > 0){
 			$row = $query->row();
 			if(!empty($row->photo_url)){
@@ -37,11 +37,32 @@ class User_model extends CR_Model {
 			}
 		}
 		
+		//fetch user's friends that aren't ignoring them
+		$friends = array(); //this will be a collection of friend ids
+		$this->db->select('friend_id');
+		$query = $this->db->get_where('CRFriends', array('user_id' => $userID, 'ignore' => 0));
+		if($query->num_rows > 0){
+			foreach($query->result() as $row){
+				$friends[] = $row->friend_id;
+			}
+		}
+		
+		//fetch unread user notifications
+		$notifications = array();
+		$this->db->select('id');
+		$this->db->order_by('created', 'desc'); //newest first
+		$query = $this->db->get_where('CRNotification', array('to_user_id' => $userID, 'is_viewed' => 0));
+		if($query->num_rows > 0){
+			foreach($query->result() as $row){
+				$notifications[] = $row->id;
+			}
+		}
+		
 		//set result
 		$this->setResult(array(
 			'image_url' => $imageURL,
-			'friends' => '',
-			'notifications' => '',
+			'friends' => $friends,
+			'notifications' => $notifications,
 			'url_profilephoto' => $this->config->item('base_url').'user/photo/'.$hashedUserID,
 			'url_addfriend' => $this->config->item('base_url').'user/addfriend/'.$hashedUserID,
 			'url_removefriend' => $this->config->item('base_url').'user/removefriend/'.$hashedUserID,
