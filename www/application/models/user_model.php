@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Init Model
  * @author Eric Gonzales <eric@crittermovies.com>
@@ -17,6 +16,12 @@ class User_model extends CR_Model {
 		parent::__construct();
 	}
 	
+	/**
+     * Generates the default result (login result)
+     * @param $userID string the id of the user
+     * @return void
+     * @access public 
+     */
 	public function defaultResult($userID){
 		//get the hashed user id
 		$hashedUserID = hashids_encrypt($userID);
@@ -60,6 +65,7 @@ class User_model extends CR_Model {
 		));
 	}
 	
+	//Signup
 	public function signup(){
 		//first we check if the email is already in use
 		$chk_stmt = $this->db->get_where('CRUser',array('email' => $_POST['email']), 1);
