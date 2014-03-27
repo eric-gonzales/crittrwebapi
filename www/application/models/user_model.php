@@ -91,7 +91,7 @@ class User_model extends CR_Model {
 			echo '<br>';
 			$post_pass = $_POST['password'];
 			echo $post_pass;
-			$hashedPassword = sha1($post_pass.$this->config->item('server_secret'));
+			$hashedPassword = sha1($post_pass.base64_encode($this->config->item('server_secret')));
 			echo '<br>';
 			echo $hashedPassword;
 			echo '<br>';
