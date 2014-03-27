@@ -18,7 +18,9 @@ class User_model extends CR_Model {
 	}
 	
 	public function defaultResult($userID){
+		//get the hashed user id
 		$hashedUserID = hashids_encrypt($userID);
+		
 		$this->setResult(array(
 			'image_url' => '',
 			'friends' => '',
@@ -75,7 +77,19 @@ class User_model extends CR_Model {
 	public function facebook(){}
 	
 	//Login
-	public function login(){}
+	public function login(){
+		//look for matching email in CRUser table
+		$chk_stmt = $this->db->get_where('CRUser',array('email' => $_POST['email']), 1);
+		
+		if($chk_stmt->num_rows() == 0){
+			
+		}
+		else{
+			//return error code
+			$this->setStatus(1);
+			$this->setMessage('Error: email does not exist in CRUser.');
+		}
+	}
 	
 	//Reset Lost Password
 	public function reset(){}
