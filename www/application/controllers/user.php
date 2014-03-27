@@ -101,7 +101,36 @@ class User extends CI_Controller{
 	}
 	
 	//Reset Lost Password
-	function reset(){}
+	function reset(){
+		$this->db->select('id');
+		//look for matching email in CRUser table
+		$chk_stmt = $this->db->get_where('CRUser',array('email' => $this->input->post('email')), 1);
+		
+		if($chk_stmt->num_rows() == 0){
+			//return error code
+			$this->user_model->setStatus(1);
+			$this->user_model->setMessage('Error: email does not exist.');
+		}
+		else{
+			$cr_user = $chk_stmt->row();
+			//check if token is already generated for this user_id. 
+			//TODO: check if email token is expired
+			$chk_tkn_stmt = $this->db->get_where('CREmailToken',array('user_id' => $cr_user->id), 1);
+			if($chk_tkn_stmt->num_rows() > 0){
+				//return error code
+				$this->user_model->setStatus(1);
+				$this->user_model->setMessage('Error: token has already been generated for this email.');	
+			}
+			else{
+				$this->load->helper('string');
+				//generate email token
+				$this->db->set('created', 'NOW()', FALSE);
+				$this->db->set('token', random_string('unique'));
+				$this->db->set('user_id', $cr_user->id);
+				$this->db->insert('CREmailToken');
+			}
+		}
+	}
 	
 	//Update User Profile Photo
 	function photo($hashedUserID){}
