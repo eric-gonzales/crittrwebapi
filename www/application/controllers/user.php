@@ -171,7 +171,7 @@ class User extends CI_Controller{
 	//Remove Friend
 	function removefriend($hashedUserID){}
 	
-	public function __call($name, $args){
+	public function _output(){
 		$data['status'] = $this->user_model->getStatus();
 		$data['message'] = $this->user_model->getMessage();
 		$data['result'] = $this->user_model->getResult();
