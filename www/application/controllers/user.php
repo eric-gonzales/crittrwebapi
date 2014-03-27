@@ -113,6 +113,7 @@ class User extends CI_Controller{
 		}
 		else{
 			$cr_user = $chk_stmt->row();
+			$this->db->order_by('created', 'desc');
 			//check if token is already generated for this user_id. 
 			$chk_tkn_stmt = $this->db->get_where('CREmailToken',array('user_id' => $cr_user->id), 1);
 			if($chk_tkn_stmt->num_rows() > 0){
