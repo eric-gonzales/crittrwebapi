@@ -11,7 +11,7 @@ class Movies extends CI_Controller{
 		$this->load->model('movies_model');
 		
 		//load cache driver: memcached default, file backup
-		//$this->load->driver('cache',  array('adapter' => 'memcached', 'backup' => 'file'));
+		$this->load->driver('cache',  array('adapter' => 'memcached', 'backup' => 'file'));
 	}
 	
 	//Fetch Priority Movies
