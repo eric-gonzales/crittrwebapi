@@ -1,6 +1,6 @@
 <?php
 /**
- * Init Model
+ * User Model
  * @author Eric Gonzales <eric@crittermovies.com>
  * @copyright 2014 Critter
  */
