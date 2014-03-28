@@ -135,20 +135,21 @@ class User extends CI_Controller{
 				//check if friend id exists
 				$friend_chk_stmt = $this->db->get_where('CRUser',array('id' => $friend_id), 1);
 				if($friend_chk_stmt->num_rows() > 0){
+					//if both user and friend exists, let's make them friends 
+					$this->db->set('created', 'NOW()', FALSE);
+					$this->db->set('user_id', $user_id);
+					$this->db->set('friend_id', $friend_id);
+					$this->db->insert('CRFriends');
+					$this->user_model->setID($user_id);
+					$this->user_model->fetchUsername();
+					$this->user_model->defaultResult();
+					
 					$this->db->select('ignore');
-					$friends_stmt = $this->db->get_where('CRFriends',array('user_id' => $user_id, 'friend_id' => $friend_id), 1);
+					$friends_stmt = $this->db->get_where('CRFriends',array('user_id' => $friend_id, 'friend_id' => $user_id), 1);
 					if($friends_stmt->num_rows() == 0){
 						$friends = $friends_stmt->row();
-						if(!$friends->ignore){
-							//if both user and friend exists, let's make them friends if they aren't already (if they are getting along)
-							$this->db->set('created', 'NOW()', FALSE);
-							$this->db->set('user_id', $user_id);
-							$this->db->set('friend_id', $friend_id);
-							$this->db->insert('CRFriends');
-							$this->user_model->setID($user_id);
-							$this->user_model->fetchUsername();
-							$this->user_model->defaultResult();
-							
+						//check if friend is ignoring user
+						if(!$friends->ignore){		
 							//and let's send them a notification so they know
 							$this->db->set('created', 'NOW()', FALSE);
 							$this->db->set('from_user_id', $user_id);
@@ -216,6 +217,7 @@ class User extends CI_Controller{
 				//check if friend id exists
 				$friend_chk_stmt = $this->db->get_where('CRUser',array('id' => $friend_id), 1);
 				if($friend_chk_stmt->num_rows() > 0){
+					//get most recent record
 					$this->db->order_by('created', 'desc');
 					$this->db->select('id');
 					$friends_stmt = $this->db->get_where('CRFriends',array('user_id' => $user_id, 'friend_id' => $friend_id), 1);
@@ -246,7 +248,6 @@ class User extends CI_Controller{
 		else{
 			$this->_generateError('friend id empty');
 		}
-		
 		$this->_response();
 	}
 	
