@@ -128,7 +128,7 @@ class User extends CI_Controller{
 		$user_id = hashids_decrypt($hashedUserID);
 		$friend_id = hashids_decrypt($this->input->post('friendID'));
 		//check if friend id is empty
-		if(!empty($friend_id)){
+		if(!empty($friend_id) && !empty($user_id)){
 			//check if user id exists
 			$chk_stmt = $this->db->get_where('CRUser',array('id' => $user_id), 1);
 			if($chk_stmt->num_rows() > 0){
@@ -191,7 +191,7 @@ class User extends CI_Controller{
 			}
 		}
 		else{
-			$this->_generateError('friend id empty');
+			$this->_generateError('friend or user id empty');
 		}
 		$this->_response();
 	}
@@ -202,7 +202,7 @@ class User extends CI_Controller{
 		$user_id = hashids_decrypt($hashedUserID);
 		$friend_id = hashids_decrypt($this->input->post('friendID'));
 		//check if friend id is empty
-		if(!empty($friend_id)){
+		if(!empty($friend_id) && !empty($user_id)){
 			//check if user id exists
 			$chk_stmt = $this->db->get_where('CRUser',array('id' => $user_id), 1);
 			if($chk_stmt->num_rows() > 0){
@@ -238,7 +238,7 @@ class User extends CI_Controller{
 			}
 		}
 		else{
-			$this->_generateError('friend id empty');
+			$this->_generateError('user or friend id empty');
 		}
 		$this->_response();
 	}
