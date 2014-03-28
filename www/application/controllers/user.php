@@ -127,7 +127,6 @@ class User extends CI_Controller{
 		//decrypt userID and friendID
 		$user_id = hashids_decrypt($hashedUserID);
 		$friend_id = hashids_decrypt($this->input->post('friendID'));
-		
 		//check if friend id is empty
 		if(!empty($friend_id)){
 			//check if user id exists
@@ -143,14 +142,12 @@ class User extends CI_Controller{
 					$this->db->insert('CRFriends');
 					$this->user_model->setID($user_id);
 					$this->user_model->fetchUsername();
-					$this->user_model->defaultResult();
-					
-					$this->db->select('ignore');
-					$friends_stmt = $this->db->get_where('CRFriends',array('user_id' => $friend_id, 'friend_id' => $user_id), 1);
-					if($friends_stmt->num_rows() == 0){
-						$friends = $friends_stmt->row();
-						//check if friend is ignoring user
-						if(!$friends->ignore){		
+					$friends_chk_stmt = $this->db->get_where('CRFriends',array('user_id' => $user_id, 'friend_id' => $friend_id), 1);
+					if($friends_chk_stmt->num_rows() == 0){
+						//check if friend is ignoring user and is not our friend already
+						$this->db->select('ignore');
+						$friends_stmt = $this->db->get_where('CRFriends',array('user_id' => $friend_id, 'friend_id' => $user_id), 1);
+						if($friends_chk_stmt->num_rows() == 0){		
 							//and let's send them a notification so they know
 							$this->db->set('created', 'NOW()', FALSE);
 							$this->db->set('from_user_id', $user_id);
@@ -158,7 +155,6 @@ class User extends CI_Controller{
 							$this->db->set('message', $this->user_model->getUsername().' wants to be your Critter friend!');
 							$this->db->insert('CRNotification');
 							$notification_id = $this->db->insert_id();
-							
 							//set a push notification to each device linked to the friend
 							$this->load->model('user_model', 'friend');
 							$this->friend->setID($friend_id);
@@ -168,13 +164,11 @@ class User extends CI_Controller{
 								$this->db->select('badge_count');
 								$badge_stmt = $this->db->get_where('CRDevice',array('id' => $device_id), 1);
 								$r = $badge_stmt->row();
-								
 								//increment badge value
 								$badge = $r->badge_count + 1;
 								$this->db->where('id', $device_id);
 								$this->db->set('badge_count', $badge);
 								$this->db->update('CRDevice');
-								
 								//now create push notification
 								$this->db->set('created', 'NOW()', FALSE);
 								$this->db->set('device_id', $device_id);
@@ -182,9 +176,6 @@ class User extends CI_Controller{
 								$this->db->set('badge', $badge);
 								$this->db->insert('CRPushNotification');
 							}
-						}
-						else{
-							$this->_generateError('user is being ignored :(');
 						}
 					}
 					else{
