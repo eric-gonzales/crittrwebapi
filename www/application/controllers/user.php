@@ -176,8 +176,9 @@ class User extends CI_Controller{
 				
 				//convert Base64 encoded photo to jpg
 				$base64 = urldecode($this->input->post('photo'));
-				echo $base64;
-				$photo_data = base64_decode($base64);
+				$data = str_replace(' ', '+', $base64);
+				echo $data;
+				$photo_data = base64_decode($data);
 				$photo = imagecreatefromstring($photo_data);
 				
 				//create a JPG
