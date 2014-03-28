@@ -58,7 +58,15 @@ class User extends CI_Controller{
 	function facebook(){
 		$facebook_token = $this->input->post('facebook_token');
 		if(!empty($facebook_token)){
+			$facebook = new Facebook(array(
+				'appId' => $this->config->item('facebook_app_id'),
+				'secret' => $this->config->item('facebook_secret'),
+				'cookie' => true
+			));
+			$facebook->setAccessToken('CAACEdEose0cBADppxuPO6wjodxgAvg8QjOeSh6styEHbVyItwOGF9RKKjGMqXhHVoF0yQHNrsijwzBUnp68FFGR2t5ZCc9bq6ku3ms2APm9N6pBlkuBEA4ZAzMZAMMfuHKAk26crGyliYML9CZBj8g3oQKAavPTDlWTck293NuJBblNxeZAARpoSifC9szMIZD');
+			$user_id = $facebook->getUser();
 			
+			print_r($user_id);
 		}
 		else{
 			$this->_generateError('facebook token empty');
