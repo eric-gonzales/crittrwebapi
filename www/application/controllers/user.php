@@ -188,7 +188,8 @@ class User extends CI_Controller{
 				$result = $client->putObject(array(
 				    'Bucket'     => 'critterphotos',
 				    'Key'        => 'photo.jpg',
-				    'Body' => $image
+				    'Body' => $image,
+				    'ACL'    => 'public-read'
 				));
 				
 				echo $result['ObjectURL'];
