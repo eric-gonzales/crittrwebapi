@@ -64,6 +64,16 @@ class User_model extends CR_Model {
 	}
 	
 	/*
+	 * Fetch username
+	 */
+	public function fetchUsername(){
+		$this->db->select('username');
+		$query = $this->db->get_where('CRUser', array('id' => $this->getID()), 1);
+		$row = $query->row();
+		$this->setUsername($row->username);
+	}
+	
+	/*
 	 * Fetch the photo_url
 	 */
 	public function fetchPhotoURL(){
