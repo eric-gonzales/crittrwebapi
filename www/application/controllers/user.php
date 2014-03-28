@@ -62,17 +62,18 @@ class User extends CI_Controller{
 		$this->db->select('id, password_hash');
 		//look for matching email in CRUser table
 		$chk_stmt = $this->db->get_where('CRUser',array('email' => $this->input->post('email')), 1);
-		
 		if($chk_stmt->num_rows() == 0){
 			$this->_generateError('email does not exist');
 		}
 		else{
 			//fetch the row
 			$cr_user = $chk_stmt->row();
-			
 			//check if credentials match
 			if($this->phpass->check($this->input->post('password'), $cr_user->password_hash)){
+				//set the proper result for the user
 				$this->user_model->setID($cr_user->id);
+				$this->user_model->fetchNotifications();
+				$this->user_model->fetchFriends();
 				$this->user_model->defaultResult();
 			}
 			else{
