@@ -178,8 +178,6 @@ class User extends CI_Controller{
 								$this->db->set('device_id', $device_id);
 								$this->db->set('notification_id', $notification_id);
 								$this->db->set('badge', $badge);
-								
-								
 							}
 						}
 						else{
