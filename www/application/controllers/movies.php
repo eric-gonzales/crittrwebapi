@@ -11,7 +11,7 @@ class Movies extends CI_Controller{
 		$this->load->model('movies_model');
 		
 		//load cache driver: memcached default, file backup
-		$this->load->driver('cache',  array('adapter' => 'memcached', 'backup' => 'file'));
+		//$this->load->driver('cache',  array('adapter' => 'memcached', 'backup' => 'file'));
 	}
 	
 	//Fetch Priority Movies
@@ -40,10 +40,10 @@ class Movies extends CI_Controller{
 	
 	//Movie Search
 	public function search($searchTerm, $limit, $page){
-		$url = sprintf($this->config->item('rotten_tomatoes_search_url'), $this->config->item('rotten_tomatoes_api_key'), $searchTerm, $limit, $page);
-		if(!$movie_info = $this->cache->get($url)){
-			echo $url;
-		}
+		//$url = sprintf($this->config->item('rotten_tomatoes_search_url'), $this->config->item('rotten_tomatoes_api_key'), $searchTerm, $limit, $page);
+		//if(!$movie_info = $this->cache->get($url)){
+		//	echo $url;
+		//}
 	}
 	
 	//Generate Error
