@@ -2,7 +2,8 @@
 	//Rotten Tomatoes API Key
 	$config['rotten_tomatoes_api_key'] = "yytapgjcae7pu4j42dwmmmg5";
 	$config['rotten_tomatoes_cache_seconds'] = 60 * 60 * 24;
-
+	$config['rotten_tomatoes_search_url'] = 'http://api.rottentomatoes.com/api/public/v1.0/movies.json?apikey=%1$s&q=%2$s&page_limit=%3$d&page=%4$d';
+	
 	//The Movie DB API
 	$config['tmdb_api_key'] = "1e0e9eb6323a33a3b940f6720a2915f1";
 	$config['tmdb_cache_seconds'] = 60 * 60 * 24;	
