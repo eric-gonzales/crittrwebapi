@@ -170,7 +170,7 @@ class User extends CI_Controller{
 								//increment badge value
 								$badge = $r->badge_count++;
 								$this->db->where('id', $device_id);
-								$this->db->set('badge', $badge);
+								$this->db->set('badge_count', $badge);
 								$this->db->update('CRDevice');
 								
 								//now create push notification
