@@ -82,7 +82,23 @@ class Notification extends CI_Controller{
 	}
 	
 	//Mark Notification Viewed
-	public function viewed($notificationID){}
+	public function viewed($notificationID){
+		//decrypt hashed notification ID
+		$notification_id = hashids_decrypt($notificationID);
+		
+		//locate notification record for this ID
+		$chk_stmt = $this->db->get_where('CRNotification', array('id' => $notification_id), 1);
+		if($chk_stmt->num_rows() > 0){
+			//set notification viewed
+			$this->db->where('id', $notification_id);
+			$this->db->set('is_viewed', 1);
+			$this->db->update('CRNotification');
+		}
+		else{
+			$this->_generateError('could not find notification with the specified id');
+		}
+		$this->_response();
+	}
 	
 	//Unread Notifications for user
 	public function unread($hashedUserID){}
