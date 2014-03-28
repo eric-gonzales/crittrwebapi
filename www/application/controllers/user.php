@@ -63,10 +63,8 @@ class User extends CI_Controller{
 				'secret' => $this->config->item('facebook_secret'),
 				'cookie' => true
 			));
-			$facebook->setAccessToken('CAACEdEose0cBADppxuPO6wjodxgAvg8QjOeSh6styEHbVyItwOGF9RKKjGMqXhHVoF0yQHNrsijwzBUnp68FFGR2t5ZCc9bq6ku3ms2APm9N6pBlkuBEA4ZAzMZAMMfuHKAk26crGyliYML9CZBj8g3oQKAavPTDlWTck293NuJBblNxeZAARpoSifC9szMIZD');
-			$user_id = $facebook->getUser();
-			
-			print_r($user_id);
+			$facebook->setAccessToken($facebook_token);
+			$user_id = $facebook->getUser();			
 		}
 		else{
 			$this->_generateError('facebook token empty');
