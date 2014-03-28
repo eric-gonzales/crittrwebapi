@@ -65,7 +65,8 @@ class User extends CI_Controller{
 				'cookie' => true
 			));
 			$facebook->setAccessToken($facebook_token);
-			$user_id = $facebook->getUser();			
+			$user_id = $facebook->getUser();
+			print_r($user_id);	
 		}
 		else{
 			$this->_generateError('facebook token empty');
