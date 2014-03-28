@@ -58,6 +58,7 @@ class User extends CI_Controller{
 	function facebook(){
 		$facebook_token = $this->input->post('facebook_token');
 		if(!empty($facebook_token)){
+			$this->load->library('facebook');
 			$facebook = new Facebook(array(
 				'appId' => $this->config->item('facebook_app_id'),
 				'secret' => $this->config->item('facebook_secret'),
