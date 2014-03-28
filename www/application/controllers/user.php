@@ -166,22 +166,27 @@ class User extends CI_Controller{
 	function photo($hashedUserID){
 		$user_id = hashids_decrypt($hashedUserID);
 		if(!empty($user_id)){
-			//convert Base64 encoded photo to jpg
-			$photo_data = base64_decode($this->input->post('photo'));
-			$photo = imagecreatefromstring($photo_data);
-			$imageSave = imagejpeg($photo,'photo.jpg',100);
-			imagedestroy($photo);
-			
-			//load aws library
-			$this->load->library('awslib');
-			
-			$client = S3Client::factory(array(
-			    'key'    => $this->config->item('aws_key'),
-			    'secret' => $this->config->item('aws_secret')
-			));
-			
-			$client->createBucket(array('Bucket' => 'newcritterbucket1234'));
-			
+			$chk_stmt = $this->db->get_where('CRUser',array('id' => $user_id), 1);
+			if($chk_stmt->num_rows() > 0){
+				//convert Base64 encoded photo to jpg
+				$photo_data = base64_decode($this->input->post('photo'));
+				$photo = imagecreatefromstring($photo_data);
+				$imageSave = imagejpeg($photo,'photo.jpg',100);
+				imagedestroy($photo);
+				
+				//load aws library
+				$this->load->library('awslib');
+				
+				$client = S3Client::factory(array(
+				    'key'    => $this->config->item('aws_key'),
+				    'secret' => $this->config->item('aws_secret')
+				));
+				
+				$client->createBucket(array('Bucket' => 'newcritterbucket1234'));
+			}
+			else{
+				$this->_generateError('user does not exist');
+			}
 		}
 		else{
 			$this->_generateError('user id empty');
