@@ -186,7 +186,7 @@ class User extends CI_Controller{
 				$result = $client->putObject(array(
 				    'Bucket'     => 'critterphotos',
 				    'Key'        => 'photo.jpg',
-				    'SourceFile' => $image
+				    'Body' => $image
 				));
 			}
 			else{
