@@ -179,7 +179,7 @@ class User extends CI_Controller{
 				
 				$awslib = new Awslib();
 				$client = $awslib->S3();
-				print_r($client);
+				$client->createBucket(array('Bucket' => 'critterimagestest1234'));
 			}
 			else{
 				$this->_generateError('user does not exist');
