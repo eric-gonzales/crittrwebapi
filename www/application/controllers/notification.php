@@ -106,7 +106,7 @@ class Notification extends CI_Controller{
 		$user_id = hashids_decrypt($hashedUserID);
 		//locate unread notifications
 		$this->load->model('user_model');
-		$this->user_model->setID($from_user_id);
+		$this->user_model->setID($user_id);
 		$this->user_model->fetchNotifications();
 		//set the result to be an array of unread CRNotifications
 		$this->notification_model->setResult($this->user_model->getNotifications());
