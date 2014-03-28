@@ -179,13 +179,14 @@ class User extends CI_Controller{
 				$photo = imagecreatefromstring($photo_data);
 				
 				//create a JPG
-				$filename = tempnam(sys_get_temp_dir(), 'photo');
-				imagejpeg($photo,$filename);
+				ob_start();
+				imagejpeg($photo);
+				$image = ob_get_clean();
 				
 				$result = $client->putObject(array(
 				    'Bucket'     => 'critterphotos',
 				    'Key'        => 'photo.jpg',
-				    'SourceFile' => $filename
+				    'SourceFile' => $image
 				));
 			}
 			else{
