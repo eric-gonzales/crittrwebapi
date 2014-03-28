@@ -10,8 +10,8 @@ class Movies extends CI_Controller{
 		parent::__construct();
 		$this->load->model('movies_model');
 		
-		//load cache driver: memcached default, file backup
-		$this->load->driver('cache',  array('adapter' => 'memcached', 'backup' => 'file'));
+		//load cache driver
+		$this->load->driver('cache');
 	}
 	
 	//Fetch Priority Movies
@@ -41,12 +41,18 @@ class Movies extends CI_Controller{
 	//Movie Search
 	public function search($searchTerm, $limit, $page){
 		$url = sprintf($this->config->item('rotten_tomatoes_search_url'), $this->config->item('rotten_tomatoes_api_key'), $searchTerm, $limit, $page);
-		if($this->cache->get($url)){
-			
+		if($this->cache->memcached->is_supported()){
+			if($this->cache->memcached->get($url)){
+				
+			}
+			else{
+				
+			}
 		}
-		else{
-			echo $url;
-		}
+		echo $url;
+		echo '<pre>';
+	   var_dump($this->cache->memcached->cache_info());
+	   echo '</pre>';
 	}
 	
 	//Generate Error
