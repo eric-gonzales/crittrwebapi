@@ -12,7 +12,15 @@ class Notification extends CI_Controller{
 	}
 	
 	//Send Notification
-	public function send(){}
+	public function send(){
+		//check required post fields
+		if(!empty($this->input->post('fromUserID')) && !empty($this->input->post('toUserID')) && !empty($this->input->post('notificationType')) && !empty($this->input->post('ratingID'))){
+			
+		}
+		else{
+			$this->_generateError('required field(s) missing');
+		}
+	}
 	
 	//Mark Notification Viewed
 	public function viewed($notificationID){}
