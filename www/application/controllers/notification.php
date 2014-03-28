@@ -13,12 +13,17 @@ class Notification extends CI_Controller{
 	
 	//Send Notification
 	public function send(){
+		$from_user_id = $this->input->post('fromUserID');
+		$to_user_id = $this->input->post('toUserID');
+		$notification_type = $this->input->post('notificationType');
+		$rating_id = $this->input->post('ratingID');
+		
 		//check required post fields
-		if(!empty($this->input->post('fromUserID')) && !empty($this->input->post('toUserID')) && !empty($this->input->post('notificationType')) && !empty($this->input->post('ratingID'))){
+		if(!empty($from_user_id) && !empty($to_user_id) && !empty($notification_type) && !empty($rating_id)){
 			//decrypt information
-			$from_user_id = hashids_decrypt($this->input->post('fromUserID'));
-			$to_user_id = hashids_decrypt($this->input->post('toUserID'));
-			$rating_id = hashids_decrypt($this->input->post('ratingID'));
+			$from_user_id = hashids_decrypt($from_user_id);
+			$to_user_id = hashids_decrypt($to_user_id);
+			$rating_id = hashids_decrypt($rating_id);
 				
 			//check if from user exists
 			$chk_stmt = $this->db->get_where('CRUser',array('id' => $from_user_id), 1);
