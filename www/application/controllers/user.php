@@ -168,23 +168,21 @@ class User extends CI_Controller{
 		if(!empty($user_id)){
 			$chk_stmt = $this->db->get_where('CRUser',array('id' => $user_id), 1);
 			if($chk_stmt->num_rows() > 0){
-				//convert Base64 encoded photo to jpg
-				$photo_data = base64_decode(urldecode($this->input->post('photo')));
-				$photo = imagecreatefromstring($photo_data);
-				
-				//create a JPG
-				$photo_jpg = imagejpeg($photo,'photo.jpg',100);
-				
-				//destroy the photo
-				imagedestroy($photo);
-				
 				//load aws library
 				$this->load->library('awslib');
 				
 				$awslib = new Awslib();
 				$client = $awslib->S3();
 				
-				$client->putObjectFile($photo_jpg, 'critterphotos', 'photo.jpg', S3::ACL_PUBLIC_READ);				
+				//convert Base64 encoded photo to jpg
+				$photo_data = base64_decode(urldecode($this->input->post('photo')));
+				$photo = imagecreatefromstring($photo_data);
+				
+				//create a JPG
+				$filename = tempnam(sys_get_temp_dir(), 'photo');
+				imagejpeg($photo,$filename);
+				
+				$client->putObjectFile($filename, 'critterphotos', 'photo.jpg', S3::ACL_PUBLIC_READ);
 			}
 			else{
 				$this->_generateError('user does not exist');
