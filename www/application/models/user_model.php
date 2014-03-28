@@ -24,6 +24,11 @@ class User_model extends CR_Model {
      */
 	public function __construct(){
 		parent::__construct();
+		
+		//Initalize empty properties
+		$this->setPhotoURL('');
+		$this->setFriends(array());
+		$this->setNotifications(array());
 	}
 	
 	/**

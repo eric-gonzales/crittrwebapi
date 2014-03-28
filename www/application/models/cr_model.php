@@ -14,8 +14,12 @@ class CR_Model extends CI_Model{
      */
 	public function __construct(){
 		$this->output->set_content_type('application/json');
+		
+		//Default Status and Message
 		$this->setStatus(0);
 		$this->setMessage('');
+		
+		//Empty Result
 		$this->setResult(array());
 	}
 	
