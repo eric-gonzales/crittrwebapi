@@ -175,6 +175,8 @@ class User extends CI_Controller{
 				//create a JPG
 				$photo_jpg = imagejpeg($photo,'photo.jpg',100);
 				
+				//destroy the photo
+				imagedestroy($photo);
 				
 				//load aws library
 				$this->load->library('awslib');
@@ -182,8 +184,11 @@ class User extends CI_Controller{
 				$awslib = new Awslib();
 				$client = $awslib->S3();
 				
-				//destroy the photo
-				imagedestroy($photo);				
+				$client->putObject(array(
+				    'Bucket' => 'critterphotos',
+				    'Key'    => 'photo.jpg',
+				    'Body'   => $photo_jpg
+				));				
 			}
 			else{
 				$this->_generateError('user does not exist');
