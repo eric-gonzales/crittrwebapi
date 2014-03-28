@@ -115,8 +115,8 @@ class User_model extends CR_Model {
 		$this->db->order_by('created', 'desc'); //newest first
 		$query = $this->db->get_where('CRNotification', array('to_user_id' => $this->getID(), 'is_viewed' => 0));
 		if($query->num_rows > 0){
-			foreach($query->result() as $row){
-				$notifications[] = $notifications[] = array(
+			foreach($query->result() as $notification){
+				$notifications[] = array(
 					'id' => hashids_encrypt($notification->id),
 					'rating_id' => hashids_encrypt($notification->rating_id),
 					'notification_type' => $notification->notification_type,
