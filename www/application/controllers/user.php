@@ -186,13 +186,14 @@ class User extends CI_Controller{
 				$image = ob_get_clean();
 				
 				$result = $client->putObject(array(
-				    'Bucket'     => 'critterphotos',
-				    'Key'        => 'photo.jpg',
+				    'Bucket' => 'critterphotos',
+				    'Key' => $hashedUserID.'/photo.jpg',
 				    'Body' => $image,
-				    'ACL'    => 'public-read'
+				    'ACL' => 'public-read'
 				));
 				
-				echo $result['ObjectURL'];
+				$this->db->where('id', $user_id)->set('photo_url', $result['ObjectURL']);
+				$this->db->update('CRUser');
 				
 			}
 			else{
