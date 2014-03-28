@@ -176,13 +176,6 @@ class User extends CI_Controller{
 				
 				//load aws library
 				$this->load->library('awslib');
-				
-				$client = S3Client::factory(array(
-				    'key'    => $this->config->item('aws_key'),
-				    'secret' => $this->config->item('aws_secret')
-				));
-				
-				$client->createBucket(array('Bucket' => 'newcritterbucket1234'));
 			}
 			else{
 				$this->_generateError('user does not exist');
