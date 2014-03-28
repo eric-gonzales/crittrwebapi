@@ -2,7 +2,7 @@
 
 if(!defined('BASEPATH')) exit('No direct script access allowed');
 
-class Notification_model extends CI_Model {
+class Notification_model extends CR_Model {
 
     protected $apnsDir = '';
 

@@ -8,6 +8,7 @@
 class Notification extends CI_Controller{
 	public function __construct(){
 		parent::__construct();
+		$this->load->model('notification_model');
 	}
 	
 	//Send Notification
@@ -18,4 +19,13 @@ class Notification extends CI_Controller{
 	
 	//Unread Notifications for user
 	public function unread($hashedUserID){}
+	
+	//Generate Error
+	public function _generateError($message, $status = 1){
+		$data['status'] = $this->notification_model->getStatus();
+		$data['message'] = $this->notification_model->getMessage();
+		$data['result'] = $this->notification_model->getResult();
+		
+		$this->load->view('standard_response', $data);
+	}
 }
