@@ -101,7 +101,32 @@ class Notification extends CI_Controller{
 	}
 	
 	//Unread Notifications for user
-	public function unread($hashedUserID){}
+	public function unread($hashedUserID){
+		$notifications = array();
+		
+		//decrypt hashed user id
+		$user_id = hashids_decrypt($hashedUserID);
+		
+		$this->db->order_by('created', 'desc');
+		//locate unread notifications
+		$chk_stmt = $this->db->get_where('CRNotification', array('to_user_id' => $user_id, 'is_viewed' => 0));
+		foreach($chk_stmt->result() as $notification){
+			$notifications[] = array(
+				'id' => hashids_encrypt($notification->id),
+				'rating_id' => hashids_encrypt($notification->rating_id),
+				'notification_type' => $notification->notification_type,
+				'from_user_id' => $notification->from_user_id,
+				'to_user_id' => $notification->to_user_id,
+				'message' => $notification->message,
+				'created' => $notification->created,
+				'modified' => $notification->modified
+			);
+		}
+		
+		//set the result to be an array of CRNotifications
+		$this->notification_model->setResult($notifications);
+		$this->_response();
+	}
 
 	//Generate Error
 	public function _generateError($message, $status = 1){
