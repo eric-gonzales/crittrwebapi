@@ -134,7 +134,7 @@ class User extends CI_Controller{
 			if($chk_stmt->num_rows() > 0){
 				//check if friend id exists
 				$friend_chk_stmt = $this->db->get_where('CRUser',array('id' => $friend_id), 1);
-				if($chk_stmt->num_rows() > 0){
+				if($friend_chk_stmt->num_rows() > 0){
 					$this->db->select('ignore');
 					$friends_stmt = $this->db->get_where('CRFriends',array('user_id' => $user_id, 'friend_id' => $friend_id), 1);
 					if($friends_stmt->num_rows() == 0){
@@ -204,7 +204,51 @@ class User extends CI_Controller{
 	}
 	
 	//Remove Friend
-	function removefriend($hashedUserID){}
+	function removefriend($hashedUserID){
+		//decrypt userID and friendID
+		$user_id = hashids_decrypt($hashedUserID);
+		$friend_id = hashids_decrypt($this->input->post('friendID'));
+		//check if friend id is empty
+		if(!empty($friend_id)){
+			//check if user id exists
+			$chk_stmt = $this->db->get_where('CRUser',array('id' => $user_id), 1);
+			if($chk_stmt->num_rows() > 0){
+				//check if friend id exists
+				$friend_chk_stmt = $this->db->get_where('CRUser',array('id' => $friend_id), 1);
+				if($friend_chk_stmt->num_rows() > 0){
+					$this->db->order_by('created', 'desc');
+					$this->db->select('id');
+					$friends_stmt = $this->db->get_where('CRFriends',array('user_id' => $user_id, 'friend_id' => $friend_id), 1);
+					if($friends_stmt->num_rows() == 0){
+						//add matching entry in CRFriend table
+						$this->db->set('created', 'NOW()', FALSE);
+						$this->db->set('user_id', $user_id);
+						$this->db->set('friend_id', $friend_id);
+						$this->db->set('ignore', 1);
+						$this->db->insert('CRFriends');
+					}
+					else{
+						//update current entry in CRFriend table
+						$friends = $friends_stmt->row();
+						$this->db->where('id', $friends->id);
+						$this->db->set('ignore', 1);
+						$this->db->update('CRFriends');
+					}
+				}
+				else{
+					$this->_generateError('friend id not found');
+				}
+			}
+			else{
+				$this->_generateError('user not found');
+			}
+		}
+		else{
+			$this->_generateError('friend id empty');
+		}
+		
+		$this->_response();
+	}
 	
 	//Generate Error
 	public function _generateError($message, $status = 1){
