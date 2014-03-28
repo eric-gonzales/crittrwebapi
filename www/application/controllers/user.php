@@ -135,19 +135,19 @@ class User extends CI_Controller{
 				//check if friend id exists
 				$friend_chk_stmt = $this->db->get_where('CRUser',array('id' => $friend_id), 1);
 				if($friend_chk_stmt->num_rows() > 0){
-					//if both user and friend exists, let's make them friends 
-					$this->db->set('created', 'NOW()', FALSE);
-					$this->db->set('user_id', $user_id);
-					$this->db->set('friend_id', $friend_id);
-					$this->db->insert('CRFriends');
-					$this->user_model->setID($user_id);
-					$this->user_model->fetchUsername();
 					$friends_chk_stmt = $this->db->get_where('CRFriends',array('user_id' => $user_id, 'friend_id' => $friend_id), 1);
 					if($friends_chk_stmt->num_rows() == 0){
+						//if both user and friend exists, let's make them friends 
+						$this->db->set('created', 'NOW()', FALSE);
+						$this->db->set('user_id', $user_id);
+						$this->db->set('friend_id', $friend_id);
+						$this->db->insert('CRFriends');
+						$this->user_model->setID($user_id);
+						$this->user_model->fetchUsername();
 						//check if friend is ignoring user and is not our friend already
 						$this->db->select('ignore');
 						$friends_stmt = $this->db->get_where('CRFriends',array('user_id' => $friend_id, 'friend_id' => $user_id), 1);
-						if($friends_chk_stmt->num_rows() == 0){		
+						if($friends_stmt->num_rows() == 0){		
 							//and let's send them a notification so they know
 							$this->db->set('created', 'NOW()', FALSE);
 							$this->db->set('from_user_id', $user_id);
