@@ -139,7 +139,7 @@ class User extends CI_Controller{
 					$friends_stmt = $this->db->get_where('CRFriends',array('user_id' => $user_id, 'friend_id' => $friend_id), 1);
 					if($friends_stmt->num_rows() == 0){
 						$friends = $friends_stmt->row();
-						if($friends->ignore){
+						if(!$friends->ignore){
 							//if both user and friend exists, let's make them friends if they aren't already (if they are getting along)
 							$this->db->set('created', 'NOW()', FALSE);
 							$this->db->set('user_id', $user_id);
@@ -155,10 +155,32 @@ class User extends CI_Controller{
 							$this->db->set('to_user_id', $friend_id);
 							$this->db->set('message', $this->user_model->getUsername().' wants to be your Critter friend!');
 							$this->db->insert('CRNotification');
+							$notification_id = $this->db->insert_id();
 							
 							//set a push notification to each device linked to the friend
-							
-							
+							$this->load->model('user_model', 'friend');
+							$this->friend->setID($friend_id);
+							$this->friend->fetchDevices();
+							foreach($this->friend->getDevices() as $device_id){
+								//how many push notifications does this device currently have?
+								$this->db->select('badge_count');
+								$badge_stmt = $this->db->get_where('CRDevice',array('device_id' => $device_id), 1);
+								$r = $badge_stmt->row();
+								
+								//increment badge value
+								$badge = $r->badge_count++;
+								$this->db->where('device_id', $device_id);
+								$this->db->set('badges', $badge);
+								$this->db->update('CRDevice');
+								
+								//now create push notification
+								$this->db->set('created', 'NOW()', FALSE);
+								$this->db->set('device_id', $device_id);
+								$this->db->set('notification_id', $notification_id);
+								$this->db->set('badge', $badge);
+								
+								
+							}
 						}
 						else{
 							$this->_generateError('user is being ignored :(');

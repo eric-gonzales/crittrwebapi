@@ -14,6 +14,7 @@ class User_model extends CR_Model {
 	private $photo_url;
 	private $notifications;
 	private $friends;
+	private $devices;
 	
 	/**
      * Default constructor
@@ -71,6 +72,20 @@ class User_model extends CR_Model {
 		$query = $this->db->get_where('CRUser', array('id' => $this->getID()), 1);
 		$row = $query->row();
 		$this->setUsername($row->username);
+	}
+	
+	/*
+	 * Fetch Devices
+	 */
+	public function fetchDevices(){
+		$devices = array();
+		$query = $this->db->get_where('CRDeviceUser', array('user_id' => $this->getID()));
+		if($query->num_rows > 0){
+			foreach($query->result() as $device){
+				$devices[] = $device->device_id;
+			}
+		}
+		$this->setDevices($devices);
 	}
 	
 	/*
@@ -191,5 +206,13 @@ class User_model extends CR_Model {
 	
 	public function getFriends(){
 		return $this->friends;
+	}
+	
+	public function setDevices($devices){
+		$this->devices = $devices;
+	}
+	
+	public function getDevices(){
+		return $this->devices;
 	}
 }
