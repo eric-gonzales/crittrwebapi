@@ -169,7 +169,7 @@ class User extends CI_Controller{
 								
 								//increment badge value
 								$badge = $r->badge_count++;
-								$this->db->where('device_id', $device_id);
+								$this->db->where('id', $device_id);
 								$this->db->set('badges', $badge);
 								$this->db->update('CRDevice');
 								
