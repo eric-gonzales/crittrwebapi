@@ -182,7 +182,15 @@ class User extends CI_Controller{
 				$filename = tempnam(sys_get_temp_dir(), 'photo');
 				imagejpeg($photo,$filename);
 				
-				//$client->putObject('critterphotos', 'photo.jpg', 'test');
+				$result = $client->putObject(array(
+				    'Bucket'     => 'critterphotos',
+				    'Key'        => 'photo.jpg',
+				    'SourceFile' => $filename,
+				    'Metadata'   => array(
+				        'Foo' => 'abc',
+				        'Baz' => '123'
+				    )
+				));
 			}
 			else{
 				$this->_generateError('user does not exist');
