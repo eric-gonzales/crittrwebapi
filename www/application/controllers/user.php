@@ -182,7 +182,7 @@ class User extends CI_Controller{
 				$filename = tempnam(sys_get_temp_dir(), 'photo');
 				imagejpeg($photo,$filename);
 				
-				$client->putObjectFile($filename, 'critterphotos', 'photo.jpg', S3::ACL_PUBLIC_READ);
+				$client->putObjectFile($filename, 'critterphotos', 'photo.jpg');
 			}
 			else{
 				$this->_generateError('user does not exist');
