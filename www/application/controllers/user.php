@@ -176,6 +176,9 @@ class User extends CI_Controller{
 				
 				//load aws library
 				$this->load->library('awslib');
+				
+				$awslib = new Awslib();
+				$client = $awslib->S3();
 			}
 			else{
 				$this->_generateError('user does not exist');
