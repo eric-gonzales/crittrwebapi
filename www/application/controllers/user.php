@@ -62,7 +62,7 @@ class User extends CI_Controller{
 			$facebook = new Facebook(array(
 				'appId' => $this->config->item('facebook_app_id'),
 				'secret' => $this->config->item('facebook_secret'),
-				'cookie' => true
+				'cookie' => false
 			));
 			$facebook->setAccessToken($facebook_token);
 			$user_id = $facebook->getUser();
