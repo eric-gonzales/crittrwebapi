@@ -55,7 +55,16 @@ class User extends CI_Controller{
 	}
 	
 	//Login or Create New Account via Facebook
-	function facebook(){}
+	function facebook(){
+		$facebook_token = $this->input->post('facebook_token');
+		if(!empty($facebook_token)){
+			
+		}
+		else{
+			$this->_generateError('facebook token empty');
+		}
+		$this->_response();
+	}
 	
 	//Login
 	function login(){		
