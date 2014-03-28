@@ -184,11 +184,7 @@ class User extends CI_Controller{
 				$awslib = new Awslib();
 				$client = $awslib->S3();
 				
-				$client->putObject(array(
-				    'Bucket' => 'critterphotos',
-				    'Key'    => 'photo.jpg',
-				    'Body'   => $photo_jpg
-				));				
+				$client->putObjectFile($photo_jpg, 'critterphotos', 'photo.jpg', S3::ACL_PUBLIC_READ);				
 			}
 			else{
 				$this->_generateError('user does not exist');
