@@ -164,7 +164,7 @@ class User extends CI_Controller{
 							foreach($this->friend->getDevices() as $device_id){
 								//how many push notifications does this device currently have?
 								$this->db->select('badge_count');
-								$badge_stmt = $this->db->get_where('CRDevice',array('device_id' => $device_id), 1);
+								$badge_stmt = $this->db->get_where('CRDevice',array('id' => $device_id), 1);
 								$r = $badge_stmt->row();
 								
 								//increment badge value
