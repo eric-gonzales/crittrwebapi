@@ -112,12 +112,20 @@ class User_model extends CR_Model {
 	 */
 	public function fetchNotifications(){
 		$notifications = array();
-		$this->db->select('id');
 		$this->db->order_by('created', 'desc'); //newest first
 		$query = $this->db->get_where('CRNotification', array('to_user_id' => $this->getID(), 'is_viewed' => 0));
 		if($query->num_rows > 0){
 			foreach($query->result() as $row){
-				$notifications[] = $row->id;
+				$notifications[] = $notifications[] = array(
+					'id' => hashids_encrypt($notification->id),
+					'rating_id' => hashids_encrypt($notification->rating_id),
+					'notification_type' => $notification->notification_type,
+					'from_user_id' => $notification->from_user_id,
+					'to_user_id' => $notification->to_user_id,
+					'message' => $notification->message,
+					'created' => $notification->created,
+					'modified' => $notification->modified
+				);
 			}
 		}
 		$this->setNotifications($notifications);
