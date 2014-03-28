@@ -41,7 +41,7 @@ class Movies extends CI_Controller{
 	//Movie Search
 	public function search($searchTerm, $limit, $page){
 		$url = sprintf($this->config->item('rotten_tomatoes_search_url'), $this->config->item('rotten_tomatoes_api_key'), $searchTerm, $limit, $page);
-		if($this->cache->memcached->get($url)){
+		if($this->cache->get($url)){
 			
 		}
 		else{
