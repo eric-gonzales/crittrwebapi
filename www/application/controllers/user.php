@@ -42,18 +42,14 @@ class User extends CI_Controller{
 				$this->db->insert('CRDeviceUser');
 			}
 			else{
-				//return error code
-				$this->user_model->setStatus(1);
-				$this->user_model->setMessage('Error: device could not be found.');
+				$this->_generateError('device not found');
 			}
 			
 			//finally, generate the default result
 			$this->user_model->defaultResult();
 		}
 		else{
-			//return error code
-			$this->user_model->setStatus(1);
-			$this->user_model->setMessage('Error: email is already in use.');
+			$this->_generateError('email already in use');
 		}
 		$this->_response();
 	}
@@ -68,9 +64,7 @@ class User extends CI_Controller{
 		$chk_stmt = $this->db->get_where('CRUser',array('email' => $this->input->post('email')), 1);
 		
 		if($chk_stmt->num_rows() == 0){
-			//return error code
-			$this->user_model->setStatus(1);
-			$this->user_model->setMessage('Error: email does not exist.');
+			$this->_generateError('email does not exist');
 		}
 		else{
 			//fetch the row
@@ -82,9 +76,7 @@ class User extends CI_Controller{
 				$this->user_model->defaultResult();
 			}
 			else{
-				//return error code
-				$this->user_model->setStatus(1);
-				$this->user_model->setMessage('Error: invalid credentials');
+				$this->_generateError('invalid credentials');
 			}
 		}
 		$this->_response();
@@ -97,9 +89,7 @@ class User extends CI_Controller{
 		$chk_stmt = $this->db->get_where('CRUser',array('email' => $this->input->post('email')), 1);
 		
 		if($chk_stmt->num_rows() == 0){
-			//return error code
-			$this->user_model->setStatus(1);
-			$this->user_model->setMessage('Error: email does not exist.');
+			$this->_generateError('email does not exist');
 		}
 		else{
 			$cr_user = $chk_stmt->row();
@@ -116,9 +106,7 @@ class User extends CI_Controller{
 					$this->user_model->newEmailToken();
 				}
 				else{
-					//return error code
-					$this->user_model->setStatus(1);
-					$this->user_model->setMessage('Error: token has already been generated');
+					$this->_generateError('token already generated');
 				}	
 			}
 			else{
@@ -156,18 +144,15 @@ class User extends CI_Controller{
 					$this->user_model->defaultResult();
 				}
 				else{
-					$this->user_model->setStatus(1);
-					$this->user_model->setMessage('Error: friend id not found');
+					$this->_generateError('friend id not found');
 				}
 			}
 			else{
-				$this->user_model->setStatus(1);
-				$this->user_model->setMessage('Error: user not found');
+				$this->_generateError('user not found');
 			}
 		}
 		else{
-			$this->user_model->setStatus(1);
-			$this->user_model->setMessage('Error: friend id empty');
+			$this->_generateError('friend id empty');
 		}
 		$this->_response();
 	}
@@ -175,7 +160,13 @@ class User extends CI_Controller{
 	//Remove Friend
 	function removefriend($hashedUserID){}
 	
-	//Create Response
+	//Generate Error
+	public function _generateError($message, $status = 1){
+		$this->user_model->setStatus($status);
+		$this->user_model->setMessage('Error: '.$message);
+	}
+	
+	//Produce Response
 	public function _response(){
 		$data['status'] = $this->user_model->getStatus();
 		$data['message'] = $this->user_model->getMessage();

@@ -68,7 +68,7 @@ class User_model extends CR_Model {
 	 */
 	public function fetchPhotoURL(){
 		$this->db->select('photo_url');
-		$query = $this->db->get_where('CRUser', array('id' => $this->id), 1);
+		$query = $this->db->get_where('CRUser', array('id' => $this->getID()), 1);
 		if($query->num_rows > 0){
 			$row = $query->row();
 			if(!empty($row->photo_url)){
@@ -84,7 +84,7 @@ class User_model extends CR_Model {
 		$notifications = array();
 		$this->db->select('id');
 		$this->db->order_by('created', 'desc'); //newest first
-		$query = $this->db->get_where('CRNotification', array('to_user_id' => $this->id, 'is_viewed' => 0));
+		$query = $this->db->get_where('CRNotification', array('to_user_id' => $this->getID(), 'is_viewed' => 0));
 		if($query->num_rows > 0){
 			foreach($query->result() as $row){
 				$notifications[] = $row->id;
@@ -99,7 +99,7 @@ class User_model extends CR_Model {
 	public function fetchFriends(){
 		$friends = array();
 		$this->db->select('friend_id');
-		$query = $this->db->get_where('CRFriends', array('user_id' => $this->id, 'ignore' => 0));
+		$query = $this->db->get_where('CRFriends', array('user_id' => $this->getID(), 'ignore' => 0));
 		if($query->num_rows > 0){
 			foreach($query->result() as $row){
 				$friends[] = $row->friend_id;
@@ -115,7 +115,7 @@ class User_model extends CR_Model {
 		$this->load->helper('string');
 		$this->db->set('created', 'NOW()', FALSE);
 		$this->db->set('token', random_string('unique'));
-		$this->db->set('user_id', $this->id);
+		$this->db->set('user_id', $this->getID());
 		$this->db->insert('CREmailToken');
 	}
 
