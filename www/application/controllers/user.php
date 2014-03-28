@@ -175,8 +175,9 @@ class User extends CI_Controller{
 				$client = $awslib->S3();
 				
 				//convert Base64 encoded photo to jpg
-				$photo_data = base64_decode($this->input->post('photo'));
-				echo $this->input->post('photo');
+				$base64 = urldecode($this->input->post('photo'));
+				echo $base64;
+				$photo_data = base64_decode($base64);
 				$photo = imagecreatefromstring($photo_data);
 				
 				//create a JPG
