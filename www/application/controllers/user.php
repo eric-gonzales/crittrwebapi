@@ -171,15 +171,19 @@ class User extends CI_Controller{
 				//convert Base64 encoded photo to jpg
 				$photo_data = base64_decode(urldecode($this->input->post('photo')));
 				$photo = imagecreatefromstring($photo_data);
-				$imageSave = imagejpeg($photo,'photo.jpg',100);
-				imagedestroy($photo);
+				
+				//create a JPG
+				$photo_jpg = imagejpeg($photo,'photo.jpg',100);
+				
 				
 				//load aws library
 				$this->load->library('awslib');
 				
 				$awslib = new Awslib();
 				$client = $awslib->S3();
-				$client->createBucket(array('Bucket' => 'critterimagestest1234'));
+				
+				//destroy the photo
+				imagedestroy($photo);				
 			}
 			else{
 				$this->_generateError('user does not exist');
