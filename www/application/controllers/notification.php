@@ -17,14 +17,12 @@ class Notification extends CI_Controller{
 		$to_user_id = $this->input->post('toUserID');
 		$notification_type = $this->input->post('notificationType');
 		$rating_id = $this->input->post('ratingID');
-		
 		//check required post fields
 		if(!empty($from_user_id) && !empty($to_user_id) && !empty($notification_type) && !empty($rating_id)){
 			//decrypt information
 			$from_user_id = hashids_decrypt($from_user_id);
 			$to_user_id = hashids_decrypt($to_user_id);
 			$rating_id = hashids_decrypt($rating_id);
-				
 			//check if from user exists
 			$chk_stmt = $this->db->get_where('CRUser',array('id' => $from_user_id), 1);
 			if($chk_stmt->num_rows() > 0){
@@ -42,7 +40,6 @@ class Notification extends CI_Controller{
 						$this->db->set('notification_type', $this->input->post('notificationType'));
 						$this->db->set('message', $this->input->post('message'));
 						$this->db->insert('CRNotification');
-						
 						//now to get all of the user's devices and send push notifications to each
 						$this->load->model('user_model');
 						$this->user_model->setID($from_user_id);
@@ -52,13 +49,11 @@ class Notification extends CI_Controller{
 							$this->db->select('badge_count');
 							$badge_stmt = $this->db->get_where('CRDevice',array('id' => $device_id), 1);
 							$r = $badge_stmt->row();
-							
 							//increment badge value
 							$badge = $r->badge_count + 1;
 							$this->db->where('id', $device_id);
 							$this->db->set('badge_count', $badge);
 							$this->db->update('CRDevice');
-							
 							//now create push notification
 							$this->db->set('created', 'NOW()', FALSE);
 							$this->db->set('device_id', $device_id);
@@ -90,7 +85,6 @@ class Notification extends CI_Controller{
 	public function viewed($notificationID){
 		//decrypt hashed notification ID
 		$notification_id = hashids_decrypt($notificationID);
-		
 		//locate notification record for this ID
 		$chk_stmt = $this->db->get_where('CRNotification', array('id' => $notification_id), 1);
 		if($chk_stmt->num_rows() > 0){
@@ -108,10 +102,8 @@ class Notification extends CI_Controller{
 	//Unread Notifications for user
 	public function unread($hashedUserID){
 		$notifications = array();
-		
 		//decrypt hashed user id
 		$user_id = hashids_decrypt($hashedUserID);
-		
 		$this->db->order_by('created', 'desc');
 		//locate unread notifications
 		$chk_stmt = $this->db->get_where('CRNotification', array('to_user_id' => $user_id, 'is_viewed' => 0));
@@ -127,7 +119,6 @@ class Notification extends CI_Controller{
 				'modified' => $notification->modified
 			);
 		}
-		
 		//set the result to be an array of CRNotifications
 		$this->notification_model->setResult($notifications);
 		$this->_response();
