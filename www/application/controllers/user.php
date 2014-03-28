@@ -131,7 +131,6 @@ class User extends CI_Controller{
 		$this->db->select('id');
 		//look for matching email in CRUser table
 		$chk_stmt = $this->db->get_where('CRUser',array('email' => $this->input->post('email')), 1);
-		
 		if($chk_stmt->num_rows() == 0){
 			$this->_generateError('email does not exist');
 		}
@@ -142,7 +141,6 @@ class User extends CI_Controller{
 			$chk_tkn_stmt = $this->db->get_where('CREmailToken',array('user_id' => $cr_user->id), 1);
 			if($chk_tkn_stmt->num_rows() > 0){
 				$tkn = $chk_tkn_stmt->row();
-				
 				//check if token is expired
 				if(strtotime($tkn->created) < (time()-60*60*24*7)){
 					//if token expired, generate new email token
@@ -170,31 +168,28 @@ class User extends CI_Controller{
 			if($chk_stmt->num_rows() > 0){
 				//load aws library
 				$this->load->library('awslib');
-				
+				//initiate Amazon class
 				$awslib = new Awslib();
 				$client = $awslib->S3();
-				
 				//convert Base64 encoded photo to jpg
 				$base64 = urldecode($this->input->post('photo'));
 				$data = str_replace(' ', '+', $base64);
 				$photo_data = base64_decode($data);
 				$photo = imagecreatefromstring($photo_data);
-				
 				//create a JPG
 				ob_start();
 				imagejpeg($photo);
 				$image = ob_get_clean();
-				
+				//put object into S3 bucket
 				$result = $client->putObject(array(
 				    'Bucket' => 'critterphotos',
 				    'Key' => $hashedUserID.'/photo.jpg',
 				    'Body' => $image,
 				    'ACL' => 'public-read'
 				));
-				
+				//update database record
 				$this->db->where('id', $user_id)->set('photo_url', $result['ObjectURL']);
 				$this->db->update('CRUser');
-				
 			}
 			else{
 				$this->_generateError('user does not exist');
@@ -221,9 +216,7 @@ class User extends CI_Controller{
 					$friends_chk_stmt = $this->db->get_where('CRFriends',array('user_id' => $user_id, 'friend_id' => $friend_id), 1);
 					if($friends_chk_stmt->num_rows() == 0){
 						//if both user and friend exists, let's make them friends 
-						$this->db->set('created', 'NOW()', FALSE);
-						$this->db->set('user_id', $user_id);
-						$this->db->set('friend_id', $friend_id);
+						$this->db->set('created', 'NOW()', FALSE)->set('user_id', $user_id)->set('friend_id', $friend_id);
 						$this->db->insert('CRFriends');
 						$this->user_model->setID($user_id);
 						$this->user_model->fetchUsername();
@@ -232,10 +225,7 @@ class User extends CI_Controller{
 						$friends_stmt = $this->db->get_where('CRFriends',array('user_id' => $friend_id, 'friend_id' => $user_id), 1);
 						if($friends_stmt->num_rows() == 0){		
 							//and let's send them a notification so they know
-							$this->db->set('created', 'NOW()', FALSE);
-							$this->db->set('from_user_id', $user_id);
-							$this->db->set('to_user_id', $friend_id);
-							$this->db->set('message', $this->user_model->getUsername().' wants to be your Critter friend!');
+							$this->db->set('created', 'NOW()', FALSE)->set('from_user_id', $user_id)->set('to_user_id', $friend_id)->set('message', $this->user_model->getUsername().' wants to be your Critter friend!');
 							$this->db->insert('CRNotification');
 							$notification_id = $this->db->insert_id();
 							//set a push notification to each device linked to the friend
@@ -249,14 +239,10 @@ class User extends CI_Controller{
 								$r = $badge_stmt->row();
 								//increment badge value
 								$badge = $r->badge_count + 1;
-								$this->db->where('id', $device_id);
-								$this->db->set('badge_count', $badge);
+								$this->db->where('id', $device_id)->set('badge_count', $badge);
 								$this->db->update('CRDevice');
 								//now create push notification
-								$this->db->set('created', 'NOW()', FALSE);
-								$this->db->set('device_id', $device_id);
-								$this->db->set('notification_id', $notification_id);
-								$this->db->set('badge', $badge);
+								$this->db->set('created', 'NOW()', FALSE)->set('device_id', $device_id)->set('notification_id', $notification_id)->set('badge', $badge);
 								$this->db->insert('CRPushNotification');
 							}
 						}
@@ -337,7 +323,6 @@ class User extends CI_Controller{
 		$data['status'] = $this->user_model->getStatus();
 		$data['message'] = $this->user_model->getMessage();
 		$data['result'] = $this->user_model->getResult();
-		
 		$this->load->view('standard_response', $data);
 	}
 }
