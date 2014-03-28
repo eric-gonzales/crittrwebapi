@@ -163,7 +163,30 @@ class User extends CI_Controller{
 	}
 	
 	//Update User Profile Photo
-	function photo($hashedUserID){}
+	function photo($hashedUserID){
+		$user_id = hashids_decrypt($hashedUserID);
+		if(!empty($user_id)){
+			//convert Base64 encoded photo to jpg
+			$photo_data = base64_decode($this->input->post('photo'));
+			$photo = imagecreatefromstring($photo_data);
+			$imageSave = imagejpeg($photo,'photo.jpg',100);
+			imagedestroy($photo);
+			
+			//load aws library
+			$this->load->library('awslib');
+			
+			$client = S3Client::factory(array(
+			    'key'    => $this->config->item('aws_key'),
+			    'secret' => $this->config->item('aws_secret')
+			));
+			
+			$client->createBucket(array('Bucket' => 'newcritterbucket1234'));
+			
+		}
+		else{
+			$this->_generateError('user id empty');
+		}
+	}
 	
 	//Add Friend
 	function addfriend($hashedUserID){

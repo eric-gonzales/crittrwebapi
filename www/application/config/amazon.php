@@ -1,5 +1,5 @@
 <?php
 
-	$config['aws_key'] = 'AKIAJQDQVFIMNW44HQ4Q';
-	$config['aws_secret'] = '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';	
+	$config['aws_key'] = 'AKIAIBIRFZPOPTJ4IFVA';
+	$config['aws_secret'] = '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';	
 ?>	
