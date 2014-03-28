@@ -177,7 +177,6 @@ class User extends CI_Controller{
 				//convert Base64 encoded photo to jpg
 				$base64 = urldecode($this->input->post('photo'));
 				$data = str_replace(' ', '+', $base64);
-				echo $data;
 				$photo_data = base64_decode($data);
 				$photo = imagecreatefromstring($photo_data);
 				
@@ -191,6 +190,9 @@ class User extends CI_Controller{
 				    'Key'        => 'photo.jpg',
 				    'Body' => $image
 				));
+				
+				echo $result['ObjectURL'];
+				
 			}
 			else{
 				$this->_generateError('user does not exist');
