@@ -32,7 +32,7 @@ class Notification extends CI_Controller{
 				$to_chk_stmt = $this->db->get_where('CRUser',array('id' => $to_user_id), 1);
 				if($to_chk_stmt->num_rows() > 0){
 					//check if rating exists
-					$rating_chk_stmt = $this->db->get_where('CRRating',array('id' => $rating_id), 1);
+					$rating_chk_stmt = $this->db->get_where('CRRating',array('int' => $rating_id), 1);
 					if($rating_chk_stmt->num_rows() > 0){
 						//add entry to notification table
 						$this->db->set('created', 'NOW()', FALSE);
