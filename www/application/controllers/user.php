@@ -56,17 +56,43 @@ class User extends CI_Controller{
 	
 	//Login or Create New Account via Facebook
 	function facebook(){
+		//get facebook token
 		$facebook_token = $this->input->post('facebook_token');
 		if(!empty($facebook_token)){
+			//load facebook library
 			$this->load->library('facebook');
 			$facebook = new Facebook(array(
 				'appId' => $this->config->item('facebook_app_id'),
 				'secret' => $this->config->item('facebook_secret'),
 				'cookie' => false
 			));
+			//set access token
 			$facebook->setAccessToken($facebook_token);
-			$user_id = $facebook->getUser();
-			print_r($user_id);	
+			$fb_id = $facebook->getUser();
+			//check if valid facebook id
+			if(!empty($fb_id)){
+				//check if user is signed up
+				$this->db->select('id');
+				$chk_stmt = $this->db->get_where('CRUser',array('facebook_id' => $fb_id), 1);
+				if($chk_stmt->num_rows() > 0){
+					//fetch user details
+					$cr_user = $chk_stmt->row();
+					$this->user_model->setID($cr_user->id);
+					$this->user_model->fetchNotifications();
+					$this->user_model->fetchFriends();
+					$this->user_model->defaultResult();
+				}
+				else{
+					//create new user
+					$this->db->set('created', 'NOW()', FALSE)->set('facebook_id', $fb_id);
+					$this->db->insert('CRUser');
+					$this->user_model->setID($this->db->insert_id());
+					$this->user_model->defaultResult();
+				}
+			}
+			else{
+				$this->_generateError('facebook id could not be found');
+			}
 		}
 		else{
 			$this->_generateError('facebook token empty');
