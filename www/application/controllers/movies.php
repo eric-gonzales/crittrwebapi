@@ -71,7 +71,7 @@ class Movies extends CI_Controller{
 				$r['imdb_id'] = $rt_res->alternate_ids->imdb;
 			}
 			if(!empty($r)){
-				array_push($response, $r);
+				array_push($results, $r);
 			}
 		}
 		
