@@ -60,7 +60,7 @@ class Movies extends CI_Controller{
 		//check to see if this is already in the cache
 		if(!$this->cache->memcached->get($url)){
 			//get search results
-			$movie_info = $this->_getCachedData($url, $this->config->item('rotten_tomatoes_cache_seconds'));
+			$movie_info = $this->_fetchFromURL($url);
 			$response = json_decode($movie_info);
 			$movies = $response->movies;
 			foreach($movies as $movie){
@@ -161,6 +161,7 @@ class Movies extends CI_Controller{
 					array_push($results, $r);
 				}
 			}
+			$this->cache->memcached->save($url, $results, $expiration);
 		}
 		else{
 			$results = $this->_getCache($url);
