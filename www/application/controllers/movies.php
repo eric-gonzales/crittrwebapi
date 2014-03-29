@@ -106,11 +106,11 @@ class Movies extends CI_Controller{
 			$tmdb_res = json_decode($tmdb_info);
 			if(isset($tmdb_res->movie_results)){
 				$tmdb = $tmdb_res->movie_results;
-				if(isset($tmdb['id'])){
-					$r['tmdb_id'] = $tmdb['id'];
+				if(isset($tmdb->id)){
+					$r['tmdb_id'] = $tmdb->id;
 				}
-				if(isset($tmdb['poster_path'])){
-					$r['tmdb_poster_path'] = $tmdb['poster_path'];
+				if(isset($tmdb->poster_path)){
+					$r['tmdb_poster_path'] = $tmdb->poster_path;
 				}
 			}
 			
@@ -135,11 +135,16 @@ class Movies extends CI_Controller{
 			$tms_res = json_decode($tms_info);
 			$r['tms_root_id'] = '';
 			$r['tms_movie_id'] = '';
-			if(isset($tms_res)){
-				echo '<pre>';
-				print_r($tms_res);
+			if(isset($tms_res) && isset($tms_res->hits)){
+				foreach($tms_res->hits as $tms){
+					if(isset($tms->program->tmsId)){
+						$r['tms_movie_id'] = $tms->program->tmsId;
+					}
+					if(isset($tms->program->rootId)){
+						$r['tms_root_id'] = $tms->program->rootId;
+					}
+				}
 			}
-			
 			
 			if(!empty($r)){
 				array_push($results, $r);
