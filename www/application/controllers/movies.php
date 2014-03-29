@@ -104,18 +104,28 @@ class Movies extends CI_Controller{
 			}
 			$tmdb_info = $this->_getCachedData($tms_url, $this->config->item('tmdb_cache_seconds'));
 			$tmdb_res = json_decode($tmdb_info);
-			$tmdb = $tmdb_res->movie_results;
-			if(isset($tmdb['id'])){
-				$r['tmdb_id'] = $tmdb['id'];
-			}
-			if(isset($tmdb['poster_path'])){
-				$r['tmdb_poster_path'] = $tmdb['poster_path'];
+			if(isset($tmdb_res->movie_results)){
+				$tmdb = $tmdb_res->movie_results;
+				if(isset($tmdb['id'])){
+					$r['tmdb_id'] = $tmdb['id'];
+				}
+				if(isset($tmdb['poster_path'])){
+					$r['tmdb_poster_path'] = $tmdb['poster_path'];
+				}
 			}
 			
 			$itunes_url = sprintf($this->config->item('itunes_title_url'), $r['title']);
 			$itunes_info = $this->_fetchFromURL($itunes_url);
 			$itunes_res = json_decode($itunes_info);
-			print_r($itunes_res);
+			$r['itunes_id'] = '';
+			foreach($itunes_res->results as $itunes){
+				$releaseYear = substr($itunes['releaseDate'], 0, 4);
+				if($releaseYear == substr($r['box_office_release_date'], 0, 4)){
+					$r['itunes_id'] = $itunes->trackId;
+				}
+			}
+			
+			
 			
 			if(!empty($r)){
 				array_push($results, $r);
