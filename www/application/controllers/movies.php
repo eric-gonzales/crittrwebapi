@@ -62,7 +62,8 @@ class Movies extends CI_Controller{
 			//get search results
 			$movie_info = $this->_fetchFromURL($url);
 			$response = json_decode($movie_info);
-			$movies = $response->movies;
+			print_r($response);
+			/*$movies = $response->movies;
 			foreach($movies as $movie){
 				$result = array();
 				//get RT details using RT ID
@@ -72,7 +73,7 @@ class Movies extends CI_Controller{
 					array_push($results, $result);
 				}
 			}
-			$this->cache->memcached->save($url, $results, $expiration);
+			$this->cache->memcached->save($url, $results, $expiration);*/
 		}
 		else{
 			$results = $this->_getCache($url);
