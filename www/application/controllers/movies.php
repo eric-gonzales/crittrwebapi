@@ -74,7 +74,7 @@ class Movies extends CI_Controller{
 				$omdb_url = sprintf($this->config->item('omdb_title_url'), urlencode($r['title']));
 				$omdb_info = $this->_getCachedData($omdb_url, $this->config->item('omdb_cache_seconds'));
 				$omdb_res = json_decode($omdb_info);
-				if(!empty($omdb_res)){
+				if(isset($omdb_res->imdbID)){
 					$r['imdb_id'] = $omdb_res->imdbID;
 				}
 				else{
