@@ -57,10 +57,9 @@ class Movies extends CI_Controller{
 			//get info from cache
 			$movie_info = $this->cache->memcached->get($url);
 		}
-		echo $movie_info;
 		$response = json_decode($movie_info);
 		$movies = $response->movies;
-	foreach($movies as $movie){
+		foreach($movies as $movie){
 			//get RT details using RT ID:
 			$results['rotten_tomatoes_id'] = $movie->id;
 			$rt_url = sprintf($this->config->item('rotten_tomatoes_movie_url'), $results['rotten_tomatoes_id'], $this->config->item('rotten_tomatoes_api_key'));
