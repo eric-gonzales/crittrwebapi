@@ -120,7 +120,7 @@ class Movies extends CI_Controller{
 			$r['itunes_id'] = '';
 			if(isset($itunes_res->results)){
 				foreach($itunes_res->results as $itunes){
-					$releaseYear = substr($itunes['releaseDate'], 0, 4);
+					$releaseYear = substr($itunes->releaseDate, 0, 4);
 					if($releaseYear == substr($r['box_office_release_date'], 0, 4)){
 						$r['itunes_id'] = $itunes->trackId;
 					}
