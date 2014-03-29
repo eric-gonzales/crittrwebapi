@@ -118,12 +118,15 @@ class Movies extends CI_Controller{
 			$itunes_info = $this->_fetchFromURL($itunes_url);
 			$itunes_res = json_decode($itunes_info);
 			$r['itunes_id'] = '';
-			foreach($itunes_res->results as $itunes){
-				$releaseYear = substr($itunes['releaseDate'], 0, 4);
-				if($releaseYear == substr($r['box_office_release_date'], 0, 4)){
-					$r['itunes_id'] = $itunes->trackId;
+			if(isset($itunes_res->results)){
+				foreach($itunes_res->results as $itunes){
+					$releaseYear = substr($itunes['releaseDate'], 0, 4);
+					if($releaseYear == substr($r['box_office_release_date'], 0, 4)){
+						$r['itunes_id'] = $itunes->trackId;
+					}
 				}
 			}
+			
 			
 			
 			
