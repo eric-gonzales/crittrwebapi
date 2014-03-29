@@ -20,12 +20,9 @@ class Movie_model extends CR_Model {
 	private $tmdb_poster_path;
 	private $priority;
 	
-	public function __construct(){
-		parent::__construct();
-	}
-	
 	//Construct from RT ID
 	public function __construct($rotten_tomatoes_id){
+		parent::__construct();
 		$inDB = false;
 		
 		//Try to get data from DB first
