@@ -40,13 +40,20 @@ class Movies extends CI_Controller{
 	
 	//Movie Search
 	public function search($searchTerm, $limit, $page){
+		//configure URL
 		$url = sprintf($this->config->item('rotten_tomatoes_search_url'), $this->config->item('rotten_tomatoes_api_key'), $searchTerm, $limit, $page);
-		if($this->cache->memcached->get($url)){
-			
+		//check if this is in the cache or not
+		if(!$this->cache->memcached->get($url)){
+			//load cURL library
+			$this->load->library('curl'); 
+			$movie_info = $this->curl->simple_get($url);
+			$this->cache->memcached->save($url, $movie_info, 30);
 		}
 		else{
-			
+			$this->_generateError('in cache');
+			$movie_info = $this->cache->memcached->get($url);
 		}
+		$this->movies_model->setResult($movie_info);
 	}
 	
 	//Generate Error
