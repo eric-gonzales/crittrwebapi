@@ -103,7 +103,8 @@ class Movies extends CI_Controller{
 				$tms_url = sprintf($this->config->item('tmdb_title_url'), $r['title'], $this->config->item('tmdb_api_key'));;
 			}
 			$tmdb_info = $this->_getCachedData($tms_url, $this->config->item('tmdb_cache_seconds'));
-			
+			$tmdb_res = json_decode($tmdb_info);
+			print_r($tmdb_res);
 			if(!empty($r)){
 				array_push($results, $r);
 			}
