@@ -56,8 +56,8 @@ class Movies extends CI_Controller{
 			//get RT details using RT ID:
 			$results['rotten_tomatoes_id'] = $movie->id;
 			$rt_url = sprintf($this->config->item('rotten_tomatoes_movie_url'), $results['rotten_tomatoes_id'], $this->config->item('rotten_tomatoes_api_key'));
-			//$rt_info = $this->_getCachedData($rt_url, $this->config->item('rotten_tomatoes_cache_seconds'));
-			//$rt_res = json_decode($rt_info);
+			$rt_info = $this->_getCachedData($rt_url, $this->config->item('rotten_tomatoes_cache_seconds'));
+			$rt_res = json_decode($rt_info);
 			$results['title'] = $rt_res['title'];
 			$results['hashtag'] = '#'.str_replace(' ', '', strtolower($rt_res['title']));
 			$results['box_office_release_date'] = $rt_res['release_dates']['theater'];
