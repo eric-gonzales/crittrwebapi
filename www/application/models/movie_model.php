@@ -47,7 +47,7 @@ class Movie_model extends CR_Model {
 		}
 		
 		//Fetch OMDB data if the IMDB id is empty
-		if(empty($this->getIMDBID())){
+		if($this->getIMDBID() == ''){
 			$this->fetchIMDBData();
 		}
 		
