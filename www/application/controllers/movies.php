@@ -114,6 +114,8 @@ class Movies extends CI_Controller{
 				}
 			}
 			
+			//iTunes info
+			//TODO: refine data fetching methology
 			$itunes_url = sprintf($this->config->item('itunes_title_url'), $r['title']);
 			$itunes_info = $this->_fetchFromURL($itunes_url);
 			$itunes_res = json_decode($itunes_info);
@@ -127,7 +129,16 @@ class Movies extends CI_Controller{
 				}
 			}
 			
-			
+			//TMS details
+			$tms_url = sprintf($this->config->item('tms_title_url'), $r['title'], $this->config->item('tms_api_key'));
+			$tms_info = $this->_fetchFromURL($tms_url);
+			$tms_res = json_decode($tms_info);
+			$r['tms_root_id'] = '';
+			$r['tms_movie_id'] = '';
+			if(isset($tms_res)){
+				echo '<pre>';
+				print_r($tms_res);
+			}
 			
 			
 			if(!empty($r)){
