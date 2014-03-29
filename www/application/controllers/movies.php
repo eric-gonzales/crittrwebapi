@@ -64,103 +64,12 @@ class Movies extends CI_Controller{
 			$response = json_decode($movie_info);
 			$movies = $response->movies;
 			foreach($movies as $movie){
-				$r = array();
+				$result = array();
 				//get RT details using RT ID
 				$movieModel = new Movie_model($movie->id);
-				$r['rotten_tomatoes_id'] = $movie->id;
-				
-				$rt_url = sprintf($this->config->item('rotten_tomatoes_movie_url'), $r['rotten_tomatoes_id'], $this->config->item('rotten_tomatoes_api_key'));
-				$rt_info = $this->_getCachedData($rt_url, $this->config->item('rotten_tomatoes_cache_seconds'));
-				$rt_res = json_decode($rt_info);
-				$r['title'] = $rt_res->title;
-				$r['hashtag'] = '#'.str_replace(' ', '', strtolower($rt_res->title));
-				if(isset($rt_res->release_dates->theater)){
-					$r['box_office_release_date'] = $rt_res->release_dates->theater;
-				}
-				else{
-					$r['box_office_release_date'] = '';
-				}
-				if(isset($rt_res->release_dates->dvd)){
-					$r['dvd_release_date'] = $rt_res->release_dates->dvd;
-				}
-				else{
-					$r['dvd_release_date'] = '';
-				}
-				if(isset($rt_res->alternate_ids->imdb)){
-					$r['imdb_id'] = $rt_res->alternate_ids->imdb;
-				}
-				else{
-					//Get IMDB details:
-					$omdb_url = sprintf($this->config->item('omdb_title_url'), urlencode($r['title']));
-					$omdb_info = $this->_getCachedData($omdb_url, $this->config->item('omdb_cache_seconds'));
-					$omdb_res = json_decode($omdb_info);
-					if(isset($omdb_res->imdbID)){
-						$r['imdb_id'] = $omdb_res->imdbID;
-					}
-					else{
-						$r['imdb_id'] = '';
-					}
-				}
-				//Fetch TMS details
-				if($r['imdb_id'] != ''){
-					//search by IMDB ID
-					$tms_url = sprintf($this->config->item('tmdb_imdb_id_url'), 'tt'.$r['imdb_id'], $this->config->item('tmdb_api_key'));
-				}
-				elseif($r['title'] != '' && $r['box_office_release_date'] != ''){
-					//search by title and year
-					$year = substr($r['box_office_release_date'], 0, 4);
-					$tms_url = sprintf($this->config->item('tmdb_title_year_url'), $r['title'], $year,  $this->config->item('tmdb_api_key'));
-				}
-				else{
-					//search by title
-					$tms_url = sprintf($this->config->item('tmdb_title_url'), $r['title'], $this->config->item('tmdb_api_key'));;
-				}
-				$tmdb_info = $this->_getCachedData($tms_url, $this->config->item('tmdb_cache_seconds'));
-				$tmdb_res = json_decode($tmdb_info);
-				if(isset($tmdb_res->movie_results)){
-					$tmdb = $tmdb_res->movie_results;
-					if(isset($tmdb->id)){
-						$r['tmdb_id'] = $tmdb->id;
-					}
-					if(isset($tmdb->poster_path)){
-						$r['tmdb_poster_path'] = $tmdb->poster_path;
-					}
-				}
-				
-				//iTunes info
-				//TODO: refine data fetching methology
-				$itunes_url = sprintf($this->config->item('itunes_title_url'), $r['title']);
-				$itunes_info = $this->_fetchFromURL($itunes_url);
-				$itunes_res = json_decode($itunes_info);
-				$r['itunes_id'] = '';
-				if(isset($itunes_res->results)){
-					foreach($itunes_res->results as $itunes){
-						$releaseYear = substr($itunes->releaseDate, 0, 4);
-						if($releaseYear == substr($r['box_office_release_date'], 0, 4)){
-							$r['itunes_id'] = $itunes->trackId;
-						}
-					}
-				}
-				
-				//TMS details
-				$tms_url = sprintf($this->config->item('tms_title_url'), $r['title'], $this->config->item('tms_api_key'));
-				$tms_info = $this->_fetchFromURL($tms_url);
-				$tms_res = json_decode($tms_info);
-				$r['tms_root_id'] = '';
-				$r['tms_movie_id'] = '';
-				if(isset($tms_res) && isset($tms_res->hits)){
-					foreach($tms_res->hits as $tms){
-						if(isset($tms->program->tmsId)){
-							$r['tms_movie_id'] = $tms->program->tmsId;
-						}
-						if(isset($tms->program->rootId)){
-							$r['tms_root_id'] = $tms->program->rootId;
-						}
-					}
-				}
-				
+				$result = $movieModel->getResult();
 				if(!empty($r)){
-					array_push($results, $r);
+					array_push($results, $result);
 				}
 			}
 			$this->cache->memcached->save($url, $results, $expiration);
