@@ -76,10 +76,10 @@ class Movies extends CI_Controller{
 		$result = '';
 		
 		if(!$this->cache->memcached->get($url)){
-			$this->_storeCache($url, $expiration);
+			$result = $this->_storeCache($url, $expiration);
 		}
 		else{
-			$this->_getCache($url, $expiration);
+			$result = $this->_getCache($url, $expiration);
 		}
 		
 		return $result;
@@ -88,6 +88,7 @@ class Movies extends CI_Controller{
 	public function _storeCache($url, $expiration){
 		$info = str_replace("\n", '', $this->curl->simple_get($url));
 		$this->cache->memcached->save($url, $info, $expiration);
+		return $info;
 	}
 	
 	public function _getCache($url, $expiration){
