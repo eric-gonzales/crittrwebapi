@@ -43,7 +43,7 @@ class Movies extends CI_Controller{
 		//array for results
 		$results = array();
 		//configure URL
-		$url = sprintf($this->config->item('rotten_tomatoes_search_url'), $this->config->item('rotten_tomatoes_api_key'), $searchTerm, $limit, $page);
+	/*		$url = sprintf($this->config->item('rotten_tomatoes_search_url'), $this->config->item('rotten_tomatoes_api_key'), $searchTerm, $limit, $page);
 		//check if this is in the cache or not
 		if(!$this->cache->memcached->get($url)){
 			//load cURL library
@@ -59,7 +59,7 @@ class Movies extends CI_Controller{
 		
 		$response = json_decode($movie_info);
 		$movies = $response['movies'];
-	/*	foreach($movies as $movie){
+	foreach($movies as $movie){
 			//get RT details using RT ID:
 			$results['rotten_tomatoes_id'] = $movie->id;
 			$rt_url = sprintf($this->config->item('rotten_tomatoes_movie_url'), $results['rotten_tomatoes_id'], $this->config->item('rotten_tomatoes_api_key'));
