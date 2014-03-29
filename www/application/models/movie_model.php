@@ -24,6 +24,18 @@ class Movie_model extends CI_Model {
 		parent::__construct();
 	}
 	
+	//Construct from RT ID
+	public function __construct($rotten_tomatoes_id){
+		$chk_stmt = $this->db->get_where('CRMovie',array('rotten_tomatoes_id' => $rotten_tomatoes_id), 1);
+		if($chk_stmt->num_rows() > 0){
+			$movie_info = $chk_stmt->row();
+			$this->setID($movie_info->id);
+		}
+		else{
+			
+		}
+	}
+	
 	public function getID(){
 		return $this->id;
 	}

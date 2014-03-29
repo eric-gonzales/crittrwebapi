@@ -66,6 +66,7 @@ class Movies extends CI_Controller{
 			foreach($movies as $movie){
 				$r = array();
 				//get RT details using RT ID
+				$movieModel = new Movie_model($movie->id);
 				$r['rotten_tomatoes_id'] = $movie->id;
 				
 				$rt_url = sprintf($this->config->item('rotten_tomatoes_movie_url'), $r['rotten_tomatoes_id'], $this->config->item('rotten_tomatoes_api_key'));
