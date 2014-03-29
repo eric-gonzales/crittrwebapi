@@ -63,8 +63,7 @@ class Movies extends CI_Controller{
 			$movie_info = $this->_fetchFromURL($url);
 			$response = json_decode($movie_info);
 			if(isset($response->movies)){
-				$movies = $response->movies;
-				foreach($movies as $movie){
+				foreach($response->movies as $key => $movie){
 					$result = array();
 					//get RT details using RT ID
 					$movieModel = new Movie_model($movie->id);
