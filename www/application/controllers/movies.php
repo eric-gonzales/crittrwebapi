@@ -42,12 +42,13 @@ class Movies extends CI_Controller{
 	public function search($searchTerm, $limit, $page){
 		//array for results
 		$results = array();
+		$this->load->spark('curl/1.3.0'); 
 		//configure URL
 		$url = sprintf($this->config->item('rotten_tomatoes_search_url'), $this->config->item('rotten_tomatoes_api_key'), $searchTerm, $limit, $page);
 		//check if this is in the cache or not
 			if(!$this->cache->memcached->get($url)){
 			//load cURL library
-			$this->load->spark('curl/1.3.0'); 
+			
 			//get movie info
 			$movie_info = str_replace("\n", '', $this->curl->simple_get($url));
 			$this->cache->memcached->save($url, $movie_info, $this->config->item('rotten_tomatoes_cache_seconds'));
