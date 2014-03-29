@@ -12,6 +12,9 @@ class Movies extends CI_Controller{
 		
 		//load cache driver
 		$this->load->driver('cache');
+		
+		//load curl 
+		$this->load->spark('curl/1.3.0');
 	}
 	
 	//Fetch Priority Movies
@@ -42,38 +45,19 @@ class Movies extends CI_Controller{
 	public function search($searchTerm, $limit, $page){
 		//array for results
 		$results = array();
-		$this->load->spark('curl/1.3.0'); 
+		 
 		//configure URL
 		$url = sprintf($this->config->item('rotten_tomatoes_search_url'), $this->config->item('rotten_tomatoes_api_key'), $searchTerm, $limit, $page);
-		//check if this is in the cache or not
-			if(!$this->cache->memcached->get($url)){
-			//load cURL library
-			
-			//get movie info
-			$movie_info = str_replace("\n", '', $this->curl->simple_get($url));
-			$this->cache->memcached->save($url, $movie_info, $this->config->item('rotten_tomatoes_cache_seconds'));
-		}
-		else{
-			//get info from cache
-			$movie_info = $this->cache->memcached->get($url);
-		}
+		//get search results
+		$movie_info = $this->_getCachedData($url, $this->config->item('rotten_tomatoes_cache_seconds'));
 		$response = json_decode($movie_info);
 		$movies = $response->movies;
 		foreach($movies as $movie){
 			//get RT details using RT ID:
 			$results['rotten_tomatoes_id'] = $movie->id;
 			$rt_url = sprintf($this->config->item('rotten_tomatoes_movie_url'), $results['rotten_tomatoes_id'], $this->config->item('rotten_tomatoes_api_key'));
-			//check if RT Info is in cache:
-			if(!$this->cache->memcached->get($rt_url)){
-				//get RT info:
-				//$rt_info = str_replace("\n", '', $this->curl->simple_get($rt_url));
-				//$this->cache->memcached->save($rt_url, $rt_info, $this->config->item('rotten_tomatoes_cache_seconds'));
-			}
-			else{
-				//$rt_info = $this->cache->memcached->get($rt_url);
-			}
-			
-			$rt_res = json_decode($rt_info);
+			//$rt_info = $this->_getCachedData($rt_url, $this->config->item('rotten_tomatoes_cache_seconds'));
+			//$rt_res = json_decode($rt_info);
 			$results['title'] = $rt_res['title'];
 			$results['hashtag'] = '#'.str_replace(' ', '', strtolower($rt_res['title']));
 			$results['box_office_release_date'] = $rt_res['release_dates']['theater'];
@@ -85,6 +69,28 @@ class Movies extends CI_Controller{
 		
 		$this->movies_model->setResult($results);
 		$this->_response();
+	}
+
+	public function _getCachedData($url, $expiration){
+		$result = '';
+		
+		if(!$this->cache->memcached->get($url)){
+			$this->_storeCache($url, $expiration);
+		}
+		else{
+			$this->_getCache($url, $expiration);
+		}
+		
+		return $result;
+	}
+
+	public function _storeCache($url, $expiration){
+		$info = str_replace("\n", '', $this->curl->simple_get($url));
+		$this->cache->memcached->save($url, $info, $expiration);
+	}
+	
+	public function _getCache($url, $expiration){
+		return $this->cache->memcached->get($url);
 	}
 	
 	//Generate Error
