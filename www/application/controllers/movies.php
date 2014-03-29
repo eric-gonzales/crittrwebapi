@@ -9,6 +9,7 @@ class Movies extends CI_Controller{
 	function __construct(){
 		parent::__construct();
 		$this->load->model('movies_model');
+		$this->load->model('movie_model');
 		
 		//load cache driver
 		$this->load->driver('cache');
