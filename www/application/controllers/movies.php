@@ -62,7 +62,10 @@ class Movies extends CI_Controller{
 			$results['hashtag'] = '#'.str_replace(' ', '', strtolower($rt_res->title));
 			$results['box_office_release_date'] = $rt_res->release_dates->theater;
 			$results['dvd_release_date'] = $rt_res->release_dates->dvd;
-			$results['imdb_id'] = $rt_res->alternate_ids->imdb;
+			if(isset($rt_res->alternate_ids->imdb)){
+				$results['imdb_id'] = $rt_res->alternate_ids->imdb;
+			}
+			
 		}
 		
 		$this->movies_model->setResult($results);
