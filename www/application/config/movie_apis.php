@@ -8,7 +8,7 @@
 	//The Movie DB API
 	$config['tmdb_api_key'] = "1e0e9eb6323a33a3b940f6720a2915f1";
 	$config['tmdb_cache_seconds'] = 60 * 60 * 24;	
-	$config['tmdb_imdb_id_url'] = 'http://api.themoviedb.org/3/find/%1$s?api_key=%2$s';
+	$config['tmdb_imdb_id_url'] = 'http://api.themoviedb.org/3/find/%1$s?api_key=%2$s&external_source=imdb_id';
 	$config['tmdb_title_url'] = 'http://api.themoviedb.org/3/search/movie?api_key=%1$s&query=%2$s';
 	$config['tmdb_title_year_url'] = 'http://api.themoviedb.org/3/search/movie?api_key=%1$s&query=%2$s&year=%3$s';
 
