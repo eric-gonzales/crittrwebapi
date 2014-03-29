@@ -40,6 +40,8 @@ class Movies extends CI_Controller{
 	
 	//Movie Search
 	public function search($searchTerm, $limit, $page){
+		//array for results
+		$results = array();
 		//configure URL
 		$url = sprintf($this->config->item('rotten_tomatoes_search_url'), $this->config->item('rotten_tomatoes_api_key'), $searchTerm, $limit, $page);
 		//check if this is in the cache or not
@@ -48,16 +50,40 @@ class Movies extends CI_Controller{
 			$this->load->spark('curl/1.3.0'); 
 			//get movie info
 			$movie_info = str_replace("\n", '', $this->curl->simple_get($url));
-			$movies = json_decode($movie_info);
-			print_r($movies);
-			//store it into memcached
 			$this->cache->memcached->save($url, $movie_info, $this->config->item('rotten_tomatoes_cache_seconds'));
 		}
 		else{
 			//get info from cache
 			$movie_info = $this->cache->memcached->get($url);
 		}
-		$this->movies_model->setResult($movie_info);
+		
+		$response = json_decode($movie_info);
+		$movies = $response['movies'];
+		foreach($movies as $movie){
+			//get RT details using RT ID:
+			$results['rotten_tomatoes_id'] = $movie->id;
+			$rt_url = sprintf($this->config->item('rotten_tomatoes_movie_url'), $results['rotten_tomatoes_id'], $this->config->item('rotten_tomatoes_api_key'));
+			//check if RT Info is in cache:
+			if(!$this->cache->memcached->get($rt_url)){
+				//get RT info:
+				$rt_info = str_replace("\n", '', $this->curl->simple_get($rt_url));
+				$this->cache->memcached->save($rt_url, $rt_info, $this->config->item('rotten_tomatoes_cache_seconds'));
+			}
+			else{
+				$rt_info = $this->cache->memcached->get($rt_url);
+			}
+			
+			$rt_res = json_decode($rt_info);
+			$results['title'] = $rt_res['title'];
+			$results['hashtag'] = '#'.str_replace(' ', '', strtolower($rt_res['title']));
+			$results['box_office_release_date'] = $rt_res['release_dates']['theater'];
+			$results['dvd_release_date'] = $rt_res['release_dates']['dvd'];
+			$results['imdb_id'] = $rt_res['alternate_ids']['imdb'];
+			
+			
+		}
+		
+		$this->movies_model->setResult($results);
 		$this->_response();
 	}
 	
