@@ -54,22 +54,21 @@ class Movies extends CI_Controller{
 		$movies = $response->movies;
 		foreach($movies as $movie){
 			//get RT details using RT ID:
-			$results['rotten_tomatoes_id'] = $movie->id;
+			$results[]['rotten_tomatoes_id'] = $movie->id;
 			$rt_url = sprintf($this->config->item('rotten_tomatoes_movie_url'), $results['rotten_tomatoes_id'], $this->config->item('rotten_tomatoes_api_key'));
 			$rt_info = $this->_getCachedData($rt_url, $this->config->item('rotten_tomatoes_cache_seconds'));
 			$rt_res = json_decode($rt_info);
-			$results['title'] = $rt_res->title;
-			$results['hashtag'] = '#'.str_replace(' ', '', strtolower($rt_res->title));
+			$results[]['title'] = $rt_res->title;
+			$results[]['hashtag'] = '#'.str_replace(' ', '', strtolower($rt_res->title));
 			if(isset($rt_res->release_dates->theater)){
-				$results['box_office_release_date'] = $rt_res->release_dates->theater;
+				$results[]['box_office_release_date'] = $rt_res->release_dates->theater;
 			}
 			if(isset($rt_res->release_dates->dvd)){
-				$results['dvd_release_date'] = $rt_res->release_dates->dvd;
+				$results[]['dvd_release_date'] = $rt_res->release_dates->dvd;
 			}
 			if(isset($rt_res->alternate_ids->imdb)){
-				$results['imdb_id'] = $rt_res->alternate_ids->imdb;
+				$results[]['imdb_id'] = $rt_res->alternate_ids->imdb;
 			}
-			
 		}
 		
 		$this->movies_model->setResult($results);
