@@ -46,11 +46,13 @@ class Movies extends CI_Controller{
 		if(!$this->cache->memcached->get($url)){
 			//load cURL library
 			$this->load->spark('curl/1.3.0'); 
+			//get movie info
 			$movie_info = str_replace("\n", '', $this->curl->simple_get($url));
-			$this->cache->memcached->save($url, $movie_info, 30);
+			//store it into memcached
+			$this->cache->memcached->save($url, $movie_info, $this->config->item('rotten_tomatoes_cache_seconds'));
 		}
 		else{
-			$this->_generateError('in cache');
+			//get info from cache
 			$movie_info = $this->cache->memcached->get($url);
 		}
 		$this->movies_model->setResult($movie_info);
