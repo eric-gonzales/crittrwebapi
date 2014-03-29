@@ -5,7 +5,7 @@
  * @copyright 2014 Critter
  */
  
-class Movie_model extends CR_Model {
+class Movie_model extends CI_Model {
 	private $id;
 	private $rotten_tomatoes_id;
 	private $itunes_id;
