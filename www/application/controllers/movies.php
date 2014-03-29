@@ -66,11 +66,11 @@ class Movies extends CI_Controller{
 			//check if RT Info is in cache:
 			if(!$this->cache->memcached->get($rt_url)){
 				//get RT info:
-				$rt_info = str_replace("\n", '', $this->curl->simple_get($rt_url));
-				$this->cache->memcached->save($rt_url, $rt_info, $this->config->item('rotten_tomatoes_cache_seconds'));
+				//$rt_info = str_replace("\n", '', $this->curl->simple_get($rt_url));
+				//$this->cache->memcached->save($rt_url, $rt_info, $this->config->item('rotten_tomatoes_cache_seconds'));
 			}
 			else{
-				$rt_info = $this->cache->memcached->get($rt_url);
+				//$rt_info = $this->cache->memcached->get($rt_url);
 			}
 			
 			$rt_res = json_decode($rt_info);
