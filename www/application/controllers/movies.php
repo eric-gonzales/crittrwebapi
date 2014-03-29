@@ -67,6 +67,7 @@ class Movies extends CI_Controller{
 				$r = array();
 				//get RT details using RT ID
 				$r['rotten_tomatoes_id'] = $movie->id;
+				
 				$rt_url = sprintf($this->config->item('rotten_tomatoes_movie_url'), $r['rotten_tomatoes_id'], $this->config->item('rotten_tomatoes_api_key'));
 				$rt_info = $this->_getCachedData($rt_url, $this->config->item('rotten_tomatoes_cache_seconds'));
 				$rt_res = json_decode($rt_info);
