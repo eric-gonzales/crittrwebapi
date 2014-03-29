@@ -81,7 +81,7 @@ class Movies extends CI_Controller{
 			$results['imdb_id'] = $rt_res['alternate_ids']['imdb'];
 			
 			
-		}*/
+		}
 		
 		$this->movies_model->setResult($results);
 		$this->_response();
