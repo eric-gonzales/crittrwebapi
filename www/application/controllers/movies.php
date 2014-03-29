@@ -46,7 +46,7 @@ class Movies extends CI_Controller{
 		if(!$this->cache->memcached->get($url)){
 			//load cURL library
 			$this->load->spark('curl/1.3.0'); 
-			$movie_info = $this->curl->simple_get($url);
+			$movie_info = str_replace("\n", '', $this->curl->simple_get($url));
 			$this->cache->memcached->save($url, $movie_info, 30);
 		}
 		else{
