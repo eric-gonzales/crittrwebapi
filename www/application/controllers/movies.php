@@ -46,9 +46,9 @@ class Movies extends CI_Controller{
 		//configure URL
 		$url = sprintf($this->config->item('rotten_tomatoes_search_url'), $this->config->item('rotten_tomatoes_api_key'), $searchTerm, $limit, $page);
 		//get movie results from this URL
-		$results = $this->_movieResults($url, $this->config->item('rotten_tomatoes_cache_seconds'));
+		$result = $this->_movieResults($url, $this->config->item('rotten_tomatoes_cache_seconds'));
 		//return an array of CRMovie records with associated details attached from RT, IMDB, TMDB, iTunes, and TMS
-		$this->movies_model->setResult($results);
+		$this->movies_model->setResult($result);
 		
 		$this->_response();
 	}
@@ -163,7 +163,7 @@ class Movies extends CI_Controller{
 			}
 		}
 		else{
-			$result = $this->_getCache($url);
+			$results = $this->_getCache($url);
 		}
 		//finally return the results
 		return $results;
