@@ -48,6 +48,8 @@ class Movies extends CI_Controller{
 			$this->load->spark('curl/1.3.0'); 
 			//get movie info
 			$movie_info = str_replace("\n", '', $this->curl->simple_get($url));
+			$movies = json_decode($movie_info);
+			print_r($movies);
 			//store it into memcached
 			$this->cache->memcached->save($url, $movie_info, $this->config->item('rotten_tomatoes_cache_seconds'));
 		}
