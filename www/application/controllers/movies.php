@@ -70,6 +70,17 @@ class Movies extends CI_Controller{
 			if(isset($rt_res->alternate_ids->imdb)){
 				$r['imdb_id'] = $rt_res->alternate_ids->imdb;
 			}
+			else{
+				$omdb_url = sprintf($this->config->item('omdb_title_url'), $r['title']);
+				$omdb_info = $this->_getCachedData($omdb_url, $this->config->item('omdb_cache_seconds'));
+				$omdb_res = json_decode($omdb_info);
+				if(!empty($omdb_res)){
+					$r['imdb_id'] = $omdb_res->imdbID;
+				}
+				else{
+					$r['imdb_id'] = '';
+				}
+			}
 			if(!empty($r)){
 				array_push($results, $r);
 			}
