@@ -60,8 +60,12 @@ class Movies extends CI_Controller{
 			$rt_res = json_decode($rt_info);
 			$results['title'] = $rt_res->title;
 			$results['hashtag'] = '#'.str_replace(' ', '', strtolower($rt_res->title));
-			$results['box_office_release_date'] = $rt_res->release_dates->theater;
-			$results['dvd_release_date'] = $rt_res->release_dates->dvd;
+			if(isset($rt_res->release_dates->theater)){
+				$results['box_office_release_date'] = $rt_res->release_dates->theater;
+			}
+			if(isset($rt_res->release_dates->dvd)){
+				$results['dvd_release_date'] = $rt_res->release_dates->dvd;
+			}
 			if(isset($rt_res->alternate_ids->imdb)){
 				$results['imdb_id'] = $rt_res->alternate_ids->imdb;
 			}
