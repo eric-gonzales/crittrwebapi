@@ -45,7 +45,7 @@ class Movies extends CI_Controller{
 		//configure URL
 		$url = sprintf($this->config->item('rotten_tomatoes_search_url'), $this->config->item('rotten_tomatoes_api_key'), $searchTerm, $limit, $page);
 		//check if this is in the cache or not
-		/*	if(!$this->cache->memcached->get($url)){
+			if(!$this->cache->memcached->get($url)){
 			//load cURL library
 			$this->load->spark('curl/1.3.0'); 
 			//get movie info
@@ -57,7 +57,7 @@ class Movies extends CI_Controller{
 			$movie_info = $this->cache->memcached->get($url);
 		}
 		
-		$response = json_decode($movie_info);
+		/*$response = json_decode($movie_info);
 		$movies = $response['movies'];
 	foreach($movies as $movie){
 			//get RT details using RT ID:
