@@ -57,8 +57,8 @@ class Movies extends CI_Controller{
 			$movie_info = $this->cache->memcached->get($url);
 		}
 		echo $movie_info;
-		/*$response = json_decode($movie_info);
-		$movies = $response['movies'];
+		$response = json_decode($movie_info);
+		$movies = $response->movies;
 	foreach($movies as $movie){
 			//get RT details using RT ID:
 			$results['rotten_tomatoes_id'] = $movie->id;
