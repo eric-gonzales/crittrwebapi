@@ -20,4 +20,7 @@
 	$config['omdb_imdb_id_url'] = 'http://www.omdbapi.com/?i=%1$s';
 	$config['omdb_title_url'] = 'http://www.omdbapi.com/?t=%1$s';
 	$config['omdb_cache_seconds'] = 60 * 60 * 24;
+	
+	//iTunes
+	$config['itunes_title_url'] = 'https://itunes.apple.com/search?country=us&entity=movie&attribute=movieTerm&term=%1$s';
 ?>

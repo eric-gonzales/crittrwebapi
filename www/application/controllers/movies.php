@@ -104,7 +104,19 @@ class Movies extends CI_Controller{
 			}
 			$tmdb_info = $this->_getCachedData($tms_url, $this->config->item('tmdb_cache_seconds'));
 			$tmdb_res = json_decode($tmdb_info);
-			print_r($tmdb_res);
+			$tmdb = $tmdb_res->movie_results;
+			if(isset($tmdb['id'])){
+				$r['tmdb_id'] = $tmdb['id'];
+			}
+			if(isset($tmdb['poster_path'])){
+				$r['tmdb_poster_path'] = $tmdb['poster_path'];
+			}
+			
+			$itunes_url = sprintf($this->config->item('itunes_title_url'), $r['title']);
+			$itunes_info = $this->_fetchFromURL($itunes_url);
+			$itunes_res = json_decode($itunes_info);
+			print_r($itunes_res);
+			
 			if(!empty($r)){
 				array_push($results, $r);
 			}
@@ -118,7 +130,7 @@ class Movies extends CI_Controller{
 		$result = '';
 		
 		if(!$this->cache->memcached->get($url)){
-			$result = $this->_storeCache($url, $expiration);
+			$result = $this->_fetchFromURL($url, $expiration, true);
 		}
 		else{
 			$result = $this->_getCache($url, $expiration);
@@ -127,9 +139,11 @@ class Movies extends CI_Controller{
 		return $result;
 	}
 
-	public function _storeCache($url, $expiration){
+	public function _fetchFromURL($url, $expiration = '', $shouldBeCached = false){
 		$info = str_replace("\n", '', $this->curl->simple_get($url));
-		$this->cache->memcached->save($url, $info, $expiration);
+		if($shouldBeCached){
+			$this->cache->memcached->save($url, $info, $expiration);
+		}
 		return $info;
 	}
 	
