@@ -62,7 +62,7 @@ class Movies extends CI_Controller{
 			//get search results
 			$movie_info = $this->_fetchFromURL($url);
 			$response = json_decode($movie_info);
-			print_r($response);die();
+			print_r($response->movies);
 			foreach($response->movies as $key => $movie){
 				$result = array();
 				//get RT details using RT ID
