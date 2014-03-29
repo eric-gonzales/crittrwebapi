@@ -8,9 +8,9 @@
 	//The Movie DB API
 	$config['tmdb_api_key'] = "1e0e9eb6323a33a3b940f6720a2915f1";
 	$config['tmdb_cache_seconds'] = 60 * 60 * 24;	
-	$config['tmdb_imdb_id_url'] = 'http://private-d9da-themoviedb.apiary-proxy.com/3/find/%1$s?api_key=%2$s';
-	$config['tmdb_title_url'] = 'http://private-d9da-themoviedb.apiary-proxy.com/3/find/%1$s?api_key=%2$s&query=%3$s';
-	$config['tmdb_title_year_url'] = 'http://private-d9da-themoviedb.apiary-proxy.com/3/find/%1$s?api_key=%2$s&query=%3$s&year=%4$s';
+	$config['tmdb_imdb_id_url'] = 'http://api.themoviedb.org/3/find/%1$s?api_key=%2$s';
+	$config['tmdb_title_url'] = 'http://api.themoviedb.org/3/find/%1$s?api_key=%2$s&query=%3$s';
+	$config['tmdb_title_year_url'] = 'http://api.themoviedb.org/3/find/%1$s?api_key=%2$s&query=%3$s&year=%4$s';
 
 	//TMS API KEY
 	$config['tms_api_key'] = "9a782k4scvuzsgye7xg9mfsh";	

@@ -91,16 +91,19 @@ class Movies extends CI_Controller{
 			//Fetch TMS details
 			if($r['imdb_id'] != ''){
 				//search by IMDB ID
-				
+				$tms_url = sprintf($this->config->item('tmdb_imdb_id_url'), $r['imdb_id'], $this->config->item('tmdb_api_key'));
 			}
 			elseif($r['title'] != '' && $r['box_office_release_date'] != ''){
 				//search by title and year
-				
+				$year = substr($r['box_office_release_date'], 0, 4);
+				$tms_url = sprintf($this->config->item('tmdb_title_year_url'), $r['title'], $year,  $this->config->item('tmdb_api_key'));
 			}
 			else{
 				//search by title
-				
+				$tms_url = sprintf($this->config->item('tmdb_title_url'), $r['title'], $this->config->item('tmdb_api_key'));;
 			}
+			$tmdb_info = $this->_getCachedData($tms_url, $this->config->item('tmdb_cache_seconds'));
+			
 			if(!empty($r)){
 				array_push($results, $r);
 			}
