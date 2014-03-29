@@ -51,8 +51,9 @@ class Movies extends CI_Controller{
 		//get search results
 		$movie_info = $this->_getCachedData($url, $this->config->item('rotten_tomatoes_cache_seconds'));
 		$response = json_decode($movie_info);
-		print_r($response);
-		/*$movies = $response->movies;
+		$movies = $response->movies;
+		print_r($movies);
+		/*
 		foreach($movies as $movie){
 			//get RT details using RT ID:
 			$results['rotten_tomatoes_id'] = $movie->id;
