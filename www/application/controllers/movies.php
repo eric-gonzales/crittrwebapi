@@ -54,7 +54,7 @@ class Movies extends CI_Controller{
 		$movies = $response->movies;
 		foreach($movies as $movie){
 			$r = array();
-			//get RT details using RT ID:
+			//get RT details using RT ID
 			$r['rotten_tomatoes_id'] = $movie->id;
 			$rt_url = sprintf($this->config->item('rotten_tomatoes_movie_url'), $r['rotten_tomatoes_id'], $this->config->item('rotten_tomatoes_api_key'));
 			$rt_info = $this->_getCachedData($rt_url, $this->config->item('rotten_tomatoes_cache_seconds'));
@@ -64,13 +64,20 @@ class Movies extends CI_Controller{
 			if(isset($rt_res->release_dates->theater)){
 				$r['box_office_release_date'] = $rt_res->release_dates->theater;
 			}
+			else{
+				$r['box_office_release_date'] = '';
+			}
 			if(isset($rt_res->release_dates->dvd)){
 				$r['dvd_release_date'] = $rt_res->release_dates->dvd;
+			}
+			else{
+				$r['dvd_release_date'] = '';
 			}
 			if(isset($rt_res->alternate_ids->imdb)){
 				$r['imdb_id'] = $rt_res->alternate_ids->imdb;
 			}
 			else{
+				//Get IMDB details:
 				$omdb_url = sprintf($this->config->item('omdb_title_url'), urlencode($r['title']));
 				$omdb_info = $this->_getCachedData($omdb_url, $this->config->item('omdb_cache_seconds'));
 				$omdb_res = json_decode($omdb_info);
@@ -80,6 +87,19 @@ class Movies extends CI_Controller{
 				else{
 					$r['imdb_id'] = '';
 				}
+			}
+			//Fetch TMS details
+			if($r['imdb_id'] != ''){
+				//search by IMDB ID
+				
+			}
+			elseif($r['title'] != '' && $r['box_office_release_date'] != ''){
+				//search by title and year
+				
+			}
+			else{
+				//search by title
+				
 			}
 			if(!empty($r)){
 				array_push($results, $r);
