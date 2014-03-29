@@ -91,7 +91,7 @@ class Movies extends CI_Controller{
 			//Fetch TMS details
 			if($r['imdb_id'] != ''){
 				//search by IMDB ID
-				$tms_url = sprintf($this->config->item('tmdb_imdb_id_url'), $r['imdb_id'], $this->config->item('tmdb_api_key'));
+				$tms_url = sprintf($this->config->item('tmdb_imdb_id_url'), 'tt'.$r['imdb_id'], $this->config->item('tmdb_api_key'));
 			}
 			elseif($r['title'] != '' && $r['box_office_release_date'] != ''){
 				//search by title and year
