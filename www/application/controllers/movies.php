@@ -62,18 +62,17 @@ class Movies extends CI_Controller{
 			//get search results
 			$movie_info = $this->_fetchFromURL($url);
 			$response = json_decode($movie_info);
-			if(isset($response->movies)){
-				foreach($response->movies as $key => $movie){
-					$result = array();
-					//get RT details using RT ID
-					$movieModel = new Movie_model($movie->id);
-					$result = $movieModel->getResult();
-					if(!empty($r)){
-						array_push($results, $result);
-					}
+			print_r($response);die();
+			foreach($response->movies as $key => $movie){
+				$result = array();
+				//get RT details using RT ID
+				$movieModel = new Movie_model($movie->id);
+				$result = $movieModel->getResult();
+				if(!empty($r)){
+					array_push($results, $result);
 				}
-				$this->cache->memcached->save($url, $results, $expiration);
 			}
+			$this->cache->memcached->save($url, $results, $expiration);
 		}
 		else{
 			$results = $this->_getCache($url);
