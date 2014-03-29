@@ -54,11 +54,11 @@ class Movies extends CI_Controller{
 	}
 
 	public function _movieResults($url, $expiration){
+		//array of results
+		$results = array();
+		
 		//check to see if this is already in the cache
 		if(!$this->cache->memcached->get($url)){
-			//array of results
-			$results = array();
-			
 			//get search results
 			$movie_info = $this->_getCachedData($url, $this->config->item('rotten_tomatoes_cache_seconds'));
 			$response = json_decode($movie_info);
