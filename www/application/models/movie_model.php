@@ -26,6 +26,7 @@ class Movie_model extends CR_Model {
 	private $tms_details;
 	private $tmdb_trailer_details;
 	private $tms_trailer_details;
+	private $tms_trailer_image_details;
 	
 	//Construct from RT ID
 	public function __construct($rotten_tomatoes_id){
@@ -508,6 +509,14 @@ class Movie_model extends CR_Model {
 	
 	public function setTMSTrailerDetails($details){
 		$this->tms_trailer_details = $details;
+	}
+	
+	public function getTMSTrailerImageDetails(){
+		return $this->tms_trailer_image_details;
+	}
+	
+	public function setTMSTrailerImageDetails($details){
+		$this->tms_trailer_image_details = $details;
 	}
 	
 	public function _getCachedData($url, $expiration){
