@@ -354,10 +354,10 @@ class Movie_model extends CR_Model {
 		$result = '';
 		
 		if(!$this->cache->memcached->get($url)){
-			$result = $this->_fetchFromURL($url, $expiration, true);
+			$result = $this->_fetchFromURL(urlencode($url), $expiration, true);
 		}
 		else{
-			$result = $this->_getCache($url);
+			$result = $this->_getCache(urlencode($url));
 		}
 		
 		return $result;
@@ -366,7 +366,7 @@ class Movie_model extends CR_Model {
 	public function _fetchFromURL($url, $expiration = '', $shouldBeCached = false){
 		$info = str_replace("\n", '', $this->curl->simple_get($url));
 		if($shouldBeCached){
-			$this->cache->memcached->save($url, $info, $expiration);
+			$this->cache->memcached->save(urlencode($url), $info, $expiration);
 		}
 		return $info;
 	}
