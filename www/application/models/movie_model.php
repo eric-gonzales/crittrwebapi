@@ -362,7 +362,10 @@ class Movie_model extends CR_Model {
 	}
 
 	public function _fetchFromURL($url, $expiration = '', $shouldBeCached = false){
+		echo 'fetching from URL: '.$url;
+		echo "\n";
 		$info = str_replace("\n", '', $this->curl->simple_get($url));
+		echo $info;
 		if($shouldBeCached){
 			$this->cache->memcached->save(urlencode($url), $info, $expiration);
 		}
