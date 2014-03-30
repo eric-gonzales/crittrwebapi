@@ -24,6 +24,8 @@ class Movie_model extends CR_Model {
 	private $tmdb_details;
 	private $itunes_details;
 	private $tms_details;
+	private $tmdb_trailer_details;
+	private $tms_trailer_details;
 	
 	//Construct from RT ID
 	public function __construct($rotten_tomatoes_id){
@@ -140,8 +142,10 @@ class Movie_model extends CR_Model {
 			'rt_details' => $this->getRTDetails(),
 			'imdb_details' => $this->getIMDBDetails(),
 			'tmdb_details' => $this->getTMDBDetails(),
+			'tmdb_trailer_details' => $this->getTMDBTrailerDetails(),
 			'itunes_details' => $this->getiTunesDetails(),
-			'tms_details' => $this->getTMSDetails()
+			'tms_details' => $this->getTMSDetails(),
+			'tms_trailer_details' => $this->getTMSTrailerDetails()
 		);
 		
 		$this->setResult($result);
@@ -203,11 +207,13 @@ class Movie_model extends CR_Model {
 			if(!empty($res->poster_path)){
 				$this->setTMDBPosterPath($res->poster_path);
 			}
+			$this->fetchTMDBTrailerDetails();
+			return $res;
 		}
 		else{
-			$this->fetchTMDBDataByIMDBID();
+			return $this->fetchTMDBDataByIMDBID();
 		}
-		return $res;
+		
 	}
 	
 	public function fetchTMDBDataByIMDBID(){
@@ -221,14 +227,11 @@ class Movie_model extends CR_Model {
 			if(!empty($res->movie_results[0]->poster_path)){
 				$this->setTMDBPosterPath($res->movie_results[0]->poster_path);
 			}
-		}
-		else{
-			$this->fetchTMDBDataByTitleAndYear();
-		}
-		if(!empty($res->movie_results[0])){
+			$this->fetchTMSTrailerDetails();
 			return $res->movie_results[0];
 		}
 		else{
+			$this->fetchTMDBDataByTitleAndYear();
 			return array();
 		}
 	}
@@ -248,15 +251,11 @@ class Movie_model extends CR_Model {
 			if(!empty($res->results[0]->poster_path)){
 				$this->setTMDBPosterPath($res->results[0]->poster_path);
 			}
-		}
-		else{
-			$this->fetchTMDBDataByTitle();
-		}
-		if(!empty($res->results[0])){
+			$this->fetchTMDBTrailerDetails();
 			return $res->results[0];
 		}
 		else{
-			return array();
+			return $this->fetchTMDBDataByTitle();
 		}
 	}
 	
@@ -264,21 +263,33 @@ class Movie_model extends CR_Model {
 		$url = sprintf($this->config->item('tmdb_title_url'), $this->getTitle(), $this->config->item('tmdb_api_key'));
 		$info = $this->_getCachedData($url, $this->config->item('tmdb_cache_seconds'));
 		$res = json_decode($info);
-		if(!empty($res->results[0]->imdb_id)){
-			$this->setIMDBID($res->results[0]->imdb_id);
-		}
-		if(!empty($res->results[0]->id)){
-			$this->setTMDBID($res->results[0]->id);
-		}
-		if(!empty($res->results[0]->poster_path)){
-			$this->setTMDBPosterPath($res->results[0]->poster_path);
-		}
 		if(!empty($res->results[0])){
+			if(!empty($res->results[0]->imdb_id)){
+				$this->setIMDBID($res->results[0]->imdb_id);
+			}
+			if(!empty($res->results[0]->id)){
+				$this->setTMDBID($res->results[0]->id);
+			}
+			if(!empty($res->results[0]->poster_path)){
+				$this->setTMDBPosterPath($res->results[0]->poster_path);
+			}
+			$this->fetchTMDBTrailerDetails();
 			return $res->results[0];
 		}
 		else{
 			return array();
 		}
+	}
+	
+	public function fetchTMDBTrailerDetails(){
+		$url = sprintf($this->config->item('tmdb_trailer_url'), $this->getTMDBID(), $this->config->item('tmdb_api_key'));
+		$info = $this->_fetchFromURL($url);
+		$res = json_decode($info);
+		$this->setTMDBTrailerDetails($res);
+	}
+	
+	public function fetchTMSTrailerDetails(){
+		
 	}
 	
 	public function fetchiTunesData(){
@@ -468,6 +479,22 @@ class Movie_model extends CR_Model {
 	
 	public function setTMSDetails($details){
 		$this->tms_details = $details;
+	}
+	
+	public function getTMDBTrailerDetails(){
+		return $this->tmdb_trailer_details;
+	}
+	
+	public function setTMDBTrailerDetails($details){
+		$this->tmdb_trailer_details = $details;
+	}
+	
+	public function getTMSTrailerDetails(){
+		return $this->tms_trailer_details;
+	}
+	
+	public function setTMSTrailerDetails($details){
+		$this->tms_trailer_details = $details;
 	}
 	
 	public function _getCachedData($url, $expiration){

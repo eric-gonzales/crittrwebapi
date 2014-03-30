@@ -12,6 +12,7 @@
 	$config['tmdb_imdb_id_url'] = 'http://api.themoviedb.org/3/find/%1$s?api_key=%2$s&external_source=imdb_id';
 	$config['tmdb_title_url'] = 'http://api.themoviedb.org/3/search/movie?api_key=%1$s&query=%2$s';
 	$config['tmdb_title_year_url'] = 'http://api.themoviedb.org/3/search/movie?api_key=%1$s&query=%2$s&year=%3$s';
+	$config['tmdb_trailer_url'] = 'http://api.themoviedb.org/3/movie/%1$s/trailers?api_key=%2$s';
 
 	//TMS API KEY
 	$config['tms_api_key'] = "9a782k4scvuzsgye7xg9mfsh";	
