@@ -217,7 +217,7 @@ class Movie_model extends CR_Model {
 		$url = sprintf($this->config->item('tmdb_title_year_url'),$this->config->item('tmdb_api_key'), $this->getTitle(), $year);
 		$info = $this->_getCachedData($url, $this->config->item('tmdb_cache_seconds'));
 		$res = json_decode($info);
-		echo '<h1>'.$url.'</h1>';
+		echo $url;
 		echo "\n";
 		print_r($res);
 		echo "\n\n";
@@ -403,7 +403,7 @@ class Movie_model extends CR_Model {
 	}
 
 	public function _fetchFromURL($url, $expiration = '', $shouldBeCached = false){
-		$info = str_replace("\n", '', $this->curl->simple_get(urlencode($url)));
+		$info = str_replace("\n", '', $this->curl->simple_get($url));
 		if($shouldBeCached){
 			$this->cache->memcached->save(urlencode($url), $info, $expiration);
 		}
