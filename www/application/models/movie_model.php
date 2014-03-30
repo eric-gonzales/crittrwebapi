@@ -217,10 +217,6 @@ class Movie_model extends CR_Model {
 		$url = sprintf($this->config->item('tmdb_title_year_url'),$this->config->item('tmdb_api_key'), urlencode($this->getTitle()), $year);
 		$info = $this->_getCachedData($url, $this->config->item('tmdb_cache_seconds'));
 		$res = json_decode($info);
-		echo $url;
-		echo "\n";
-		print_r($res);
-		echo "\n\n";
 		if(!empty($res->results[0])){
 			if(!empty($res->results[0]->imdb_id)){
 				$this->setIMDBID($res->results[0]->imdb_id);
@@ -256,6 +252,10 @@ class Movie_model extends CR_Model {
 		$url = sprintf($this->config->item('itunes_title_url'), $this->getTitle());
 		$info = $this->_fetchFromURL($url);
 		$res = json_decode($info);
+		echo $url;
+		echo "\n";
+		print_r($res);
+		echo "\n";echo "\n";
 		if(isset($res->results)){
 			foreach($res->results as $itunes){
 				$releaseYear = substr($itunes->releaseDate, 0, 4);
