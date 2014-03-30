@@ -136,12 +136,7 @@ class Movie_model extends CR_Model {
 			'hashtag' => $this->getHashtag(),
 			'title' => $this->getTitle(),
 			'dvd_release_date' => $this->getDVDReleaseDate(),
-			'tmdb_poster_path' => $this->getTMDBPosterPath(),
-			'rt_details' => $this->getRTDetails(),
-			'imdb_details' => $this->getIMDBDetails(),
-			'tmdb_details' => $this->getTMDBDetails(),
-			'itunes_details' => $this->getiTunesDetails(),
-			'tms_details' => $this->getTMSDetails()
+			'tmdb_poster_path' => $this->getTMDBPosterPath()
 		);
 		
 		$this->setResult($result);
@@ -151,7 +146,6 @@ class Movie_model extends CR_Model {
 		$url = sprintf($this->config->item('rotten_tomatoes_movie_url'), $this->getRottenTomatoesID(), $this->config->item('rotten_tomatoes_api_key'));
 		$info = $this->_getCachedData($url, $this->config->item('rotten_tomatoes_cache_seconds'));
 		echo $info;
-		$res = json_decode($info);
 		if(isset($res->title)){
 			$this->setTitle($res->title);
 			$this->setHashtag($this->makeHashtag($res->title));

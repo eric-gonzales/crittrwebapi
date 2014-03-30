@@ -3,4 +3,4 @@ $response['status'] = $status;
 $response['message'] = $message;
 $response['result'] = $result;
 
-echo stripslashes(json_encode($response));
+echo json_encode($response);

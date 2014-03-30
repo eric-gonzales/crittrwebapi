@@ -116,6 +116,7 @@ class Movies extends CI_Controller{
 		$data['status'] = $this->movies_model->getStatus();
 		$data['message'] = $this->movies_model->getMessage();
 		$data['result'] = $this->movies_model->getResult();
+		
 		$this->load->view('standard_response', $data);
 	}
 }
