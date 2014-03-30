@@ -71,9 +71,7 @@ class Movies extends CI_Controller{
 				//get RT details using RT ID
 				$movieModel = new Movie_model($movie->id);
 				$result = $movieModel->getResult();
-				if(!empty($r)){
-					array_push($results, $result);
-				}
+				array_push($results, $result);
 			}
 			$this->cache->memcached->save($url, $results, $expiration);
 		}
