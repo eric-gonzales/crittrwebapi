@@ -72,10 +72,35 @@ class Movie_model extends CR_Model {
 		}
 		
 		if($inDB){
-			//update the CRMovie record
+			$this->db->where('id', $this->getID());
+			$this->db->set('rotten_tomatoes_id', $this->getRottenTomatoesID());
+			$this->db->set('itunes_id', $this->getiTunesID());
+			$this->db->set('imdb_id', $this->getIMDBID());
+			$this->db->set('tmdb_id', $this->getTMDBID());
+			$this->db->set('tms_root_id', $this->getTMSRootID());
+			$this->db->set('tms_movie_id', $this->getTMSMovieID());
+			$this->db->set('hashtag', $this->getHashtag());
+			$this->db->set('title', $this->getTitle());
+			$this->db->set('box_office_release_date', $this->getBoxOfficeReleaseDate());
+			$this->db->set('dvd_release_date', $this->getDVDReleaseDate());
+			$this->db->set('tmdb_poster_path', $this->getTMDBPosterPath());
+			$this->db->update('CRMovie');
 		}
 		else{
-			//create the CRMovie record
+			$this->db->set('created', 'NOW()', FALSE);
+			$this->db->set('rotten_tomatoes_id', $this->getRottenTomatoesID());
+			$this->db->set('itunes_id', $this->getiTunesID());
+			$this->db->set('imdb_id', $this->getIMDBID());
+			$this->db->set('tmdb_id', $this->getTMDBID());
+			$this->db->set('tms_root_id', $this->getTMSRootID());
+			$this->db->set('tms_movie_id', $this->getTMSMovieID());
+			$this->db->set('hashtag', $this->getHashtag());
+			$this->db->set('title', $this->getTitle());
+			$this->db->set('box_office_release_date', $this->getBoxOfficeReleaseDate());
+			$this->db->set('dvd_release_date', $this->getDVDReleaseDate());
+			$this->db->set('tmdb_poster_path', $this->getTMDBPosterPath());
+			$this->db->insert('CRMovie');
+			$this->setID($this->db->insert_id());
 		}
 		
 		$result = array(
@@ -347,7 +372,6 @@ class Movie_model extends CR_Model {
 	
 	public function _getCachedData($url, $expiration){
 		$result = '';
-		
 		if(!$this->cache->memcached->get(urlencode($url))){
 			$result = $this->_fetchFromURL($url, $expiration, true);
 		}
