@@ -137,7 +137,11 @@ class Movie_model extends CR_Model {
 			'title' => $this->getTitle(),
 			'dvd_release_date' => $this->getDVDReleaseDate(),
 			'tmdb_poster_path' => $this->getTMDBPosterPath(),
-			'rt_details' => $this->getRTDetails()
+			'rt_details' => $this->getRTDetails(),
+			'imdb_details' => $this->getIMDBDetails(),
+			'tmdb_details' => $this->getTMDBDetails(),
+			'itunes_details' => $this->getiTunesDetails(),
+			'tms_details' => $this->getTMSDetails()
 		);
 		
 		$this->setResult($result);
