@@ -249,7 +249,7 @@ class Movie_model extends CR_Model {
 	}
 	
 	public function fetchiTunesData(){
-		$url = sprintf($this->config->item('itunes_title_url'), $this->getTitle());
+		$url = sprintf($this->config->item('itunes_title_url'), urlencode($this->getTitle()));
 		$info = $this->_fetchFromURL($url);
 		$res = json_decode($info);
 		echo $url;
