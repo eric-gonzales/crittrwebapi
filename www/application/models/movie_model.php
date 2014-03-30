@@ -34,11 +34,9 @@ class Movie_model extends CR_Model {
 			$this->setID($movie_info->id);
 		}
 		
-		//check if any RT data is empty
-		if(empty($movie_info->title) || empty($movie_info->box_office_release_date) || empty($movie_info->dvd_release_date) || empty($movie_info->imdb_id)){
-			$this->fetchRottenTomatoesData();
-		}
-		else{
+		//RT data
+		$this->fetchRottenTomatoesData();
+		if($inDB){
 			$this->setTitle($movie_info->title);
 			$this->setHashtag($this->makeHashtag($movie_info->title));
 			$this->setBoxOfficeReleaseDate($movie_info->box_office_release_date);
@@ -46,20 +44,18 @@ class Movie_model extends CR_Model {
 			$this->setIMDBID($movie_info->imdb_id);
 		}
 		
-		//Fetch OMDB data if the IMDB id is empty
-		if($this->getIMDBID() == ''){
-			$this->fetchIMDBData();
-		}
+		//MDB Data
+		$this->fetchIMDBData();
 		
-		//Fetch TMDB data if the tmdb id or poster path is missing
-		if(empty($movie_info->tmdb_id) || empty($movie_info->tmdb_poster_path)){
-			$this->fetchTMDBData();
-		}
-		else{
+		//TMDB data
+		$this->fetchTMDBData();
+		
+		if($inDB){
 			$this->setTMDBID($movie_info->tmdb_id);
 			$this->setTMDBPosterPath($movie_info->tmdb_poster_path);
 		}
-		//Fetch iTunes ID if it is missing
+		
+		//iTunes ID if it is missing
 		if(empty($movie_info->itunes_id)){
 			$this->fetchiTunesData();
 		}
@@ -67,13 +63,19 @@ class Movie_model extends CR_Model {
 			$this->setiTunesID($movie_info->itunes_id);
 		}
 		
-		//Fetch TMS Data if it is missing from database
-		if(empty($movie_info->tms_root_id) || empty($movie_info->tms_movie_id)){
-			$this->fetchTMSData();
-		}
-		else{
+		//TMS Data 
+		$this->fetchTMSData();
+		
+		if($inDB){
 			$this->setTMSMovieID($movie_info->tms_movie_id);
 			$this->setTMSRootID($movie_info->tms_root_id);
+		}
+		
+		if($inDB){
+			//update the CRMovie record
+		}
+		else{
+			//create the CRMovie record
 		}
 		
 		$result = array(
@@ -93,12 +95,6 @@ class Movie_model extends CR_Model {
 		print_r($result);
 		
 		$this->setResult($result);
-		if($inDB){
-			//update the CRMovie record
-		}
-		else{
-			//create the CRMovie record
-		}
 	}
 
 	public function fetchRottenTomatoesData(){
