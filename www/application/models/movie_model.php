@@ -214,7 +214,7 @@ class Movie_model extends CR_Model {
 	
 	public function fetchTMDBDataByTitleAndYear(){
 		$year = substr($this->getBoxOfficeReleaseDate(), 0, 4);
-		$url = sprintf($this->config->item('tmdb_title_year_url'),$this->config->item('tmdb_api_key'), $this->getTitle(), $year);
+		$url = sprintf($this->config->item('tmdb_title_year_url'),$this->config->item('tmdb_api_key'), urlencode($this->getTitle()), $year);
 		$info = $this->_getCachedData($url, $this->config->item('tmdb_cache_seconds'));
 		$res = json_decode($info);
 		echo $url;
