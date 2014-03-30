@@ -350,8 +350,8 @@ class Movie_model extends CR_Model {
 	public function _getCachedData($url, $expiration){
 		$result = '';
 		
-		if(!$this->cache->memcached->get($url)){
-			$result = $this->_fetchFromURL(urlencode($url), $expiration, true);
+		if(!$this->cache->memcached->get(urlencode($url))){
+			$result = $this->_fetchFromURL($url, $expiration, true);
 			echo 'test1: '.$result;
 		}
 		else{
