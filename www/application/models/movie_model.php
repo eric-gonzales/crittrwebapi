@@ -225,7 +225,12 @@ class Movie_model extends CR_Model {
 		else{
 			$this->fetchTMDBDataByTitleAndYear();
 		}
-		return $res;
+		if(!empty($res->movie_results[0])){
+			return $res->movie_results[0];
+		}
+		else{
+			return array();
+		}
 	}
 	
 	public function fetchTMDBDataByTitleAndYear(){
