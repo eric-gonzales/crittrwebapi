@@ -164,7 +164,7 @@ class Movie_model extends CR_Model {
 		if(isset($res->alternate_ids->imdb)){
 			$this->setIMDBID($res->alternate_ids->imdb);
 		}
-		$this->setRTDetails($res);
+		$this->setRTDetails(addslashes($res));
 	}
 	
 	public function fetchIMDBData(){
