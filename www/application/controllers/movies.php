@@ -4,7 +4,7 @@
  * @author Eric Gonzales <eric@crittermovies.com>
  * @copyright 2014 Critter
  */
-require_once(dirname(__FILE__).'/../models/movie_model.php');
+
 
 class Movies extends CI_Controller{
 	function __construct(){
@@ -16,6 +16,9 @@ class Movies extends CI_Controller{
 		
 		//load curl 
 		$this->load->spark('curl/1.3.0');
+		
+		//add Movie Model
+		require_once(dirname(__FILE__).'/../models/movie_model.php');
 	}
 	
 	//Fetch Priority Movies
