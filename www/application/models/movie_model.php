@@ -164,7 +164,7 @@ class Movie_model extends CR_Model {
 		if(isset($res->alternate_ids->imdb)){
 			$this->setIMDBID($res->alternate_ids->imdb);
 		}
-		$this->setRTDetails(addslashes($res));
+		$this->setRTDetails($info);
 	}
 	
 	public function fetchIMDBData(){
@@ -174,7 +174,7 @@ class Movie_model extends CR_Model {
 		if(isset($res->imdbID)){
 			$this->setIMDBID($res->imdbID);
 		}
-		$this->setIMDBDetails($res);
+		$this->setIMDBDetails($info);
 	}
 	
 	public function fetchTMDBData(){
@@ -207,7 +207,7 @@ class Movie_model extends CR_Model {
 		else{
 			$this->fetchTMDBDataByIMDBID();
 		}
-		return $res;
+		return $info;
 	}
 	
 	public function fetchTMDBDataByIMDBID(){
@@ -225,7 +225,7 @@ class Movie_model extends CR_Model {
 		else{
 			$this->fetchTMDBDataByTitleAndYear();
 		}
-		return $res;
+		return $info;
 	}
 	
 	public function fetchTMDBDataByTitleAndYear(){
@@ -247,12 +247,7 @@ class Movie_model extends CR_Model {
 		else{
 			$this->fetchTMDBDataByTitle();
 		}
-		if(!empty($res->results[0])){
-			return $res->results[0];
-		}
-		else{
-			return array();
-		}
+		return $info;
 	}
 	
 	public function fetchTMDBDataByTitle(){
@@ -268,12 +263,7 @@ class Movie_model extends CR_Model {
 		if(!empty($res->results[0]->poster_path)){
 			$this->setTMDBPosterPath($res->results[0]->poster_path);
 		}
-		if(!empty($res->results[0])){
-			return $res->results[0];
-		}
-		else{
-			return array();
-		}
+		return $info;
 	}
 	
 	public function fetchiTunesData(){
@@ -292,7 +282,7 @@ class Movie_model extends CR_Model {
 				}
 			}
 		}
-		$this->setiTunesDetails($finalRes);
+		$this->setiTunesDetails($info);
 	}
 	
 	public function fetchTMSData(){
@@ -314,7 +304,7 @@ class Movie_model extends CR_Model {
 				}
 			}
 		}
-		$this->setTMSDetails($finalRes);
+		$this->setTMSDetails($info);
 	}
 	
 	public function makeHashtag($string){
