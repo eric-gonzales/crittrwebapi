@@ -52,12 +52,11 @@ class Movie_model extends CR_Model {
 			}
 		}
 		
-		//MDB Data
+		//IMDB Data
 		$this->fetchIMDBData();
 		
 		//TMDB data
 		$this->fetchTMDBData();
-		
 		if($inDB){
 			if($movie_info->tmdb_id != ''){
 				$this->setTMDBID($movie_info->tmdb_id);
@@ -67,17 +66,16 @@ class Movie_model extends CR_Model {
 			}
 		}
 		
-		//iTunes ID if it is missing
-		if(empty($movie_info->itunes_id)){
-			$this->fetchiTunesData();
-		}
-		else{
-			$this->setiTunesID($movie_info->itunes_id);
+		//iTunes Data
+		$this->fetchiTunesData();
+		if($inDB){
+			if($movie_info->itunes_id != ''){
+				$this->setiTunesID($movie_info->itunes_id);
+			}
 		}
 		
 		//TMS Data 
 		$this->fetchTMSData();
-		
 		if($inDB){
 			if($movie_info->tms_movie_id != ''){
 				$this->setTMSMovieID($movie_info->tms_movie_id);
@@ -88,6 +86,7 @@ class Movie_model extends CR_Model {
 			
 		}
 		
+		//Database Operations
 		if($inDB){
 			$this->db->where('id', $this->getID());
 			$this->db->set('rotten_tomatoes_id', $this->getRottenTomatoesID());
@@ -120,6 +119,7 @@ class Movie_model extends CR_Model {
 			$this->setID($this->db->insert_id());
 		}
 		
+		//Setting Result
 		$result = array(
 			'id' => hashids_encrypt($this->getID()),
 			'rotten_tomatoes_id' => $this->getRottenTomatoesID(),
@@ -131,7 +131,12 @@ class Movie_model extends CR_Model {
 			'hashtag' => $this->getHashtag(),
 			'title' => $this->getTitle(),
 			'dvd_release_date' => $this->getDVDReleaseDate(),
-			'tmdb_poster_path' => $this->getTMDBPosterPath()
+			'tmdb_poster_path' => $this->getTMDBPosterPath(),
+			'rt_details' => array(),
+			'imdb_details' => array(),
+			'tmdb_details' => array(),
+			'itunes_details' => array(),
+			'tms_details' => array()
 		);
 		
 		$this->setResult($result);
@@ -265,7 +270,7 @@ class Movie_model extends CR_Model {
 	}
 	
 	public function fetchTMSData(){
-		$url = sprintf($this->config->item('tms_title_url'), $this->getTitle(), $this->config->item('tms_api_key'));
+		$url = sprintf($this->config->item('tms_title_url'), urlencode($this->getTitle()), $this->config->item('tms_api_key'));
 		$info = $this->_fetchFromURL($url);
 		$res = json_decode($info);
 		if(isset($res->hits)){
