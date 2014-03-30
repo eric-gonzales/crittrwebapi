@@ -145,7 +145,6 @@ class Movie_model extends CR_Model {
 	public function fetchRottenTomatoesData(){
 		$url = sprintf($this->config->item('rotten_tomatoes_movie_url'), $this->getRottenTomatoesID(), $this->config->item('rotten_tomatoes_api_key'));
 		$info = $this->_getCachedData($url, $this->config->item('rotten_tomatoes_cache_seconds'));
-		echo $info;
 		if(isset($res->title)){
 			$this->setTitle($res->title);
 			$this->setHashtag($this->makeHashtag($res->title));
