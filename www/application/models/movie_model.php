@@ -136,7 +136,8 @@ class Movie_model extends CR_Model {
 			'hashtag' => $this->getHashtag(),
 			'title' => $this->getTitle(),
 			'dvd_release_date' => $this->getDVDReleaseDate(),
-			'tmdb_poster_path' => $this->getTMDBPosterPath()
+			'tmdb_poster_path' => $this->getTMDBPosterPath(),
+			'rt_details' => $this->getRTDetails()
 		);
 		
 		$this->setResult($result);
