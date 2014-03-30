@@ -300,6 +300,8 @@ class Movie_model extends CR_Model {
 	
 	public function fetchTMSTrailerImageDetails(){
 		$url = sprintf($this->config->item('tms_trailer_image_url'), $this->getTMSRootID(), $this->config->item('tms_api_key'));
+		echo $url;
+		echo "\n";
 		$info = $this->_getCachedData($url, $this->config->item('tms_cache_seconds'));
 		$res = json_decode($info);
 		$this->setTMSTrailerImageDetails($res);
