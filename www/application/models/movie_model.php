@@ -92,7 +92,7 @@ class Movie_model extends CR_Model {
 			'tmdb_poster_path' => $this->getTMDBPosterPath()
 		);
 		
-		//print_r($result);
+		print_r($result);
 		
 		$this->setResult($result);
 	}
