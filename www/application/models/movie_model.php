@@ -147,7 +147,7 @@ class Movie_model extends CR_Model {
 	public function fetchTMDBDataByTMDBID(){
 		$url = sprintf($this->config->item('tmdb_id_url'), $this->getTMDBID(), $this->config->item('tmdb_api_key'));
 		$info = $this->_getCachedData($url, $this->config->item('tmdb_cache_seconds'));
-		$res = json_decode($tmdb_info);
+		$res = json_decode($info);
 		if(!empty($res)){
 			if(!empty($res->poster_path)){
 				$this->setTMDBPosterPath($res->poster_path);
@@ -161,7 +161,7 @@ class Movie_model extends CR_Model {
 	public function fetchTMDBDataByIMDBID(){
 		$url = sprintf($this->config->item('tmdb_imdb_id_url'), $this->getIMDBID(), $this->config->item('tmdb_api_key'));
 		$info = $this->_getCachedData($url, $this->config->item('tmdb_cache_seconds'));
-		$res = json_decode($tmdb_info);
+		$res = json_decode($info);
 		if(!empty($res->movie_results)){
 			if(!empty($res->movie_results->id)){
 				$this->setTMDBID($res->movie_results->id);
@@ -179,7 +179,7 @@ class Movie_model extends CR_Model {
 		$year = substr($this->getBoxOfficeReleaseDate(), 0, 4);
 		$url = sprintf($this->config->item('tmdb_title_year_url'), $this->getTitle(), $year, $this->config->item('tmdb_api_key'));
 		$info = $this->_getCachedData($url, $this->config->item('tmdb_cache_seconds'));
-		$res = json_decode($tmdb_info);
+		$res = json_decode($info);
 		if(!empty($res->results)){
 			if(!empty($res->results->imdb_id)){
 				$this->setIMDBID($res->imdb_id);
@@ -199,7 +199,7 @@ class Movie_model extends CR_Model {
 	public function fetchTMDBDataByTitle(){
 		$url = sprintf($this->config->item('tmdb_title_url'), $this->getTitle(), $this->config->item('tmdb_api_key'));
 		$info = $this->_getCachedData($url, $this->config->item('tmdb_cache_seconds'));
-		$res = json_decode($tmdb_info);
+		$res = json_decode($info);
 		if(!empty($res->results->imdb_id)){
 			$this->setIMDBID($res->results->imdb_id);
 		}
