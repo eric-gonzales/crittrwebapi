@@ -217,19 +217,19 @@ class Movie_model extends CR_Model {
 		$url = sprintf($this->config->item('tmdb_title_year_url'),$this->config->item('tmdb_api_key'), $this->getTitle(), $year);
 		$info = $this->_getCachedData($url, $this->config->item('tmdb_cache_seconds'));
 		$res = json_decode($info);
-		echo $url;
+		echo '<h1>'.$url.'</h1>';
 		echo "\n";
 		print_r($res);
 		echo "\n\n";
-		if(!empty($res->results)){
-			if(!empty($res->results->imdb_id)){
-				$this->setIMDBID($res->imdb_id);
+		if(!empty($res->results[0])){
+			if(!empty($res->results[0]->imdb_id)){
+				$this->setIMDBID($res->results[0]->imdb_id);
 			}
-			if(!empty($res->results->id)){
-				$this->setTMDBID($res->id);
+			if(!empty($res->results[0]->id)){
+				$this->setTMDBID($res->results[0]->id);
 			}
-			if(!empty($res->results->poster_path)){
-				$this->setTMDBPosterPath($res->poster_path);
+			if(!empty($res->results[0]->poster_path)){
+				$this->setTMDBPosterPath($res->results[0]->poster_path);
 			}
 		}
 		else{
@@ -241,14 +241,14 @@ class Movie_model extends CR_Model {
 		$url = sprintf($this->config->item('tmdb_title_url'), $this->getTitle(), $this->config->item('tmdb_api_key'));
 		$info = $this->_getCachedData($url, $this->config->item('tmdb_cache_seconds'));
 		$res = json_decode($info);
-		if(!empty($res->results->imdb_id)){
-			$this->setIMDBID($res->results->imdb_id);
+		if(!empty($res->results[0]->imdb_id)){
+			$this->setIMDBID($res->results[0]->imdb_id);
 		}
-		if(!empty($res->results->id)){
-			$this->setTMDBID($res->results->id);
+		if(!empty($res->results[0]->id)){
+			$this->setTMDBID($res->results[0]->id);
 		}
-		if(!empty($res->results->poster_path)){
-			$this->setTMDBPosterPath($res->results->poster_path);
+		if(!empty($res->results[0]->poster_path)){
+			$this->setTMDBPosterPath($res->results[0]->poster_path);
 		}
 	}
 	
