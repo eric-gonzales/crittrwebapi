@@ -150,6 +150,7 @@ class Movie_model extends CR_Model {
 	public function fetchRottenTomatoesData(){
 		$url = sprintf($this->config->item('rotten_tomatoes_movie_url'), $this->getRottenTomatoesID(), $this->config->item('rotten_tomatoes_api_key'));
 		$info = $this->_getCachedData($url, $this->config->item('rotten_tomatoes_cache_seconds'));
+		echo $info;
 		$res = json_decode($info);
 		if(isset($res->title)){
 			$this->setTitle($res->title);
@@ -164,7 +165,7 @@ class Movie_model extends CR_Model {
 		if(isset($res->alternate_ids->imdb)){
 			$this->setIMDBID($res->alternate_ids->imdb);
 		}
-		$this->setRTDetails($info);
+		$this->setRTDetails($res);
 	}
 	
 	public function fetchIMDBData(){
@@ -174,7 +175,7 @@ class Movie_model extends CR_Model {
 		if(isset($res->imdbID)){
 			$this->setIMDBID($res->imdbID);
 		}
-		$this->setIMDBDetails($info);
+		$this->setIMDBDetails($res);
 	}
 	
 	public function fetchTMDBData(){
@@ -207,7 +208,7 @@ class Movie_model extends CR_Model {
 		else{
 			$this->fetchTMDBDataByIMDBID();
 		}
-		return $info;
+		return $res;
 	}
 	
 	public function fetchTMDBDataByIMDBID(){
@@ -225,7 +226,7 @@ class Movie_model extends CR_Model {
 		else{
 			$this->fetchTMDBDataByTitleAndYear();
 		}
-		return $info;
+		return $res;
 	}
 	
 	public function fetchTMDBDataByTitleAndYear(){
@@ -247,7 +248,12 @@ class Movie_model extends CR_Model {
 		else{
 			$this->fetchTMDBDataByTitle();
 		}
-		return $info;
+		if(!empty($res->results[0])){
+			return $res->results[0];
+		}
+		else{
+			return array();
+		}
 	}
 	
 	public function fetchTMDBDataByTitle(){
@@ -263,7 +269,12 @@ class Movie_model extends CR_Model {
 		if(!empty($res->results[0]->poster_path)){
 			$this->setTMDBPosterPath($res->results[0]->poster_path);
 		}
-		return $info;
+		if(!empty($res->results[0])){
+			return $res->results[0];
+		}
+		else{
+			return array();
+		}
 	}
 	
 	public function fetchiTunesData(){
@@ -282,7 +293,7 @@ class Movie_model extends CR_Model {
 				}
 			}
 		}
-		$this->setiTunesDetails($info);
+		$this->setiTunesDetails($finalRes);
 	}
 	
 	public function fetchTMSData(){
@@ -304,7 +315,7 @@ class Movie_model extends CR_Model {
 				}
 			}
 		}
-		$this->setTMSDetails($info);
+		$this->setTMSDetails($finalRes);
 	}
 	
 	public function makeHashtag($string){
