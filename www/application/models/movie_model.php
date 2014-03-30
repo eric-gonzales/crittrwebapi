@@ -329,6 +329,7 @@ class Movie_model extends CR_Model {
 				}
 				if(isset($tms->program->rootId) || isset($tms->program->tmsId)){
 					$finalRes = $tms->program;
+					$this->fetchTMSTrailerDetails();
 					break;
 				}
 			}
