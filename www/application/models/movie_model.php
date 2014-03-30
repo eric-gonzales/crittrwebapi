@@ -37,11 +37,19 @@ class Movie_model extends CR_Model {
 		//RT data
 		$this->fetchRottenTomatoesData();
 		if($inDB){
-			$this->setTitle($movie_info->title);
-			$this->setHashtag($this->makeHashtag($movie_info->title));
-			$this->setBoxOfficeReleaseDate($movie_info->box_office_release_date);
-			$this->setDVDReleaseDate($movie_info->dvd_release_date);
-			$this->setIMDBID($movie_info->imdb_id);
+			if($movie_info->title != ''){
+				$this->setTitle($movie_info->title);
+				$this->setHashtag($this->makeHashtag($movie_info->title));
+			}
+			if($movie_info->box_office_release_date != ''){
+				$this->setBoxOfficeReleaseDate($movie_info->box_office_release_date);
+			}
+			if($movie_info->dvd_release_date != ''){
+				$this->setDVDReleaseDate($movie_info->dvd_release_date);
+			}
+			if($movie_info->imdb_id != ''){
+				$this->setIMDBID($movie_info->imdb_id);
+			}
 		}
 		
 		//MDB Data
@@ -51,8 +59,12 @@ class Movie_model extends CR_Model {
 		$this->fetchTMDBData();
 		
 		if($inDB){
-			$this->setTMDBID($movie_info->tmdb_id);
-			$this->setTMDBPosterPath($movie_info->tmdb_poster_path);
+			if($movie_info->tmdb_id != ''){
+				$this->setTMDBID($movie_info->tmdb_id);
+			}
+			if($movie_info->tmdb_poster_path != ''){
+				$this->setTMDBPosterPath($movie_info->tmdb_poster_path);
+			}
 		}
 		
 		//iTunes ID if it is missing
@@ -67,8 +79,13 @@ class Movie_model extends CR_Model {
 		$this->fetchTMSData();
 		
 		if($inDB){
-			$this->setTMSMovieID($movie_info->tms_movie_id);
-			$this->setTMSRootID($movie_info->tms_root_id);
+			if($movie_info->tms_movie_id != ''){
+				$this->setTMSMovieID($movie_info->tms_movie_id);
+			}
+			if($movie_info->tms_root_id != ''){
+				$this->setTMSRootID($movie_info->tms_root_id);
+			}
+			
 		}
 		
 		if($inDB){
