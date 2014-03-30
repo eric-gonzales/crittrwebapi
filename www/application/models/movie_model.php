@@ -4,7 +4,7 @@
  * @author Eric Gonzales <eric@crittermovies.com>
  * @copyright 2014 Critter
  */
-require_once(dirname(__FILE__).'/cr_model.php');
+require_once(dirname(__FILE__).'/movies_model.php');
 
 class Movie_model extends CR_Model {
 	private $id;
