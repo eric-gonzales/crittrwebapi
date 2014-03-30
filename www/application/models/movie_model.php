@@ -292,7 +292,7 @@ class Movie_model extends CR_Model {
 		$url = sprintf($this->config->item('tms_trailer_url'), $this->getTMSRootID(), $this->config->item('tms_api_key'));
 		$info = $this->_fetchFromURL($url);
 		$res = json_decode($info);
-		$this->setTMDBTrailerDetails($res);
+		$this->setTMSTrailerDetails($res);
 	}
 	
 	public function fetchiTunesData(){
