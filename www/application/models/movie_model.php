@@ -19,6 +19,11 @@ class Movie_model extends CR_Model {
 	private $dvd_release_date;
 	private $tmdb_poster_path;
 	private $priority;
+	private $rt_details;
+	private $imdb_details;
+	private $tmdb_details;
+	private $itunes_details;
+	private $tms_details;
 	
 	//Construct from RT ID
 	public function __construct($rotten_tomatoes_id){
@@ -132,11 +137,11 @@ class Movie_model extends CR_Model {
 			'title' => $this->getTitle(),
 			'dvd_release_date' => $this->getDVDReleaseDate(),
 			'tmdb_poster_path' => $this->getTMDBPosterPath(),
-			'rt_details' => array(),
-			'imdb_details' => array(),
-			'tmdb_details' => array(),
-			'itunes_details' => array(),
-			'tms_details' => array()
+			'rt_details' => $this->getRTDetails(),
+			'imdb_details' => $this->getIMDBDetails(),
+			'tmdb_details' => $this->getTMDBDetails(),
+			'itunes_details' => $this->getiTunesDetails(),
+			'tms_details' => $this->getTMSDetails()
 		);
 		
 		$this->setResult($result);
@@ -159,6 +164,7 @@ class Movie_model extends CR_Model {
 		if(isset($res->alternate_ids->imdb)){
 			$this->setIMDBID($res->alternate_ids->imdb);
 		}
+		$this->setRTDetails($res);
 	}
 	
 	public function fetchIMDBData(){
@@ -168,22 +174,25 @@ class Movie_model extends CR_Model {
 		if(isset($res->imdbID)){
 			$this->setIMDBID($res->imdbID);
 		}
+		$this->setIMDBDetails($res);
 	}
 	
 	public function fetchTMDBData(){
+		$res = array();
 		//Have TMDB id?
 		if($this->getTMDBID() != ''){
-			$this->fetchTMDBDataByTMDBID();
+			$res = $this->fetchTMDBDataByTMDBID();
 		}
 		elseif($this->getIMDBID() != ''){ //Have IMDB id?
-			$this->fetchTMDBDataByIMDBID();
+			$res = $this->fetchTMDBDataByIMDBID();
 		}
 		elseif(($this->getTitle() != '') && ($this->getBoxOfficeReleaseDate() != '')){ //Have title and year?
-			$this->fetchTMDBDataByTitleAndYear();
+			$res = $this->fetchTMDBDataByTitleAndYear();
 		}
 		else{ //Fetch by title
-			$this->fetchTMDBDataByTitle();
+			$res = $this->fetchTMDBDataByTitle();
 		}
+		$this->setTMDBDetails($res);
 	}
 
 	public function fetchTMDBDataByTMDBID(){
@@ -198,6 +207,7 @@ class Movie_model extends CR_Model {
 		else{
 			$this->fetchTMDBDataByIMDBID();
 		}
+		return $res;
 	}
 	
 	public function fetchTMDBDataByIMDBID(){
@@ -215,6 +225,7 @@ class Movie_model extends CR_Model {
 		else{
 			$this->fetchTMDBDataByTitleAndYear();
 		}
+		return $res;
 	}
 	
 	public function fetchTMDBDataByTitleAndYear(){
@@ -236,6 +247,12 @@ class Movie_model extends CR_Model {
 		else{
 			$this->fetchTMDBDataByTitle();
 		}
+		if(!empty($res->results[0])){
+			return $res->results[0];
+		}
+		else{
+			return array();
+		}
 	}
 	
 	public function fetchTMDBDataByTitle(){
@@ -251,9 +268,16 @@ class Movie_model extends CR_Model {
 		if(!empty($res->results[0]->poster_path)){
 			$this->setTMDBPosterPath($res->results[0]->poster_path);
 		}
+		if(!empty($res->results[0])){
+			return $res->results[0];
+		}
+		else{
+			return array();
+		}
 	}
 	
 	public function fetchiTunesData(){
+		$finalRes = array();
 		$url = sprintf($this->config->item('itunes_title_url'), urlencode($this->getTitle()));
 		$info = $this->_fetchFromURL($url);
 		$res = json_decode($info);
@@ -263,13 +287,16 @@ class Movie_model extends CR_Model {
 				$releaseYear = substr($this->getBoxOfficeReleaseDate(), 0, 4);
 				if((($releaseYear-1) <= $iTunesReleaseYear) && ($iTunesReleaseYear <= ($releaseYear+1))){
 					$this->setiTunesID($itunes->trackId);
+					$finalRes = $itunes;
 					break;
 				}
 			}
 		}
+		$this->setiTunesDetails($finalRes);
 	}
 	
 	public function fetchTMSData(){
+		$finalRes = array();
 		$url = sprintf($this->config->item('tms_title_url'), urlencode($this->getTitle()), $this->config->item('tms_api_key'));
 		$info = $this->_fetchFromURL($url);
 		$res = json_decode($info);
@@ -281,8 +308,13 @@ class Movie_model extends CR_Model {
 				if(isset($tms->program->rootId)){
 					$this->setTMSRootID($tms->program->rootId);
 				}
+				if(isset($tms->program->rootId) || isset($tms->program->tmsId)){
+					$finalRes = $tms->program;
+					break;
+				}
 			}
 		}
+		$this->setTMSDetails($finalRes);
 	}
 	
 	public function makeHashtag($string){
@@ -391,6 +423,46 @@ class Movie_model extends CR_Model {
 	
 	public function setPriority($priority){
 		$this->priority = $priority;
+	}
+	
+	public function getRTDetails(){
+		return $this->rt_details;
+	}
+	
+	public function setRTDetails($details){
+		$this->rt_details = $details;
+	}
+	
+	public function getIMDBDetails(){
+		return $this->imdb_details;
+	}
+	
+	public function setIMDBDetails($details){
+		$this->imdb_details = $details;
+	}
+	
+	public function getTMDBDetails(){
+		return $this->tmdb_details;
+	}
+	
+	public function setTMDBDetails($details){
+		$this->tmdb_details = $details;
+	}
+	
+	public function getiTunesDetails(){
+		return $this->itunes_details;
+	}
+	
+	public function setiTunesDetails($details){
+		$this->itunes_details = $details;
+	}
+	
+	public function getTMSDetails(){
+		return $this->tms_details;
+	}
+	
+	public function setTMSDetails($details){
+		$this->tms_details = $details;
 	}
 	
 	public function _getCachedData($url, $expiration){
