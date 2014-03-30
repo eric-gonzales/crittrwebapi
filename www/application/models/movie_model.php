@@ -100,7 +100,7 @@ class Movie_model extends CR_Model {
 	}
 
 	public function fetchRottenTomatoesData(){
-		$url = sprintf($this->config->item('rotten_tomatoes_movie_url'), $r['rotten_tomatoes_id'], $this->config->item('rotten_tomatoes_api_key'));
+		$url = sprintf($this->config->item('rotten_tomatoes_movie_url'), $this->getRottenTomatoesID(), $this->config->item('rotten_tomatoes_api_key'));
 		$info = $this->_getCachedData($url, $this->config->item('rotten_tomatoes_cache_seconds'));
 		$res = json_decode($info);
 		if(isset($res->title)){
@@ -121,7 +121,7 @@ class Movie_model extends CR_Model {
 	public function fetchIMDBData(){
 		$url = sprintf($this->config->item('omdb_title_url'), urlencode($this->getTitle()));
 		$info = $this->_getCachedData($url, $this->config->item('omdb_cache_seconds'));
-		$res = json_decode($omdb_info);
+		$res = json_decode($info);
 		if(isset($res->imdbID)){
 			$this->setIMDBID($res->imdbID);
 		}
@@ -217,7 +217,7 @@ class Movie_model extends CR_Model {
 		if(isset($res->results)){
 			foreach($res->results as $itunes){
 				$releaseYear = substr($itunes->releaseDate, 0, 4);
-				if($releaseYear == substr($r['box_office_release_date'], 0, 4)){
+				if($releaseYear == substr($this->getBoxOfficeReleaseDate(), 0, 4)){
 					$this->setiTunesID($itunes->trackId);
 					break;
 				}
@@ -232,10 +232,10 @@ class Movie_model extends CR_Model {
 		if(isset($res->hits)){
 			foreach($res->hits as $tms){
 				if(isset($tms->program->tmsId)){
-					$r['tms_movie_id'] = $tms->program->tmsId;
+					$this->setTMSMovieID($tms->program->tmsId);
 				}
 				if(isset($tms->program->rootId)){
-					$r['tms_root_id'] = $tms->program->rootId;
+					$this->setTMSRootID($tms->program->rootId);
 				}
 			}
 		}

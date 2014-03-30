@@ -4,6 +4,7 @@
  * @author Eric Gonzales <eric@crittermovies.com>
  * @copyright 2014 Critter
  */
+require_once(dirname(__FILE__).'/../models/movie_model.php');
 
 class Movies extends CI_Controller{
 	function __construct(){
@@ -65,7 +66,6 @@ class Movies extends CI_Controller{
 			foreach($response->movies as $key => $movie){
 				$result = array();
 				//get RT details using RT ID
-				require(dirname(__FILE__).'/../models/movie_model.php');
 				$movieModel = new Movie_model($movie->id);
 				$result = $movieModel->getResult();
 				if(!empty($r)){
