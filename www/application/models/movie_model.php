@@ -129,13 +129,13 @@ class Movie_model extends CR_Model {
 	
 	public function fetchTMDBData(){
 		//Have TMDB id?
-		if(!empty($this->getTMDBID())){
+		if($this->getTMDBID() != ''){
 			$this->fetchTMDBDataByTMDBID();
 		}
-		elseif(!empty($this->getIMDBID())){ //Have IMDB id?
+		elseif($this->getIMDBID() != ''){ //Have IMDB id?
 			$this->fetchTMDBDataByIMDBID();
 		}
-		elseif(!empty($this->getTitle()) && !empty($this->getBoxOfficeReleaseDate())){ //Have title and year?
+		elseif(($this->getTitle() != '') && ($this->getBoxOfficeReleaseDate() != '')){ //Have title and year?
 			$this->fetchTMDBDataByTitleAndYear();
 		}
 		else{ //Fetch by title
