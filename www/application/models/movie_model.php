@@ -4,7 +4,6 @@
  * @author Eric Gonzales <eric@crittermovies.com>
  * @copyright 2014 Critter
  */
-require_once(dirname(__FILE__).'/movies_model.php');
 
 class Movie_model extends CR_Model {
 	private $id;
@@ -90,6 +89,8 @@ class Movie_model extends CR_Model {
 			'dvd_release_date' => $this->getDVDReleaseDate(),
 			'tmdb_poster_path' => $this->getTMDBPosterPath()
 		);
+		
+		print_r($result);
 		
 		$this->setResult($result);
 		if($inDB){
