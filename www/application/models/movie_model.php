@@ -252,10 +252,6 @@ class Movie_model extends CR_Model {
 		$url = sprintf($this->config->item('itunes_title_url'), urlencode($this->getTitle()));
 		$info = $this->_fetchFromURL($url);
 		$res = json_decode($info);
-		echo $url;
-		echo "\n";
-		print_r($res);
-		echo "\n";echo "\n";
 		if(isset($res->results)){
 			foreach($res->results as $itunes){
 				$iTunesReleaseYear = substr($itunes->releaseDate, 0, 4);
