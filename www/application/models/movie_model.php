@@ -92,7 +92,7 @@ class Movie_model extends CR_Model {
 			'tmdb_poster_path' => $this->getTMDBPosterPath()
 		);
 		
-		print_r($result);
+		//print_r($result);
 		
 		$this->setResult($result);
 	}
@@ -101,6 +101,7 @@ class Movie_model extends CR_Model {
 		$url = sprintf($this->config->item('rotten_tomatoes_movie_url'), $this->getRottenTomatoesID(), $this->config->item('rotten_tomatoes_api_key'));
 		$info = $this->_getCachedData($url, $this->config->item('rotten_tomatoes_cache_seconds'));
 		$res = json_decode($info);
+		print_r($res);
 		if(isset($res->title)){
 			$this->setTitle($res->title);
 			$this->setHashtag($this->makeHashtag($res->title));
