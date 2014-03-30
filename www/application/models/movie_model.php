@@ -263,7 +263,7 @@ class Movie_model extends CR_Model {
 	}
 	
 	public function makeHashtag($string){
-		return '#'.str_replace(' ', '', strtolower($string));
+		return '#'.preg_replace('/[^a-zA-Z0-9_ %\[\]\.\(\)%&-]/s', '',str_replace(' ', '', strtolower($string)));
 	}
 	
 	public function getID(){
