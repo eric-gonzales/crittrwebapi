@@ -199,6 +199,10 @@ class Movie_model extends CR_Model {
 		$url = sprintf($this->config->item('tmdb_imdb_id_url'), $this->getIMDBID(), $this->config->item('tmdb_api_key'));
 		$info = $this->_getCachedData($url, $this->config->item('tmdb_cache_seconds'));
 		$res = json_decode($info);
+		echo $url;
+		echo "\n";
+		print_r($res);
+		echo "\n\n";
 		if(!empty($res->movie_results)){
 			if(!empty($res->movie_results->id)){
 				$this->setTMDBID($res->movie_results->id);
