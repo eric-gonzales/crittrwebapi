@@ -19,6 +19,7 @@
 	$config['tms_cache_seconds'] = 60 * 60 * 24;
 	$config['tms_title_url'] = 'http://data.tmsapi.com/v1/programs/search?q=%1$s&queryFields=title&entityType=movie&titleLang=en&descriptionLang=en&limit=1&api_key=%2$s';
 	$config['tms_trailer_url'] = 'http://data.tmsapi.com/v1/screenplayTrailers?rootids=%1$s&bitrateids=449,472,461,457,460,471,455,452&trailersonly=1&languageid=en&player_url=0&best_eclip=1&api_key=%2$s';
+	$config['tms_trailer_image_url'] = 'http://data.tmsapi.com/v1/screenplayTrailers?rootids=%1$sbitrateids=382&trailersonly=1&languageid=en&player_url=0&best_eclip=1&api_key=%2$s';
 	
 	//OMDB
 	$config['omdb_imdb_id_url'] = 'http://www.omdbapi.com/?i=%1$s';

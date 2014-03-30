@@ -145,6 +145,7 @@ class Movie_model extends CR_Model {
 			'tmdb_trailer_details' => $this->getTMDBTrailerDetails(),
 			'itunes_details' => $this->getiTunesDetails(),
 			'tms_details' => $this->getTMSDetails(),
+			'tms_trailer_image_details' => $this->getTMSTrailerImageDetails(),
 			'tms_trailer_details' => $this->getTMSTrailerDetails()
 		);
 		
@@ -283,16 +284,24 @@ class Movie_model extends CR_Model {
 	
 	public function fetchTMDBTrailerDetails(){
 		$url = sprintf($this->config->item('tmdb_trailer_url'), $this->getTMDBID(), $this->config->item('tmdb_api_key'));
-		$info = $this->_fetchFromURL($url);
+		$info = $this->_getCachedData($url, $this->config->item('tmdb_cache_seconds'));
 		$res = json_decode($info);
 		$this->setTMDBTrailerDetails($res);
 	}
 	
 	public function fetchTMSTrailerDetails(){
 		$url = sprintf($this->config->item('tms_trailer_url'), $this->getTMSRootID(), $this->config->item('tms_api_key'));
-		$info = $this->_fetchFromURL($url);
+		$info = $this->_getCachedData($url, $this->config->item('tms_cache_seconds'));
 		$res = json_decode($info);
 		$this->setTMSTrailerDetails($res);
+		$this->fetchTMSTrailerImageDetails();
+	}
+	
+	public function fetchTMSTrailerImageDetails(){
+		$url = sprintf($this->config->item('tms_trailer_image_url'), $this->getTMSRootID(), $this->config->item('tms_api_key'));
+		$info = $this->_getCachedData($url, $this->config->item('tms_cache_seconds'));
+		$res = json_decode($info);
+		$this->setTMSTrailerImageDetails($res);
 	}
 	
 	public function fetchiTunesData(){
