@@ -258,8 +258,9 @@ class Movie_model extends CR_Model {
 		echo "\n";echo "\n";
 		if(isset($res->results)){
 			foreach($res->results as $itunes){
-				$releaseYear = substr($itunes->releaseDate, 0, 4);
-				if($releaseYear == substr($this->getBoxOfficeReleaseDate(), 0, 4)){
+				$iTunesReleaseYear = substr($itunes->releaseDate, 0, 4);
+				$releaseYear = substr($this->getBoxOfficeReleaseDate(), 0, 4);
+				if((($releaseYear-1) <= $iTunesReleaseYear) && ($iTunesReleaseYear <= ($releaseYear+1))){
 					$this->setiTunesID($itunes->trackId);
 					break;
 				}
