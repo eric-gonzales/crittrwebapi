@@ -271,7 +271,7 @@ class Movie_model extends CR_Model {
 		return $this->imdb_id;
 	}
 	
-	public function setIMDBID(){
+	public function setIMDBID($imdbID){
 		$this->imdb_id = $imdbID;
 	}
 	
@@ -352,20 +352,15 @@ class Movie_model extends CR_Model {
 		
 		if(!$this->cache->memcached->get(urlencode($url))){
 			$result = $this->_fetchFromURL($url, $expiration, true);
-			echo 'test1: '.$result;
 		}
 		else{
 			$result = $this->_getCache(urlencode($url));
-			echo 'test2: '.$result;
 		}
 		return $result;
 	}
 
 	public function _fetchFromURL($url, $expiration = '', $shouldBeCached = false){
-		echo 'fetching from URL: '.$url;
-		echo "\n";
 		$info = str_replace("\n", '', $this->curl->simple_get($url));
-		echo $info;
 		if($shouldBeCached){
 			$this->cache->memcached->save(urlencode($url), $info, $expiration);
 		}
