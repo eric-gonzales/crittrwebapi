@@ -5,6 +5,7 @@
 	$config['rotten_tomatoes_search_url'] = 'http://api.rottentomatoes.com/api/public/v1.0/movies.json?apikey=%1$s&q=%2$s&page_limit=%3$d&page=%4$s';
 	$config['rotten_tomatoes_movie_url'] = 'http://api.rottentomatoes.com/api/public/v1.0/movies/%1$s.json?apikey=%2$s';
 	$config['rotten_tomatoes_box_office_url'] = 'http://api.rottentomatoes.com/api/public/v1.0/lists/movies/box_office.json?apikey=%1$s&limit=%2$s&country=%3$s';
+	$config['rotten_tomatoes_opening_url'] = 'http://api.rottentomatoes.com/api/public/v1.0/lists/movies/opening.json?apikey=%1$s&limit=%2$s&country=%3$s';
 	
 	//The Movie DB API
 	$config['tmdb_api_key'] = "1e0e9eb6323a33a3b940f6720a2915f1";
