@@ -555,7 +555,8 @@ class Movie_model extends CR_Model {
 				break;
 			default:
 				$info = str_replace("\n", '', $this->curl->simple_get($url));
-				echo $this->curl->error_code;
+				print_r($this->curl->info);
+				
 				if($shouldBeCached){
 					$this->cache->memcached->save(urlencode($url), $info, $expiration);
 				}
