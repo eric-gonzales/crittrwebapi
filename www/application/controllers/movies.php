@@ -68,7 +68,7 @@ class Movies extends CI_Controller{
 			$this->db->order_by('box_office_release_date', 'ASC');
 			$movie_stmt = $this->db->get_where('CRMovie','priority IS NULL');
 			foreach($movie_stmt->result() as $movie){
-				$movie_stmt = $this->db->get_where('CRRating',array('movie_id' => $movie->id, 'user_id' => $user_id), 1);
+				$chk_stmt = $this->db->get_where('CRRating',array('movie_id' => $movie->id, 'user_id' => $user_id), 1);
 				if($chk_stmt->num_rows() == 0){
 					$result = array();
 					//get RT details using RT ID
