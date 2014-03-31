@@ -41,6 +41,7 @@ class Movies extends CI_Controller{
 			else{
 				$results = $this->_getCache('priority_movies');
 			}
+			
 			//return an array of CRMovie records with associated details attached from RT, IMDB, TMDB, iTunes, and TMS
 			$this->movies_model->setResult($results);
 		}
@@ -73,6 +74,8 @@ class Movies extends CI_Controller{
 	
 	//Movie Search
 	public function search($searchTerm, $limit, $page){
+		//array of search results
+		$results = array();
 		//configure URL
 		$url = sprintf($this->config->item('rotten_tomatoes_search_url'), $this->config->item('rotten_tomatoes_api_key'), $searchTerm, $limit, $page);
 		//get movie results from this URL
