@@ -150,6 +150,8 @@ class Movie_model extends CR_Model {
 			'tms_trailer_details' => $this->getTMSTrailerDetails()
 		);
 		
+		print_r($result);
+		
 		$this->setResult($result);
 	}
 
