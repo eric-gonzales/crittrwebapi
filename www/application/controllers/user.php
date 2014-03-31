@@ -190,6 +190,7 @@ class User extends CI_Controller{
 		else{
 			$this->_generateError('user id empty');
 		}
+		$this->_response();
 	}
 	
 	//Add Friend
