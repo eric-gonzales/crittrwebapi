@@ -334,18 +334,49 @@ class Movie_model extends CR_Model {
 		$info = $this->_fetchFromURL($url);
 		$res = json_decode($info);
 		if(isset($res->hits)){
+			$matched = false;
+			$releaseYear = substr($this->getBoxOfficeReleaseDate(), 0, 4);
+			$secondTMSMovieID = '';
+			$secondTMSRootID = '';
+			$secondRes = array();
 			foreach($res->hits as $tms){
-				print_r($tms);
-				if(isset($tms->program->tmsId)){
-					$this->setTMSMovieID($tms->program->tmsId);
+				if($tms->program->entityType == 'Movie'){
+					//Pull out salient details
+					if($tms->program->releaseYear == $releaseYear){
+						$matched = true;
+					}
+					elseif(abs($tms->program->releaseYear - $releaseYear) <= 1){
+						if(isset($tms->program->tmsId)){
+							$secondTMSMovieID = $tms->program->tmsId;
+						}
+						if(isset($tms->program->rootId)){
+							$secondTMSRootID = $tms->program->rootId;
+						}
+					}
+					else{
+						continue;
+					}
+					if($matched){
+						if(isset($tms->program->tmsId)){
+							$this->setTMSMovieID($tms->program->tmsId);
+						}
+						if(isset($tms->program->rootId)){
+							$this->setTMSRootID($tms->program->rootId);
+						}
+						$finalRes = $tms->program;
+						$this->fetchTMSTrailerDetails();
+						break;
+					}
 				}
-				if(isset($tms->program->rootId)){
-					$this->setTMSRootID($tms->program->rootId);
+			}
+			if(!$matched){
+				if($secondTMSMovieID  != ''){
+					$this->setTMSMovieID($secondTMSMovieID);
 				}
-				if(isset($tms->program->rootId) || isset($tms->program->tmsId)){
-					$finalRes = $tms->program;
+				if($secondTMSRootID  != ''){
+					$this->setTMSRootID($secondTMSRootID);
 					$this->fetchTMSTrailerDetails();
-					break;
+					$finalRes = $secondRes;
 				}
 			}
 		}
