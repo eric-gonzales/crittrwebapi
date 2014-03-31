@@ -140,7 +140,15 @@ class User_model extends CR_Model {
 		$query = $this->db->get_where('CRFriends', array('user_id' => $this->getID(), 'ignore' => 0));
 		if($query->num_rows > 0){
 			foreach($query->result() as $row){
-				$friends[] = $row->friend_id;
+				$result = $this->db->get_where('CRUser', array('id' => $row->friend_id), 1);
+				$friend = $result->row();
+				$friends[] = array(
+					'username' => $friend->username,
+					'email' => $friend->email,
+					'facebook_id' => $friend->facebook_id,
+					'full_name' => $friend->fullname,
+					'photo_url' => $friend->photo_url
+				);
 			}
 		}
 		$this->setFriends($friends);
