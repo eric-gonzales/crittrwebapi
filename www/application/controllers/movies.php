@@ -4,7 +4,7 @@
  * @author Eric Gonzales <eric@crittermovies.com>
  * @copyright 2014 Critter
  */
-
+//TODO: investigate consolidating design pattern re: box office, opening, etc. 
 
 class Movies extends CI_Controller{
 	function __construct(){
@@ -182,7 +182,7 @@ class Movies extends CI_Controller{
 		$user_id = hashids_decrypt($hashedUserID);
 		if(!empty($user_id)){
 			//configure URL
-			$url = sprintf($this->config->item('rotten_tomatoes_upcoming_url'), $this->config->item('rotten_tomatoes_api_key'), $limit, $countryCode);
+			$url = sprintf($this->config->item('rotten_tomatoes_upcoming_url'), $this->config->item('rotten_tomatoes_api_key'), $limit, $page, $countryCode);
 			//get movie results from this URL
 			if(!$this->cache->memcached->get($url)){
 				//get search results
@@ -218,7 +218,46 @@ class Movies extends CI_Controller{
 	}
 	
 	//Fetch New Release DVDs for User
-	public function newreleasedvds($hashedUserID, $limit, $page, $countryCode){}
+	public function newreleasedvds($hashedUserID, $limit, $page, $countryCode){
+		//array of box office results
+		$results = array();
+		$user_id = hashids_decrypt($hashedUserID);
+		if(!empty($user_id)){
+			//configure URL
+			$url = sprintf($this->config->item('rotten_tomatoes_new_dvds_url'), $this->config->item('rotten_tomatoes_api_key'), $limit, $page, $countryCode);
+			//get movie results from this URL
+			if(!$this->cache->memcached->get($url)){
+				//get search results
+				$movie_info = $this->_fetchFromURL($url);
+				$response = json_decode($movie_info);
+				foreach($response->movies as $movie){
+					$result = array();
+					//get RT details using RT ID
+					$movieModel = new Movie_model($movie->id);
+					$result = $movieModel->getResult();
+					array_push($results, $result);
+				}
+				$this->cache->memcached->save($url, $results, $this->config->item('rotten_tomatoes_cache_seconds'));
+			}
+			else{
+				$results = $this->_getCache($url);
+			}
+			//before returning the array, remove any movies the user has already rated
+			foreach($results as $key => $movie){
+				$movie_id = hashids_decrypt($movie['id']);
+				$chk_stmt = $this->db->get_where('CRRating',array('movie_id' => $movie_id, 'user_id' => $user_id), 1);
+				if($chk_stmt->num_rows() > 0){
+					unset($results[$key]);
+				}
+			}
+			//return an array of CRMovie records with associated details attached from RT, IMDB, TMDB, iTunes, and TMS
+			$this->movies_model->setResult($results);
+		}
+		else{
+			$this->_generateError('could not find user with the specified id');
+		}
+		$this->_response();
+	}
 	
 	//Fetch Current Release DVDs for User
 	public function currentdvds($hashedUserID, $limit, $page, $countryCode){}
