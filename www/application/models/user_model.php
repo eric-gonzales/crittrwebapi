@@ -143,6 +143,7 @@ class User_model extends CR_Model {
 				$result = $this->db->get_where('CRUser', array('id' => $row->friend_id), 1);
 				$friend = $result->row();
 				$friends[] = array(
+					'id' => hashids_encrypt($friend->id),
 					'username' => $friend->username,
 					'email' => $friend->email,
 					'facebook_id' => $friend->facebook_id,
