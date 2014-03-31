@@ -335,6 +335,7 @@ class Movie_model extends CR_Model {
 		$res = json_decode($info);
 		if(isset($res->hits)){
 			foreach($res->hits as $tms){
+				print_r($tms);
 				if(isset($tms->program->tmsId)){
 					$this->setTMSMovieID($tms->program->tmsId);
 				}
