@@ -541,7 +541,8 @@ class Movie_model extends CR_Model {
 				$used = 0;
 				while($retries > 0){
 					$info = str_replace("\n", '', $this->curl->simple_get($url));
-					if($this->curl->error_code == 403){
+					$curlInfo = $this->curl->info;
+					if($curlInfo['http_code'] == 403){
 						// wait for .5 seconds * number of retries
 						usleep(500000*$used); //Backs off longer each time
 						$retries--;
@@ -556,11 +557,19 @@ class Movie_model extends CR_Model {
 				} 
 				break;
 			default:
-				$info = str_replace("\n", '', $this->curl->simple_get($url));
-				print_r($this->curl->info);
-				
-				if($shouldBeCached){
-					$this->cache->memcached->save(urlencode($url), $info, $expiration);
+				$retries = 10;
+				while($retries > 0){
+					$info = str_replace("\n", '', $this->curl->simple_get($url));
+					$curlInfo = $this->curl->info;
+					if($curlInfo['http_code'] < 400){
+						if($shouldBeCached){
+							$this->cache->memcached->save(urlencode($url), $info, $expiration);
+						}
+						break;
+					}
+					else{
+						$retries--;
+					}
 				}
 				break;
 		}
