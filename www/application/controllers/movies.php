@@ -32,7 +32,7 @@ class Movies extends CI_Controller{
 			if(!$this->cache->memcached->get('priority_movies')){
 				$this->db->order_by('priority', 'ASC');
 				$movie_stmt = $this->db->get_where('CRMovie','priority IS NOT NULL');
-				foreach($movie_stmt->results() as $movie){
+				foreach($movie_stmt->result() as $movie){
 					$result = array();
 					//get RT details using RT ID
 					$movieModel = new Movie_model($movie->rotten_tomatoes_id);
