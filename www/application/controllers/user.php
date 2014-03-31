@@ -11,13 +11,10 @@ class User extends CI_Controller{
 		$this->load->model('user_model');
 	}
 	
-	function index(){}
-	
 	//Create new Account
 	function signup(){
 		//first we check if the email is already in use
 		$chk_stmt = $this->db->get_where('CRUser',array('email' => $this->input->post('email')), 1);
-		
 		if($chk_stmt->num_rows() == 0){
 			//create new entry in CRUser table
 			$this->db->set('created', 'NOW()', FALSE);
@@ -25,15 +22,11 @@ class User extends CI_Controller{
 			$this->db->set('password_hash', $this->phpass->hash($this->input->post('password')));
 			$this->db->set('email', $this->input->post('email'));
 			$this->db->insert('CRUser');
-			
 			//grab the user id from the last insert
 			$this->user_model->setID($this->db->insert_id());
-			
-			//get headers
-			$headers = getallheaders();
 			//First, select id from CRDevice where device_vendor_id = critter-device
 			$this->db->select('id');
-			$query = $this->db->get_where('CRDevice', array('device_vendor_id' => $headers['critter-device']), 1);
+			$query = $this->db->get_where('CRDevice', array('device_vendor_id' => $this->input->get_request_header('critter-device'), TRUE), 1);
 			//if we have a match, lets insert a new record into the table
 			if($query->num_rows > 0){
 				$row = $query->row();
@@ -44,7 +37,6 @@ class User extends CI_Controller{
 			else{
 				$this->_generateError('device not found');
 			}
-			
 			//finally, generate the default result
 			$this->user_model->defaultResult();
 		}
