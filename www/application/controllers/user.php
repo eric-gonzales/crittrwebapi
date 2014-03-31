@@ -284,17 +284,13 @@ class User extends CI_Controller{
 					$friends_stmt = $this->db->get_where('CRFriends',array('user_id' => $user_id, 'friend_id' => $friend_id), 1);
 					if($friends_stmt->num_rows() == 0){
 						//add matching entry in CRFriend table
-						$this->db->set('created', 'NOW()', FALSE);
-						$this->db->set('user_id', $user_id);
-						$this->db->set('friend_id', $friend_id);
-						$this->db->set('ignore', 1);
+						$this->db->set('created', 'NOW()', FALSE)->set('user_id', $user_id)->set('friend_id', $friend_id)->set('ignore', 1);
 						$this->db->insert('CRFriends');
 					}
 					else{
 						//update current entry in CRFriend table
 						$friends = $friends_stmt->row();
-						$this->db->where('id', $friends->id);
-						$this->db->set('ignore', 1);
+						$this->db->where('id', $friends->id)->set('ignore', 1);
 						$this->db->update('CRFriends');
 					}
 				}

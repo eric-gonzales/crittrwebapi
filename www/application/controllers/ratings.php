@@ -13,22 +13,121 @@ class Ratings extends CI_Controller{
 	
 	//Update Movie Rating for User
 	function update($hashedUserID){
-		
+		$user_id = hashids_decrypt($hashedUserID);
+		if(!empty($user_id)){
+			$movie_id = hashids_decrypt($this->input->post('movieID'));
+			$rating_id = 0;
+			$this->db->select('int');
+			$chk_stmt = $this->db->get_where('CRRating',array('user_id' => $user_id, 'movie_id' => $movie_id), 1);
+			if($chk_stmt->num_rows() > 0){
+				//grab id
+				$rating = $chk_stmt->row();
+				$rating_id = $rating->id;
+				//update record
+				$this->db->where('int', $rating_id)->set('rating', $this->input->post('rating'))->set('comment', $this->input->post('comment'));
+				$this->db->update('CRRating');
+			}
+			else{
+				//create record
+				$this->db->set('created', 'NOW()', FALSE)->set('user_id', $user_id)->set('movie_id', $movie_id)->set('rating', $this->input->post('rating'))->set('comment', $this->input->post('comment'));
+				$this->db->insert('CRRating');
+				//grab id
+				$rating_id = $this->db->insert_id();
+			}
+			$this->ratings_model->setResponse(array(hashids_encrypt($rating_id)));
+		}
+		else{
+			$this->_generateError('user not found');
+		}
+		$this->_response();
 	}
 	
 	//Fetch Movie Rating for Specific User and Movie
 	function movie($hashedUserID, $hashedMovieID){
-		
+		$user_id = hashids_decrypt($hashedUserID);
+		$movie_id = hashids_decrypt($hashedMovieID);
+		if(!empty($user_id) || !empty($movie_id)){
+			$chk_stmt = $this->db->get_where('CRRating',array('user_id' => $user_id, 'movie_id' => $movie_id), 1);
+			if($chk_stmt->num_rows() > 0){
+				$rating = $chk_stmt->row();
+				$result = array(
+					'int' => hashids_encrypt($rating->int),
+					'user_id' => $rating->user_id,
+					'movie_id' => hashids_encrypt($rating->movie_id),
+					'notified_box_office' => $rating->notified_box_office,
+					'notified_dvd' => $rating->notified_dvd,
+					'rating' => $rating->rating,
+					'comment' => $rating->comment
+				);
+				$this->ratings_model->setResponse($result);
+			}
+			else{
+				$this->_generateError('record with specified user/movie combination not found');
+			}
+		}
+		else{
+			$this->_generateError('user and/or movie not found');
+		}
+		$this->_response();
 	}
 	
 	//Fetch Movie Ratings for User
-	function user($hashedUserID, $modifiedSinceDateTime){
-		
+	function user($hashedUserID, $modifiedSinceDateTime = ''){
+		$user_id = hashids_decrypt($hashedUserID);
+		if(!empty($user_id)){
+			$results = array();
+			if($modifiedSinceDateTime == ''){
+				$chk_stmt = $this->db->get_where('CRRating',array('user_id' => $user_id), 1);
+				if($chk_stmt->num_rows() > 0){
+					foreach($chk_stmt->result() as $rating){
+						$result = array(
+							'int' => hashids_encrypt($rating->int),
+							'user_id' => $rating->user_id,
+							'movie_id' => hashids_encrypt($rating->movie_id),
+							'notified_box_office' => $rating->notified_box_office,
+							'notified_dvd' => $rating->notified_dvd,
+							'rating' => $rating->rating,
+							'comment' => $rating->comment
+						);
+						$results[] = $result;
+					}
+					$this->ratings_model->setResponse($results);
+				}
+				else{
+					$this->_generateError('ratings not found for the user specified');
+				}
+			}
+		}
+		else{
+			$this->_generateError('user not found');
+		}
+		$this->_response();
 	}
 	
 	//Fetch All Ratings for Movie
-	function all($hashedUserID, $limit, $offset){
-		
+	function all($hashedMovieID, $limit, $offset){
+		$movie_id = hashids_decrypt($hashedMovieID);
+		if(!empty($movie_id)){
+			$results = array();
+			$chk_stmt = $this->db->get_where('CRRating',array('movie_id' => $movie_id), $limit);
+			foreach($chk_stmt->result() as $rating){
+				$result = array(
+					'int' => hashids_encrypt($rating->int),
+					'user_id' => $rating->user_id,
+					'movie_id' => hashids_encrypt($rating->movie_id),
+					'notified_box_office' => $rating->notified_box_office,
+					'notified_dvd' => $rating->notified_dvd,
+					'rating' => $rating->rating,
+					'comment' => $rating->comment
+				);
+				$results[] = $result;
+			}
+			$this->ratings_model->setResponse($results);
+		}
+		else{
+			$this->_generateError('movie not found');
+		}
+		$this->_response();
 	}
 	
 	//Generate Error
