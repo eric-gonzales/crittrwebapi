@@ -308,12 +308,13 @@ class Movie_model extends CR_Model {
 	public function fetchiTunesData(){
 		$finalRes = array();
 		$url = sprintf($this->config->item('itunes_title_url'), urlencode($this->getTitle()));
-		$info = $this->_fetchFromURL($url);
+		$info = $this->_getCachedData($url, $this->config->item('itunes_cache_seconds'), 'itunes');
 		$res = json_decode($info);
 		if(isset($res->results)){
 			foreach($res->results as $itunes){
 				$iTunesReleaseYear = substr($itunes->releaseDate, 0, 4);
 				$releaseYear = substr($this->getBoxOfficeReleaseDate(), 0, 4);
+				//Sometimes the year is +/- 1 year, so get that as a fallback
 				if((($releaseYear-1) <= $iTunesReleaseYear) && ($iTunesReleaseYear <= ($releaseYear+1))){
 					$this->setiTunesID($itunes->trackId);
 					$finalRes = $itunes;
@@ -519,10 +520,10 @@ class Movie_model extends CR_Model {
 		$this->tms_trailer_image_details = $details;
 	}
 	
-	public function _getCachedData($url, $expiration){
+	public function _getCachedData($url, $expiration, $mode = ''){
 		$result = '';
 		if(!$this->cache->memcached->get(urlencode($url))){
-			$result = $this->_fetchFromURL($url, $expiration, true);
+			$result = $this->_fetchFromURL($url, $expiration, true, $mode);
 		}
 		else{
 			$result = $this->_getCache(urlencode($url));
@@ -530,11 +531,31 @@ class Movie_model extends CR_Model {
 		return $result;
 	}
 
-	public function _fetchFromURL($url, $expiration = '', $shouldBeCached = false){
-		$info = str_replace("\n", '', $this->curl->simple_get($url));
-		if($shouldBeCached){
-			$this->cache->memcached->save(urlencode($url), $info, $expiration);
+	public function _fetchFromURL($url, $expiration = '', $shouldBeCached = false, $mode = ''){
+		switch($mode){
+			case 'itunes':
+				$retries = 10;
+				while($retries > 0){
+					$info = str_replace("\n", '', $this->curl->simple_get($url));
+					if($this->curl->error_code == 403){
+						$retries--;
+					}
+					else{
+						if($shouldBeCached){
+							$this->cache->memcached->save(urlencode($url), $info, $expiration);
+						}
+						break;
+					}
+				} 
+				break;
+			default:
+				$info = str_replace("\n", '', $this->curl->simple_get($url));
+				if($shouldBeCached){
+					$this->cache->memcached->save(urlencode($url), $info, $expiration);
+				}
+				break;
 		}
+		
 		return $info;
 	}
 	

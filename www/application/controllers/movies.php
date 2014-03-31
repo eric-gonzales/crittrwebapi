@@ -372,6 +372,7 @@ class Movies extends CI_Controller{
 		$this->_response();
 	}
 
+	//Get cached data
 	public function _getCachedData($url, $expiration){
 		$result = '';
 		if(!$this->cache->memcached->get(urlencode($url))){
@@ -382,7 +383,8 @@ class Movies extends CI_Controller{
 		}
 		return $result;
 	}
-
+	
+	//Fetch data from URL
 	public function _fetchFromURL($url, $expiration = '', $shouldBeCached = false){
 		$info = str_replace("\n", '', $this->curl->simple_get($url));
 		if($shouldBeCached){
@@ -391,6 +393,7 @@ class Movies extends CI_Controller{
 		return $info;
 	}
 	
+	//Get from cache
 	public function _getCache($key){
 		return $this->cache->memcached->get($key);
 	}
