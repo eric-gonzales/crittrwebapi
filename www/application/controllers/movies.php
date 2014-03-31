@@ -68,11 +68,14 @@ class Movies extends CI_Controller{
 			$this->db->order_by('box_office_release_date', 'ASC');
 			$movie_stmt = $this->db->get_where('CRMovie','priority IS NULL');
 			foreach($movie_stmt->result() as $movie){
-				$result = array();
-				//get RT details using RT ID
-				$movieModel = new Movie_model($movie->rotten_tomatoes_id);
-				$result = $movieModel->getResult();
-				array_push($results, $result);
+				$movie_stmt = $this->db->get_where('CRRating',array('movie_id' => $movie->id, 'user_id' => $user_id), 1);
+				if($chk_stmt->num_rows() == 0){
+					$result = array();
+					//get RT details using RT ID
+					$movieModel = new Movie_model($movie->rotten_tomatoes_id);
+					$result = $movieModel->getResult();
+					array_push($results, $result);
+				}
 			}		
 			
 			//return an array of CRMovie records with associated details attached from RT, IMDB, TMDB, iTunes, and TMS
