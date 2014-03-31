@@ -114,6 +114,8 @@ class Movies extends CI_Controller{
 			}
 			//before returning the array, remove any movies the user has already rated
 			foreach($results as $key => $movie){
+				print_r($movie);
+				die();
 				$movie_id = hashids_decrypt($movie->id);
 				$chk_stmt = $this->db->get_where('CRRating',array('movie_id' => $movie_id, 'user_id' => $user_id), 1);
 				if($chk_stmt->num_rows() > 0){
