@@ -536,10 +536,14 @@ class Movie_model extends CR_Model {
 		switch($mode){
 			case 'itunes':
 				$retries = 10;
+				$used = 0;
 				while($retries > 0){
 					$info = str_replace("\n", '', $this->curl->simple_get($url));
 					if($this->curl->error_code == 403){
+						// wait for .5 seconds * number of retries
+						usleep(500000*$used); //Backs off longer each time
 						$retries--;
+						$used++;
 					}
 					else{
 						if($shouldBeCached){
@@ -551,6 +555,7 @@ class Movie_model extends CR_Model {
 				break;
 			default:
 				$info = str_replace("\n", '', $this->curl->simple_get($url));
+				echo $this->curl->error_code;
 				if($shouldBeCached){
 					$this->cache->memcached->save(urlencode($url), $info, $expiration);
 				}
