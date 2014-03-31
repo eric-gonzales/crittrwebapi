@@ -23,6 +23,9 @@ class Movies extends CI_Controller{
 	
 	//Fetch Priority Movies
 	public function priority($hashedUserID){
+		//array of priority movie results
+		$results = array(); 
+		
 		$user_id = hashids_decrypt($hashedUserID);
 		if(!empty($user_id)){
 			$results = array();
