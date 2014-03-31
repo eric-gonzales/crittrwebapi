@@ -25,7 +25,7 @@ class Movies extends CI_Controller{
 	public function priority($hashedUserID){
 		//array of priority movie results
 		$results = array(); 
-		
+		//decrypt user id
 		$user_id = hashids_decrypt($hashedUserID);
 		if(!empty($user_id)){
 			$results = array();
@@ -82,13 +82,45 @@ class Movies extends CI_Controller{
 			$this->movies_model->setResult($results);
 		}
 		else{
-			$this->_generateError('could not find user');
+			$this->_generateError('could not find user with the specified id');
 		}
 		$this->_response();
 	}
 	
 	//Fetch Box Office Movies for User
-	public function boxoffice($hashedUserID, $limit, $countryCode){}
+	public function boxoffice($hashedUserID, $limit, $countryCode){
+		//array of box office results
+		$results = array();
+		$user_id = hashids_decrypt($hashedUserID);
+		if(!empty($user_id)){
+			//configure URL
+			$url = sprintf($this->config->item('rotten_tomatoes_box_office_url'), $this->config->item('rotten_tomatoes_api_key'), $limit, $countryCode);
+			//get movie results from this URL
+			if(!$this->cache->memcached->get($url)){
+				//get search results
+				$movie_info = $this->_fetchFromURL($url);
+				$response = json_decode($movie_info);
+				foreach($response->movies as $movie){
+					$result = array();
+					//get RT details using RT ID
+					$movieModel = new Movie_model($movie->id);
+					$result = $movieModel->getResult();
+					array_push($results, $result);
+				}
+				$this->cache->memcached->save($url, $results, $this->config->item('rotten_tomatoes_cache_seconds'));
+			}
+			else{
+				$results = $this->_getCache($url);
+			}
+			print_r($results);
+			//return an array of CRMovie records with associated details attached from RT, IMDB, TMDB, iTunes, and TMS
+			$this->movies_model->setResult($results);
+		}
+		else{
+			$this->_generateError('could not find user with the specified id');
+		}
+		$this->_response();
+	}
 	
 	//Fetch Opening Movies for User
 	public function opening($hashedUserID, $limit, $countryCode){}
