@@ -146,7 +146,7 @@ class User_model extends CR_Model {
 					'username' => $friend->username,
 					'email' => $friend->email,
 					'facebook_id' => $friend->facebook_id,
-					'full_name' => $friend->fullname,
+					'full_name' => $friend->full_name,
 					'photo_url' => $friend->photo_url
 				);
 			}
