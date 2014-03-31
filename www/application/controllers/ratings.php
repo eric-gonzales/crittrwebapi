@@ -109,7 +109,8 @@ class Ratings extends CI_Controller{
 		$movie_id = hashids_decrypt($hashedMovieID);
 		if(!empty($movie_id)){
 			$results = array();
-			$chk_stmt = $this->db->get_where('CRRating',array('movie_id' => $movie_id), $limit);
+			$this->db->order_by('created', 'desc'); //newest first
+			$chk_stmt = $this->db->get_where('CRRating',array('movie_id' => $movie_id), $limit, $offset);
 			foreach($chk_stmt->result() as $rating){
 				$result = array(
 					'int' => hashids_encrypt($rating->int),
