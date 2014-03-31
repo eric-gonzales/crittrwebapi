@@ -138,6 +138,7 @@ class Movie_model extends CR_Model {
 			'tms_movie_id' => $this->getTMSMovieID(),
 			'hashtag' => $this->getHashtag(),
 			'title' => $this->getTitle(),
+			'box_office_release_date' => $this->getBoxOfficeReleaseDate(),
 			'dvd_release_date' => $this->getDVDReleaseDate(),
 			'tmdb_poster_path' => $this->getTMDBPosterPath(),
 			'rt_details' => $this->getRTDetails(),
