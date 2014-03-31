@@ -45,6 +45,8 @@ class Movies extends CI_Controller{
 				$results = $this->_getCache('priority_movies');
 			}
 			
+			//TODO: remove movies the user has already rated
+			
 			//return an array of CRMovie records with associated details attached from RT, IMDB, TMDB, iTunes, and TMS
 			$this->movies_model->setResult($results);
 		}
@@ -55,7 +57,32 @@ class Movies extends CI_Controller{
 	}
 	
 	//Fetch Unrated Movies for User
-	public function unrated($hashedUserID){}
+	public function unrated($hashedUserID){
+		//array of priority movie results
+		$results = array(); 
+		
+		$user_id = hashids_decrypt($hashedUserID);
+		if(!empty($user_id)){
+			$results = array();
+			//TODO: I'm pretty sure we are going to have to set some sort of limit here eventually
+			$this->db->order_by('box_office_release_date', 'ASC');
+			$movie_stmt = $this->db->get_where('CRMovie','priority IS NULL');
+			foreach($movie_stmt->result() as $movie){
+				$result = array();
+				//get RT details using RT ID
+				$movieModel = new Movie_model($movie->rotten_tomatoes_id);
+				$result = $movieModel->getResult();
+				array_push($results, $result);
+			}		
+			
+			//return an array of CRMovie records with associated details attached from RT, IMDB, TMDB, iTunes, and TMS
+			$this->movies_model->setResult($results);
+		}
+		else{
+			$this->_generateError('could not find user');
+		}
+		$this->_response();
+	}
 	
 	//Fetch Box Office Movies for User
 	public function boxoffice($hashedUserID, $limit, $countryCode){}
