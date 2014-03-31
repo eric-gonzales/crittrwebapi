@@ -35,7 +35,7 @@ class Movie_model extends CR_Model {
 		
 		//Try to get data from DB first
 		$this->setRottenTomatoesID($rotten_tomatoes_id);
-		$chk_stmt = $this->db->get_where('CRMovie',array('rotten_tomatoes_id' => $rotten_tomatoes_id), 1);
+		$chk_stmt = $this->db->get_where('CRMovie',array('rotten_tomatoes_id' => $this->getRottenTomatoesID()), 1);
 		if($chk_stmt->num_rows() > 0){
 			$inDB = true; //this record is in the database, so we will update instead of insert
 			$movie_info = $chk_stmt->row();

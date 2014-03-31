@@ -22,7 +22,33 @@ class Movies extends CI_Controller{
 	}
 	
 	//Fetch Priority Movies
-	public function priority($hashedUserID){}
+	public function priority($hashedUserID){
+		$user_id = hashids_decrypt($hashedUserID);
+		if(!empty($user_id)){
+			$results = array();
+			if(!$this->cache->memcached->get('priority_movies')){
+				$this->db->order_by('priority', 'ASC');
+				$movie_stmt = $this->db->get_where('CRMovie','priority IS NOT NULL');
+				foreach($movie_stmt->results() as $movie){
+					$result = array();
+					//get RT details using RT ID
+					$movieModel = new Movie_model($movie->rotten_tomatoes_id);
+					$result = $movieModel->getResult();
+					array_push($results, $result);
+				}
+				$this->cache->memcached->save('priority_movies', $results, $this->config->item('rotten_tomatoes_cache_seconds'));
+			}
+			else{
+				$results = $this->_getCache('priority_movies');
+			}
+			//return an array of CRMovie records with associated details attached from RT, IMDB, TMDB, iTunes, and TMS
+			$this->movies_model->setResult($results);
+		}
+		else{
+			$this->_generateError('could not find user');
+		}
+		$this->_response();
+	}
 	
 	//Fetch Unrated Movies for User
 	public function unrated($hashedUserID){}
@@ -50,36 +76,26 @@ class Movies extends CI_Controller{
 		//configure URL
 		$url = sprintf($this->config->item('rotten_tomatoes_search_url'), $this->config->item('rotten_tomatoes_api_key'), $searchTerm, $limit, $page);
 		//get movie results from this URL
-		$result = $this->_movieResults($url, $this->config->item('rotten_tomatoes_cache_seconds'));
-		//return an array of CRMovie records with associated details attached from RT, IMDB, TMDB, iTunes, and TMS
-		$this->movies_model->setResult($result);
-		
-		$this->_response();
-	}
-
-	public function _movieResults($url, $expiration){
-		//array of results
-		$results = array();
-		
-		//check to see if this is already in the cache
 		if(!$this->cache->memcached->get($url)){
 			//get search results
 			$movie_info = $this->_fetchFromURL($url);
 			$response = json_decode($movie_info);
-			foreach($response->movies as $key => $movie){
+			foreach($response->movies as $movie){
 				$result = array();
 				//get RT details using RT ID
 				$movieModel = new Movie_model($movie->id);
 				$result = $movieModel->getResult();
 				array_push($results, $result);
 			}
-			$this->cache->memcached->save($url, $results, $expiration);
+			$this->cache->memcached->save($url, $results, $this->config->item('rotten_tomatoes_cache_seconds'));
 		}
 		else{
 			$results = $this->_getCache($url);
 		}
-		//finally return the results
-		return $results;
+		//return an array of CRMovie records with associated details attached from RT, IMDB, TMDB, iTunes, and TMS
+		$this->movies_model->setResult($results);
+		
+		$this->_response();
 	}
 
 	public function _getCachedData($url, $expiration){
