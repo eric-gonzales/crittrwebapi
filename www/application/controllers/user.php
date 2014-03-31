@@ -26,7 +26,7 @@ class User extends CI_Controller{
 			$this->user_model->setID($this->db->insert_id());
 			//First, select id from CRDevice where device_vendor_id = critter-device
 			$this->db->select('id');
-			$query = $this->db->get_where('CRDevice', array('device_vendor_id' => $this->input->get_request_header('critter-device'), TRUE), 1);
+			$query = $this->db->get_where('CRDevice', array('device_vendor_id' => $this->input->get_request_header('critter-device', TRUE)), 1);
 			//if we have a match, lets insert a new record into the table
 			if($query->num_rows > 0){
 				$row = $query->row();
