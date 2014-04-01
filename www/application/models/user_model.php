@@ -159,11 +159,14 @@ class User_model extends CR_Model {
 	 * Email token
 	 */
 	public function newEmailToken(){
+		$tok = random_string('unique');
 		$this->load->helper('string');
 		$this->db->set('created', 'NOW()', FALSE);
-		$this->db->set('token', random_string('unique'));
+		$this->db->set('token', $tok);
 		$this->db->set('user_id', $this->getID());
 		$this->db->insert('CREmailToken');
+		$reset_url = $this->config->item('base_url').'reset.php?t='.$tok;
+		
 	}
 
 	public function setID($id){

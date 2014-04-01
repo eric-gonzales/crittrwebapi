@@ -20,17 +20,16 @@ class Init_model extends CR_Model {
 	public function process(){
 		//first we check if the device exists.
 		$chk_stmt = $this->db->get_where('CRDevice',array('device_vendor_id' => $this->post->deviceID), 1);
-		
-		//if the device does not exist in the DB, we will add an entry
 		if($chk_stmt->num_rows() == 0){
-			$this->db->set('created', 'NOW()', FALSE);
-			$this->db->set('appID', $this->post->appID);
-			$this->db->set('appName', $this->post->appName);
-			$this->db->set('appVersion',$this->post->appVersion);
-			$this->db->set('device_vendor_id', $this->post->deviceID);
+			//if the device does not exist in the DB, we will add an entry
+			$this->db->set('created', 'NOW()', FALSE)->set('appID', $this->post->appID)->set('appName', $this->post->appName)->set('appVersion',$this->post->appVersion)->set('device_vendor_id', $this->post->deviceID);
 			$this->db->insert('CRDevice');
 		}
-		
+		else{
+			//if it does exist, we will update the modified field
+			$this->db->where('device_vendor_id', $this->post->deviceID)->set('modified', 'NOW()', FALSE);
+			$this->db->update('CRDevice');
+		}
 		//our result payload
 		$this->setResult(array(
 			'url_newaccount' => $this->config->item('base_url').'user/signup',
