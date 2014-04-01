@@ -179,11 +179,10 @@ class User_model extends CR_Model {
 		$this->db->insert('CREmailToken');
 		$reset_url = 'http://request.crittermovies.com/?a=res&t='.$tok;
 		
-		$ci->email->from('do-not-reply@crittermovies.com', 'Critter');
 		$ci->email->to($this->getEmail()); 
+		$ci->email->from('do-not-reply@crittermovies.com', 'Critter');
 		$ci->email->subject('Password Reset');
 		$ci->email->message('Here is a link to reset your password: '.$reset_url.'. Please use it as soon as possible, because it expires in 24 hours!');	
-		$ci->email->clear(TRUE);
 		$ci->email->send();
 	}
 
