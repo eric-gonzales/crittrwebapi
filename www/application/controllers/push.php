@@ -27,7 +27,7 @@ class Push extends CI_Controller
 		$this->db->where('CRDevice.push_token is not null');
 		$query = $this->db->get();
 		
-		foreach($query->result as $row)
+		foreach($query->result() as $row)
 		{
 			$this->notification_model->send_ios($row->push_token, $row->message, intval($row->badge));
 			
