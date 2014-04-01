@@ -9,18 +9,19 @@ class User extends CI_Controller{
 	function __construct(){
 		parent::__construct();
 		$this->load->model('user_model');
+		$this->post = json_decode(file_get_contents('php://input'));
 	}
 	
 	//Create new Account
 	function signup(){
 		//first we check if the email is already in use
-		$chk_stmt = $this->db->get_where('CRUser',array('email' => $this->input->post('email')), 1);
+		$chk_stmt = $this->db->get_where('CRUser',array('email' => $this->post->email), 1);
 		if($chk_stmt->num_rows() == 0){
 			//create new entry in CRUser table
 			$this->db->set('created', 'NOW()', FALSE);
-			$this->db->set('username', $this->input->post('username'));
-			$this->db->set('password_hash', $this->phpass->hash($this->input->post('password')));
-			$this->db->set('email', $this->input->post('email'));
+			$this->db->set('username', $this->post->username);
+			$this->db->set('password_hash', $this->phpass->hash($this->post->password));
+			$this->db->set('email', $this->post->email);
 			$this->db->insert('CRUser');
 			//grab the user id from the last insert
 			$this->user_model->setID($this->db->insert_id());
@@ -49,7 +50,7 @@ class User extends CI_Controller{
 	//Login or Create New Account via Facebook
 	function facebook(){
 		//get facebook token
-		$facebook_token = $this->input->post('facebook_token');
+		$facebook_token = $this->post->facebook_token;
 		if(!empty($facebook_token)){
 			//load facebook library
 			$this->load->library('facebook');
@@ -96,7 +97,7 @@ class User extends CI_Controller{
 	function login(){		
 		$this->db->select('id, password_hash');
 		//look for matching email in CRUser table
-		$chk_stmt = $this->db->get_where('CRUser',array('email' => $this->input->post('email')), 1);
+		$chk_stmt = $this->db->get_where('CRUser',array('email' => $this->post->email), 1);
 		if($chk_stmt->num_rows() == 0){
 			$this->_generateError('email does not exist');
 		}
@@ -104,7 +105,7 @@ class User extends CI_Controller{
 			//fetch the row
 			$cr_user = $chk_stmt->row();
 			//check if credentials match
-			if($this->phpass->check($this->input->post('password'), $cr_user->password_hash)){
+			if($this->phpass->check($this->post->password, $cr_user->password_hash)){
 				//set the proper result for the user
 				$this->user_model->setID($cr_user->id);
 				$this->user_model->fetchNotifications();
@@ -122,7 +123,7 @@ class User extends CI_Controller{
 	function reset(){
 		$this->db->select('id');
 		//look for matching email in CRUser table
-		$chk_stmt = $this->db->get_where('CRUser',array('email' => $this->input->post('email')), 1);
+		$chk_stmt = $this->db->get_where('CRUser',array('email' => $this->post->email), 1);
 		if($chk_stmt->num_rows() == 0){
 			$this->_generateError('email does not exist');
 		}
@@ -164,7 +165,7 @@ class User extends CI_Controller{
 				$awslib = new Awslib();
 				$client = $awslib->S3();
 				//convert Base64 encoded photo to jpg
-				$base64 = urldecode($this->input->post('photo'));
+				$base64 = urldecode($this->post('photo'));
 				$data = str_replace(' ', '+', $base64);
 				$photo_data = base64_decode($data);
 				$photo = imagecreatefromstring($photo_data);
@@ -197,7 +198,7 @@ class User extends CI_Controller{
 	function addfriend($hashedUserID){
 		//decrypt userID and friendID
 		$user_id = hashids_decrypt($hashedUserID);
-		$friend_id = hashids_decrypt($this->input->post('friendID'));
+		$friend_id = hashids_decrypt($this->post->friendID);
 		//check if friend id is empty
 		if(!empty($friend_id) && !empty($user_id)){
 			//check if user id exists
@@ -262,7 +263,7 @@ class User extends CI_Controller{
 	function removefriend($hashedUserID){
 		//decrypt userID and friendID
 		$user_id = hashids_decrypt($hashedUserID);
-		$friend_id = hashids_decrypt($this->input->post('friendID'));
+		$friend_id = hashids_decrypt($this->post->friendID);
 		//check if friend id is empty
 		if(!empty($friend_id) && !empty($user_id)){
 			//check if user id exists
