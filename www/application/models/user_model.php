@@ -171,24 +171,30 @@ class User_model extends CR_Model {
 	public function newEmailToken(){
 		$this->fetchEmail();
 		$this->load->helper('string');
-		$ci =& get_instance();
-     	$ci->load->library('email');
 		$tok = random_string('unique');
 		$this->db->set('created', 'NOW()', FALSE);
 		$this->db->set('token', $tok);
 		$this->db->set('user_id', $this->getID());
 		$this->db->insert('CREmailToken');
 		$reset_url = 'http://request.crittermovies.com/?a='.sha1('resetmypassword').'&t='.$tok;
-		
 		$address = $this->getEmail();
-		$ci->email->from('do-not-reply@crittermovies.com', 'Critter');
-		$ci->email->to('eric@crittermovies.com'); 
-		$ci->email->subject('Password Reset');
-		$ci->email->message('Here is a link to reset your password: '.$reset_url.'. Please use it as soon as possible, because it expires in 24 hours!');	
-		$ci->email->send();
-		echo $ci->email->print_debugger();
-		
-		
+		$to  = $address;
+		$subject = 'Password Reset';
+		$message = '
+		<html>
+		<head>
+		  <title>Password Reset</title>
+		</head>
+		<body>
+		  <p>Hello,</p>
+		  <p>Here is your password reset link: '.$reset_url.'. Please use within 24 hours or it will expire!</p>
+		</body>
+		</html>
+		';
+		$headers  = 'MIME-Version: 1.0' . "\r\n";
+		$headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+		$headers .= 'From: Critter <donotreply@crittermovies.com>' . "\r\n";
+		mail($to, $subject, $message, $headers);
 	}
 
 	public function setID($id){
