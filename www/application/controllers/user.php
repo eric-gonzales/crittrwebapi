@@ -309,7 +309,6 @@ class User extends CI_Controller{
 	
 	//Password Update
 	function updatepass(){
-		echo $this->post;
 		if(!empty($this->post->user) && !empty($this->post->pass)){
 			$this->db->where('id', $this->post->user)->set('password_hash', $this->phpass->hash($this->post->pass));
 			$this->db->update('CRUser');
