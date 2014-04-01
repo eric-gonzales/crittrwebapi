@@ -13,7 +13,9 @@ class Ratings extends CI_Controller{
 	
 	//Update Movie Rating for User
 	function update($hashedUserID){
-		if($this->input->post('movieID') != '' && $this->input->post('rating') != ''){
+		$post = json_decode($_POST);
+		print_r($post);
+		if($post('movieID') != '' && $this->input->post('rating') != ''){
 			$user_id = hashids_decrypt($hashedUserID);
 			if(!empty($user_id)){
 				$movie_id = hashids_decrypt($this->input->post('movieID'));
