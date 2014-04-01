@@ -9,6 +9,7 @@ class Ratings extends CI_Controller{
 	function __construct(){
 		parent::__construct();
 		$this->load->model('ratings_model');
+		$this->load->driver('cache');
 		$this->post = json_decode(file_get_contents('php://input'));
 	}
 	
