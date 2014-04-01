@@ -169,6 +169,7 @@ class User_model extends CR_Model {
 	 * Email token
 	 */
 	public function newEmailToken(){
+		$this->load->helper('string');
 		$tok = random_string('unique');
 		$this->load->helper('string');
 		$this->db->set('created', 'NOW()', FALSE);
