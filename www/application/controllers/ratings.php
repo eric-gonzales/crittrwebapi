@@ -9,16 +9,15 @@ class Ratings extends CI_Controller{
 	function __construct(){
 		parent::__construct();
 		$this->load->model('ratings_model');
+		$this->post = json_decode(file_get_contents('php://input'));
 	}
 	
 	//Update Movie Rating for User
 	function update($hashedUserID){
-		$post = json_decode(file_get_contents('php://input'));
-		print_r($post);
-		if($post->movieID != '' && $post->rating != ''){
+		if($this->post->movieID != '' && $this->post->rating != ''){
 			$user_id = hashids_decrypt($hashedUserID);
 			if(!empty($user_id)){
-				$movie_id = hashids_decrypt($post->movieID);
+				$movie_id = hashids_decrypt($this->post->movieID);
 				$rating_id = 0;
 				$this->db->select('int');
 				$chk_stmt = $this->db->get_where('CRRating',array('user_id' => $user_id, 'movie_id' => $movie_id), 1);
@@ -27,12 +26,12 @@ class Ratings extends CI_Controller{
 					$rating = $chk_stmt->row();
 					$rating_id = $rating->int;
 					//update record
-					$this->db->where('int', $rating_id)->set('rating', $post->rating)->set('comment', $post->comment);
+					$this->db->where('int', $rating_id)->set('rating', $this->post->rating)->set('comment', $this->post->comment);
 					$this->db->update('CRRating');
 				}
 				else{
 					//create record
-					$this->db->set('created', 'NOW()', FALSE)->set('user_id', $user_id)->set('movie_id', $movie_id)->set('rating', $post->rating)->set('comment', $post->comment);
+					$this->db->set('created', 'NOW()', FALSE)->set('user_id', $user_id)->set('movie_id', $movie_id)->set('rating', $this->post->rating)->set('comment', $this->post->comment);
 					$this->db->insert('CRRating');
 					//grab id
 					$rating_id = $this->db->insert_id();
