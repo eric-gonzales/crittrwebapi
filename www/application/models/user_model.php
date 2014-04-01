@@ -170,8 +170,8 @@ class User_model extends CR_Model {
 	 */
 	public function newEmailToken(){
 		$this->load->helper('string');
-		$this->ci =& get_instance();
-     	$this->ci->load->library('email');
+		$ci =& get_instance();
+     	$ci->load->library('email');
 		$tok = random_string('unique');
 		$this->db->set('created', 'NOW()', FALSE);
 		$this->db->set('token', $tok);
@@ -179,12 +179,12 @@ class User_model extends CR_Model {
 		$this->db->insert('CREmailToken');
 		$reset_url = 'http://request.crittermovies.com/?a=res&t='.$tok;
 		
-		$this->ci->email->from('do-not-reply@crittermovies.com', 'Critter');
-		$this->ci->email->to($this->getEmail()); 
-		$this->ci->email->subject('Password Reset');
-		$this->ci->email->message('Here is a link to reset your password: '.$reset_url.'. Please use it as soon as possible, because it expires in 24 hours!');	
-		$this->ci->email->clear(TRUE);
-		$this->ci->email->send();
+		$ci->email->from('do-not-reply@crittermovies.com', 'Critter');
+		$ci->email->to($this->getEmail()); 
+		$ci->email->subject('Password Reset');
+		$ci->email->message('Here is a link to reset your password: '.$reset_url.'. Please use it as soon as possible, because it expires in 24 hours!');	
+		$ci->email->clear(TRUE);
+		$ci->email->send();
 	}
 
 	public function setID($id){
