@@ -388,7 +388,7 @@ class Movie_model extends CR_Model {
 		$this->setTMSDetails($finalRes);
 	}
 
-	public function tterRating(){
+	public function fetchCritterRating(){
 		if(!$this->cache->memcafetchCriched->get('critter_rating_'.$this->getID())){
 			$this->db->select_avg('rating');
 			$rating_stmt = $this->db->get_where('CRRating',array('movie_id' => $this->getID()), 1);
