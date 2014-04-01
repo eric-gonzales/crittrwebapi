@@ -9,11 +9,12 @@ class Init extends CI_Controller{
 	function __construct(){
 		parent::__construct();
 		$this->load->model('init_model');
+		$this->post = json_decode(file_get_contents('php://input'));
 	}
 	
 	//Initalization
 	function index(){
-		if($this->input->post('appID') != '' && $this->input->post('appName') != '' && $this->input->post('appVersion') != '' && $this->input->post('deviceID') != ''){
+		if($this->post->appID != '' && $this->post->appName != '' && $this->post->appVersion != '' && $this->post->deviceID != ''){
 			$this->init_model->process();	
 		}
 		else{
