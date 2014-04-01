@@ -18,6 +18,7 @@ class Movie_model extends CR_Model {
 	private $box_office_release_date;
 	private $dvd_release_date;
 	private $tmdb_poster_path;
+	private $critter_rating;
 	private $priority;
 	private $rt_details;
 	private $imdb_details;
@@ -141,6 +142,7 @@ class Movie_model extends CR_Model {
 			'box_office_release_date' => $this->getBoxOfficeReleaseDate(),
 			'dvd_release_date' => $this->getDVDReleaseDate(),
 			'tmdb_poster_path' => $this->getTMDBPosterPath(),
+			'critter_rating' => $this->getCritterRating(),
 			'rt_details' => $this->getRTDetails(),
 			'imdb_details' => $this->getIMDBDetails(),
 			'tmdb_details' => $this->getTMDBDetails(),
@@ -382,6 +384,18 @@ class Movie_model extends CR_Model {
 		}
 		$this->setTMSDetails($finalRes);
 	}
+
+	public function fetchCritterRating(){
+		if(!$this->cache->memcached->get('critter_rating_'.$this->getID())){
+			$this->db->select('AVG(rating)');
+			$rating_stmt = $this->db->get_where('CRMovie',array('movie_id' => $this->getID()), 1);
+			print_r($rating_stmt->row());
+			$this->cache->memcached->save('critter_rating_'.$this->getID(), $results, $this->config->item('critter_rating_cache_seconds'));
+		}
+		else{
+			$results = $this->_getCache('critter_rating_'.$this->getID());
+		}
+	}
 	
 	public function makeHashtag($string){
 		return '#'.preg_replace("/[^a-z0-9]+/", "",strtolower($string));
@@ -553,6 +567,14 @@ class Movie_model extends CR_Model {
 	
 	public function setTMSTrailerImageDetails($details){
 		$this->tms_trailer_image_details = $details;
+	}
+	
+	public function getCritterRating(){
+		return $this->critter_rating;
+	}
+	
+	public function setCritterRating($rating){
+		$this->critter_rating = $rating;
 	}
 	
 	public function _getCachedData($url, $expiration, $mode = ''){

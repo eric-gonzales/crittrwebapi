@@ -35,4 +35,7 @@
 	//iTunes
 	$config['itunes_title_url'] = 'https://itunes.apple.com/search?country=us&entity=movie&attribute=movieTerm&term=%1$s';
 	$config['itunes_cache_seconds'] = 60 * 60 * 24;
+	
+	//Critter
+	$config['critter_rating_cache_seconds'] = 60 * 60 * 24;
 	?>

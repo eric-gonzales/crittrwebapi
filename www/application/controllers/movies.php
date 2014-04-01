@@ -4,7 +4,6 @@
  * @author Eric Gonzales <eric@crittermovies.com>
  * @copyright 2014 Critter
  */
-//TODO: investigate consolidating design pattern re: box office, opening, etc. 
 
 class Movies extends CI_Controller{
 	function __construct(){
