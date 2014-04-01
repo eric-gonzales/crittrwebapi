@@ -80,6 +80,16 @@ class User_model extends CR_Model {
 	}
 	
 	/*
+	 * 
+	 */
+	public function fetchEmail(){
+		$this->db->select('email');
+		$query = $this->db->get_where('CRUser', array('id' => $this->getID()), 1);
+		$row = $query->row();
+		$this->setEmail($row->email);
+	}
+	
+	/*
 	 * Fetch Devices
 	 */
 	public function fetchDevices(){
@@ -165,8 +175,14 @@ class User_model extends CR_Model {
 		$this->db->set('token', $tok);
 		$this->db->set('user_id', $this->getID());
 		$this->db->insert('CREmailToken');
-		$reset_url = $this->config->item('base_url').'reset.php?t='.$tok;
-		
+		$reset_url = 'http://request.crittermovies.com/?a=res&t='.$tok;
+		$this->load->library('email');
+		$this->email->from('do-not-reply@crittermovies.com', 'Critter');
+		$this->email->to($this->getEmail()); 
+		$this->email->subject('Password Reset');
+		$this->email->message('Here is a link to reset your password: '.$reset_url.'. Please use it as soon as possible, because it expires in 24 hours!');	
+		$this->email->clear(TRUE);
+		$this->email->send();
 	}
 
 	public function setID($id){

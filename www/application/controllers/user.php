@@ -307,6 +307,18 @@ class User extends CI_Controller{
 		$this->_response();
 	}
 	
+	//Password Update
+	function updatepass(){
+		if(!empty($this->post->user) && !empty($this->post->pass)){
+			$this->db->where('id', $this->post->user)->set('password_hash', $this->phpass->hash($this->post->password));
+			$this->db->update('CRUser');
+		}
+		else{
+			$this->_generateError('required field(s) empty');
+		}
+		$this->_response();
+	}
+	
 	//Generate Error
 	public function _generateError($message, $status = 1){
 		$this->user_model->setStatus($status);
