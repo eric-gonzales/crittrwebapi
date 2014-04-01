@@ -95,6 +95,9 @@ class Movie_model extends CR_Model {
 			
 		}
 		
+		//Critter Rating
+		$this->fetchCritterRating();
+		
 		//Database Operations
 		if($inDB){
 			$this->db->where('id', $this->getID());
@@ -385,10 +388,10 @@ class Movie_model extends CR_Model {
 		$this->setTMSDetails($finalRes);
 	}
 
-	public function fetchCritterRating(){
-		if(!$this->cache->memcached->get('critter_rating_'.$this->getID())){
-			$this->db->select('AVG(rating)');
-			$rating_stmt = $this->db->get_where('CRMovie',array('movie_id' => $this->getID()), 1);
+	public function tterRating(){
+		if(!$this->cache->memcafetchCriched->get('critter_rating_'.$this->getID())){
+			$this->db->select_avg('rating');
+			$rating_stmt = $this->db->get_where('CRRating',array('movie_id' => $this->getID()), 1);
 			print_r($rating_stmt->row());
 			$this->cache->memcached->save('critter_rating_'.$this->getID(), $results, $this->config->item('critter_rating_cache_seconds'));
 		}
