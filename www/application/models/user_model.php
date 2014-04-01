@@ -169,6 +169,7 @@ class User_model extends CR_Model {
 	 * Email token
 	 */
 	public function newEmailToken(){
+		$this->fetchEmail();
 		$this->load->helper('string');
 		$ci =& get_instance();
      	$ci->load->library('email');
