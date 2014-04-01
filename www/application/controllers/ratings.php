@@ -35,7 +35,7 @@ class Ratings extends CI_Controller{
 					//grab id
 					$rating_id = $this->db->insert_id();
 				}
-				$this->ratings_model->setResponse(array(hashids_encrypt($rating_id)));
+				$this->ratings_model->setResult(array(hashids_encrypt($rating_id)));
 			}
 			else{
 				$this->_generateError('user not found');
