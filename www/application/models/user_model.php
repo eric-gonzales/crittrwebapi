@@ -187,7 +187,8 @@ class User_model extends CR_Model {
 		</head>
 		<body>
 		  <p>Hello,</p>
-		  <p>Here is your password reset link: '.$reset_url.'. Please use within 24 hours or it will expire!</p>
+		  <p>Here is your password reset link: <a href="'.$reset_url.'">'.$reset_url.'</a>. Please use within 24 hours or it will expire!</p>
+		  <p>--Critter</p>
 		</body>
 		</html>
 		';
