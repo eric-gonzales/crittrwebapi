@@ -389,7 +389,7 @@ class Movie_model extends CR_Model {
 	}
 
 	public function fetchCritterRating(){
-		if(!$this->cache->memcafetchCriched->get('critter_rating_'.$this->getID())){
+		if(!$this->cache->memcached->get('critter_rating_'.$this->getID())){
 			$this->db->select_avg('rating');
 			$rating_stmt = $this->db->get_where('CRRating',array('movie_id' => $this->getID()), 1);
 			print_r($rating_stmt->row());
