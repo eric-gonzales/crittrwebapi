@@ -36,6 +36,13 @@ class Ratings extends CI_Controller{
 					//grab id
 					$rating_id = $this->db->insert_id();
 				}
+				$this->db->select_avg('rating');
+				$rating_stmt = $this->db->get_where('CRRating',array('movie_id' => $movie_id), 1);
+				$row = $rating_stmt->row();
+				$rating = $row->rating;
+				$this->cache->memcached->save('critter_rating_'.$movie_id, $rating, $this->config->item('critter_rating_cache_seconds'));
+				$this->db->where('id', $movie_id)->set('critter_rating', $rating);
+				$this->db->update('CRMovie');
 				$this->ratings_model->setResult(array(hashids_encrypt($rating_id)));
 			}
 			else{
