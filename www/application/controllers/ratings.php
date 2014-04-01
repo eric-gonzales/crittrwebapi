@@ -23,7 +23,7 @@ class Ratings extends CI_Controller{
 				if($chk_stmt->num_rows() > 0){
 					//grab id
 					$rating = $chk_stmt->row();
-					$rating_id = $rating->id;
+					$rating_id = $rating->int;
 					//update record
 					$this->db->where('int', $rating_id)->set('rating', $this->input->post('rating'))->set('comment', $this->input->post('comment'));
 					$this->db->update('CRRating');
