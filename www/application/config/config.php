@@ -14,7 +14,7 @@
 | path to your installation.
 |
 */
-$config['base_url']	= 'http://54.186.144.144/';
+$config['base_url']	= 'http://api.crittermovies.com/';
 
 /*
 |--------------------------------------------------------------------------
