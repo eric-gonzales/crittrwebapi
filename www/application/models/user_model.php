@@ -184,6 +184,9 @@ class User_model extends CR_Model {
 		$ci->email->subject('Password Reset');
 		$ci->email->message('Here is a link to reset your password: '.$reset_url.'. Please use it as soon as possible, because it expires in 24 hours!');	
 		$ci->email->send();
+		echo $ci->email->print_debugger();
+		
+		
 	}
 
 	public function setID($id){
