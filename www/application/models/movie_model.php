@@ -396,6 +396,9 @@ class Movie_model extends CR_Model {
 			$row = $rating_stmt->row();
 			$rating = $row->rating;
 			$this->cache->memcached->save('critter_rating_'.$this->getID(), $rating, $this->config->item('critter_rating_cache_seconds'));
+			//update db record
+			$this->db->where('id', $this->getID())->set('critter_rating', $rating);
+			$this->db->update('CRMovie');
 		}
 		else{
 			$rating = $this->_getCache('critter_rating_'.$this->getID());
