@@ -121,34 +121,39 @@ class User extends CI_Controller{
 	
 	//Reset Lost Password
 	function reset(){
-		$this->db->select('id');
-		//look for matching email in CRUser table
-		$chk_stmt = $this->db->get_where('CRUser',array('email' => $this->post->email), 1);
-		if($chk_stmt->num_rows() == 0){
-			$this->_generateError('email does not exist');
-		}
-		else{
-			$cr_user = $chk_stmt->row();
-			$this->db->order_by('created', 'desc');
-			//check if token is already generated for this user_id. 
-			$chk_tkn_stmt = $this->db->get_where('CREmailToken',array('user_id' => $cr_user->id), 1);
-			if($chk_tkn_stmt->num_rows() > 0){
-				$tkn = $chk_tkn_stmt->row();
-				//check if token is expired
-				if(strtotime($tkn->created) < (time()-60*60*24*7)){
-					//if token expired, generate new email token
+		if(!empty($this->post->email)){
+			$this->db->select('id');
+			//look for matching email in CRUser table
+			$chk_stmt = $this->db->get_where('CRUser',array('email' => $this->post->email), 1);
+			if($chk_stmt->num_rows() == 0){
+				$this->_generateError('email does not exist');
+			}
+			else{
+				$cr_user = $chk_stmt->row();
+				$this->db->order_by('created', 'desc');
+				//check if token is already generated for this user_id. 
+				$chk_tkn_stmt = $this->db->get_where('CREmailToken',array('user_id' => $cr_user->id), 1);
+				if($chk_tkn_stmt->num_rows() > 0){
+					$tkn = $chk_tkn_stmt->row();
+					//check if token is expired
+					if((strtotime($tkn->created) < (time()-60*60*24)) || $tkn->used == 1){
+						//if token expired, generate new email token
+						$this->user_model->setID($cr_user->id);
+						$this->user_model->newEmailToken();
+					}
+					else{
+						$this->_generateError('token already generated');
+					}	
+				}
+				else{
+					//if no token exists, generate email token
 					$this->user_model->setID($cr_user->id);
 					$this->user_model->newEmailToken();
 				}
-				else{
-					$this->_generateError('token already generated');
-				}	
 			}
-			else{
-				//if no token exists, generate email token
-				$this->user_model->setID($cr_user->id);
-				$this->user_model->newEmailToken();
-			}
+		}
+		else{
+			$this->_generateError('email is empty');
 		}
 		$this->_response();
 	}
@@ -298,6 +303,18 @@ class User extends CI_Controller{
 		}
 		else{
 			$this->_generateError('user or friend id empty');
+		}
+		$this->_response();
+	}
+	
+	//Password Update
+	function updatepass(){
+		if(!empty($this->post->user) && !empty($this->post->pass)){
+			$this->db->where('id', $this->post->user)->set('password_hash', $this->phpass->hash($this->post->pass));
+			$this->db->update('CRUser');
+		}
+		else{
+			$this->_generateError('required field(s) empty');
 		}
 		$this->_response();
 	}
