@@ -30,18 +30,20 @@ DEFAULT CHARACTER SET = utf8;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`CRUser` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `username` VARCHAR(255) NOT NULL,
-  `password_hash` VARCHAR(45) NULL,
+  `password_hash` VARCHAR(255) NULL,
   `email` VARCHAR(255) NOT NULL,
+  `name` VARCHAR(255) NOT NULL,
   `facebook_id` VARCHAR(45) NULL,
-  `full_name` VARCHAR(255) NOT NULL,
+  `facebook_username` VARCHAR(255) NULL,
   `photo_url` VARCHAR(255) NULL,
+  `tutorials_shown` TINYINT(1) NOT NULL DEFAULT 0,
+  `push_enabled` TINYINT(1) NOT NULL DEFAULT 1,
   `created` DATETIME NOT NULL,
   `modified` DATETIME NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `email_idx` (`email` ASC),
   INDEX `facebook_id_idx` (`facebook_id` ASC),
-  INDEX `username_idx` (`username` ASC))
+  INDEX `username_idx` (`name` ASC))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
@@ -67,6 +69,22 @@ CREATE TABLE IF NOT EXISTS `mydb`.`CRDeviceUser` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`CREmailToken`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`CREmailToken` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `token` VARCHAR(100) NOT NULL,
+  `user_id` INT(11) NOT NULL,
+  `used` TINYINT(4) NULL DEFAULT '0',
+  `created` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 16
+DEFAULT CHARACTER SET = utf8
+COLLATE = utf8_general_ci;
 
 
 -- -----------------------------------------------------
