@@ -24,9 +24,9 @@ class Movies extends CI_Controller{
 	public function priority($hashedUserID){
 		//array of priority movie results
 		$results = array(); 
-		//decrypt user id
-		$user_id = hashids_decrypt($hashedUserID);
-		if(!empty($user_id)){
+		if($hashedUserID != ''){
+			//decrypt user id
+			$user_id = hashids_decrypt($hashedUserID);
 			$results = array();
 			if(!$this->cache->memcached->get('priority_movies')){
 				$this->db->order_by('priority', 'ASC');
@@ -55,7 +55,7 @@ class Movies extends CI_Controller{
 			$this->movies_model->setResult($results);
 		}
 		else{
-			$this->_generateError('could not find user');
+			$this->_generateError('Required Fields Missing', $this->config->item('error_required_fields'));
 		}
 		$this->_response();
 	}
@@ -64,9 +64,9 @@ class Movies extends CI_Controller{
 	public function unrated($hashedUserID){
 		//array of priority movie results
 		$results = array(); 
-		//decrypt user id
-		$user_id = hashids_decrypt($hashedUserID);
-		if(!empty($user_id)){
+		if($hashedUserID != ''){
+			//decrypt user id
+			$user_id = hashids_decrypt($hashedUserID);
 			$results = array();
 			//TODO: I'm pretty sure we are going to have to set some sort of limit here eventually
 			$this->db->order_by('box_office_release_date', 'ASC');
@@ -85,7 +85,7 @@ class Movies extends CI_Controller{
 			$this->movies_model->setResult($results);
 		}
 		else{
-			$this->_generateError('could not find user with the specified id');
+			$this->_generateError('Required Fields Missing', $this->config->item('error_required_fields'));
 		}
 		$this->_response();
 	}
@@ -94,8 +94,8 @@ class Movies extends CI_Controller{
 	public function boxoffice($hashedUserID, $limit, $countryCode){
 		//array of box office results
 		$results = array();
-		$user_id = hashids_decrypt($hashedUserID);
-		if(!empty($user_id)){
+		if($hashedUserID != ''){
+			$user_id = hashids_decrypt($hashedUserID);
 			//configure URL
 			$url = sprintf($this->config->item('rotten_tomatoes_box_office_url'), $this->config->item('rotten_tomatoes_api_key'), $limit, $countryCode);
 			//get movie results from this URL
@@ -127,7 +127,7 @@ class Movies extends CI_Controller{
 			$this->movies_model->setResult($results);
 		}
 		else{
-			$this->_generateError('could not find user with the specified id');
+			$this->_generateError('Required Fields Missing', $this->config->item('error_required_fields'));
 		}
 		$this->_response();
 	}
@@ -136,8 +136,8 @@ class Movies extends CI_Controller{
 	public function opening($hashedUserID, $limit, $countryCode){
 		//array of results
 		$results = array();
-		$user_id = hashids_decrypt($hashedUserID);
-		if(!empty($user_id)){
+		if($hashedUserID != ''){
+			$user_id = hashids_decrypt($hashedUserID);
 			//configure URL
 			$url = sprintf($this->config->item('rotten_tomatoes_opening_url'), $this->config->item('rotten_tomatoes_api_key'), $limit, $countryCode);
 			//get movie results from this URL
@@ -169,7 +169,7 @@ class Movies extends CI_Controller{
 			$this->movies_model->setResult($results);
 		}
 		else{
-			$this->_generateError('could not find user with the specified id');
+			$this->_generateError('Required Fields Missing', $this->config->item('error_required_fields'));
 		}
 		$this->_response();
 	}
@@ -178,8 +178,8 @@ class Movies extends CI_Controller{
 	public function upcoming($hashedUserID, $limit, $page, $countryCode){
 		//array of results
 		$results = array();
-		$user_id = hashids_decrypt($hashedUserID);
-		if(!empty($user_id)){
+		if($hashedUserID != ''){
+			$user_id = hashids_decrypt($hashedUserID);
 			//configure URL
 			$url = sprintf($this->config->item('rotten_tomatoes_upcoming_url'), $this->config->item('rotten_tomatoes_api_key'), $limit, $page, $countryCode);
 			//get movie results from this URL
@@ -211,7 +211,7 @@ class Movies extends CI_Controller{
 			$this->movies_model->setResult($results);
 		}
 		else{
-			$this->_generateError('could not find user with the specified id');
+			$this->_generateError('Required Fields Missing', $this->config->item('error_required_fields'));
 		}
 		$this->_response();
 	}
@@ -220,8 +220,8 @@ class Movies extends CI_Controller{
 	public function newreleasedvds($hashedUserID, $limit, $page, $countryCode){
 		//array of results
 		$results = array();
-		$user_id = hashids_decrypt($hashedUserID);
-		if(!empty($user_id)){
+		if($hashedUserID != ''){
+			$user_id = hashids_decrypt($hashedUserID);
 			//configure URL
 			$url = sprintf($this->config->item('rotten_tomatoes_new_dvds_url'), $this->config->item('rotten_tomatoes_api_key'), $limit, $page, $countryCode);
 			//get movie results from this URL
@@ -253,7 +253,7 @@ class Movies extends CI_Controller{
 			$this->movies_model->setResult($results);
 		}
 		else{
-			$this->_generateError('could not find user with the specified id');
+			$this->_generateError('Required Fields Missing', $this->config->item('error_required_fields'));
 		}
 		$this->_response();
 	}
@@ -262,8 +262,8 @@ class Movies extends CI_Controller{
 	public function currentdvds($hashedUserID, $limit, $page, $countryCode){
 		//array of results
 		$results = array();
-		$user_id = hashids_decrypt($hashedUserID);
-		if(!empty($user_id)){
+		if($hashedUserID != ''){
+			$user_id = hashids_decrypt($hashedUserID);
 			//configure URL
 			$url = sprintf($this->config->item('rotten_tomatoes_current_dvds_url'), $this->config->item('rotten_tomatoes_api_key'), $limit, $page, $countryCode);
 			//get movie results from this URL
@@ -295,7 +295,7 @@ class Movies extends CI_Controller{
 			$this->movies_model->setResult($results);
 		}
 		else{
-			$this->_generateError('could not find user with the specified id');
+			$this->_generateError('Required Fields Missing', $this->config->item('error_required_fields'));
 		}
 		$this->_response();
 	}
@@ -304,8 +304,8 @@ class Movies extends CI_Controller{
 	public function upcomingdvds($hashedUserID, $limit, $page, $countryCode){
 		//array of results
 		$results = array();
-		$user_id = hashids_decrypt($hashedUserID);
-		if(!empty($user_id)){
+		if($hashedUserID != ''){
+			$user_id = hashids_decrypt($hashedUserID);
 			//configure URL
 			$url = sprintf($this->config->item('rotten_tomatoes_upcoming_dvds_url'), $this->config->item('rotten_tomatoes_api_key'), $limit, $page, $countryCode);
 			//get movie results from this URL
@@ -337,7 +337,7 @@ class Movies extends CI_Controller{
 			$this->movies_model->setResult($results);
 		}
 		else{
-			$this->_generateError('could not find user with the specified id');
+			$this->_generateError('Required Fields Missing', $this->config->item('error_required_fields'));
 		}
 		$this->_response();
 	}

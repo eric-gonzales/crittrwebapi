@@ -18,7 +18,7 @@ class Init extends CI_Controller{
 			$this->init_model->process();	
 		}
 		else{
-			$this->_generateError('required fields missing');
+			$this->_generateError('Required Fields Missing', $this->config->item('error_required_fields'));
 		}
 		
 		$this->_response();

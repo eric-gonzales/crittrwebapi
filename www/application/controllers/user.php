@@ -36,13 +36,13 @@ class User extends CI_Controller{
 				$this->db->insert('CRDeviceUser');
 			}
 			else{
-				$this->_generateError('device not found');
+				$this->_generateError('Device Not Found',$this->config->item('error_entity_not_found'));
 			}
 			//finally, generate the default result
 			$this->user_model->defaultResult();
 		}
 		else{
-			$this->_generateError('email already in use');
+			$this->_generateError('Email is already in use',$this->config->item('error_already_in_use'));
 		}
 		$this->_response();
 	}
@@ -51,7 +51,7 @@ class User extends CI_Controller{
 	function facebook(){
 		//get facebook token
 		$facebook_token = $this->post->facebook_token;
-		if(!empty($facebook_token)){
+		if($facebook_token != ''){
 			//load facebook library
 			$this->load->library('facebook');
 			$facebook = new Facebook(array(
@@ -84,11 +84,11 @@ class User extends CI_Controller{
 				}
 			}
 			else{
-				$this->_generateError('facebook id could not be found');
+				$this->_generateError('Facebook ID Could Not Be Found', $this->config->item('error_entity_not_found'));
 			}
 		}
 		else{
-			$this->_generateError('facebook token empty');
+			$this->_generateError('Required Fields Missing', $this->config->item('error_required_fields'));
 		}
 		$this->_response();
 	}
@@ -99,7 +99,7 @@ class User extends CI_Controller{
 		//look for matching email in CRUser table
 		$chk_stmt = $this->db->get_where('CRUser',array('email' => $this->post->email), 1);
 		if($chk_stmt->num_rows() == 0){
-			$this->_generateError('email does not exist');
+			$this->_generateError('User Could Not Be Found', $this->config->item('error_entity_not_found'));
 		}
 		else{
 			//fetch the row
@@ -113,7 +113,7 @@ class User extends CI_Controller{
 				$this->user_model->defaultResult();
 			}
 			else{
-				$this->_generateError('invalid credentials');
+				$this->_generateError('Invalid Credentials', $this->config->item('error_not_authorized'));
 			}
 		}
 		$this->_response();
@@ -121,12 +121,12 @@ class User extends CI_Controller{
 	
 	//Reset Lost Password
 	function reset(){
-		if(!empty($this->post->email)){
+		if($this->post->email != ''){
 			$this->db->select('id');
 			//look for matching email in CRUser table
 			$chk_stmt = $this->db->get_where('CRUser',array('email' => $this->post->email), 1);
 			if($chk_stmt->num_rows() == 0){
-				$this->_generateError('email does not exist');
+				$this->_generateError('Email Could Not Be Found', $this->config->item('error_entity_not_found'));
 			}
 			else{
 				$cr_user = $chk_stmt->row();
@@ -142,7 +142,7 @@ class User extends CI_Controller{
 						$this->user_model->newEmailToken();
 					}
 					else{
-						$this->_generateError('token already generated');
+						$this->_generateError('Token is Already Generated', $this->config->item('error_token_generated'));
 					}	
 				}
 				else{
@@ -153,15 +153,15 @@ class User extends CI_Controller{
 			}
 		}
 		else{
-			$this->_generateError('email is empty');
+			$this->_generateError('Required Fields Missing', $this->config->item('error_required_fields'));
 		}
 		$this->_response();
 	}
 	
 	//Update User Profile Photo
 	function photo($hashedUserID){
-		$user_id = hashids_decrypt($hashedUserID);
-		if(!empty($user_id)){
+		if($hashedUserID != ''){
+			$user_id = hashids_decrypt($hashedUserID);
 			$chk_stmt = $this->db->get_where('CRUser',array('id' => $user_id), 1);
 			if($chk_stmt->num_rows() > 0){
 				//load aws library
@@ -190,22 +190,22 @@ class User extends CI_Controller{
 				$this->db->update('CRUser');
 			}
 			else{
-				$this->_generateError('user does not exist');
+				$this->_generateError('User Could Not Be Found', $this->config->item('error_entity_not_found'));
 			}
 		}
 		else{
-			$this->_generateError('user id empty');
+			$this->_generateError('Required Fields Missing', $this->config->item('error_required_fields'));
 		}
 		$this->_response();
 	}
 	
 	//Add Friend
 	function addfriend($hashedUserID){
-		//decrypt userID and friendID
-		$user_id = hashids_decrypt($hashedUserID);
-		$friend_id = hashids_decrypt($this->post->friendID);
-		//check if friend id is empty
-		if(!empty($friend_id) && !empty($user_id)){
+		//check if friend or user id is empty
+		if($this->post->friendID != '' && $user_id != ''){
+			//decrypt userID and friendID
+			$user_id = hashids_decrypt($hashedUserID);
+			$friend_id = hashids_decrypt($this->post->friendID);
 			//check if user id exists
 			$chk_stmt = $this->db->get_where('CRUser',array('id' => $user_id), 1);
 			if($chk_stmt->num_rows() > 0){
@@ -247,19 +247,19 @@ class User extends CI_Controller{
 						}
 					}
 					else{
-						$this->_generateError('user is already friend');
+						$this->_generateError('Users Are Already Friends', $this->config->item('error_invalid_request'));
 					}
 				}
 				else{
-					$this->_generateError('friend id not found');
+					$this->_generateError('Friend Not Found', $this->config->item('error_entity_not_found'));
 				}
 			}
 			else{
-				$this->_generateError('user not found');
+				$this->_generateError('User Not Found', $this->config->item('error_entity_not_found'));
 			}
 		}
 		else{
-			$this->_generateError('friend or user id empty');
+			$this->_generateError('Required Fields Missing', $this->config->item('error_required_fields'));
 		}
 		$this->_response();
 	}
@@ -294,15 +294,15 @@ class User extends CI_Controller{
 					}
 				}
 				else{
-					$this->_generateError('friend id not found');
+					$this->_generateError('Friend Not Found', $this->config->item('error_entity_not_found'));
 				}
 			}
 			else{
-				$this->_generateError('user not found');
+				$this->_generateError('User Not Found', $this->config->item('error_entity_not_found'));
 			}
 		}
 		else{
-			$this->_generateError('user or friend id empty');
+			$this->_generateError('Required Fields Missing', $this->config->item('error_required_fields'));
 		}
 		$this->_response();
 	}
@@ -314,12 +314,18 @@ class User extends CI_Controller{
 			$this->db->update('CRUser');
 		}
 		else{
-			$this->_generateError('required field(s) empty');
+			$this->_generateError('Required Fields Missing', $this->config->item('error_required_fields'));
 		}
 		$this->_response();
 	}
 	
-	//Generate Error
+	/*
+	 * Generate Error
+	 * Status Codes:
+	 * 1 -- General Error
+	 * 100 -- Required Post Fields Missing
+	 * 200 -- Entity(s) Not Found
+	 */
 	public function _generateError($message, $status = 1){
 		$this->user_model->setStatus($status);
 		$this->user_model->setMessage('Error: '.$message);
