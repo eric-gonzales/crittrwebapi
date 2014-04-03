@@ -20,7 +20,7 @@ class User extends CI_Controller{
 			//create new entry in CRUser table
 			$this->db->set('created', 'NOW()', FALSE);
 			$this->db->set('modified', 'NOW()', FALSE);			
-			$this->db->set('username', $this->post->username);
+			$this->db->set('name', $this->post->name);
 			$this->db->set('password_hash', $this->phpass->hash($this->post->password));
 			$this->db->set('email', $this->post->email);
 			$this->db->insert('CRUser');
@@ -64,27 +64,35 @@ class User extends CI_Controller{
 			$facebook->setAccessToken($facebook_token);
 			$fb_id = $facebook->getUser();
 			//check if valid facebook id
-			if(!empty($fb_id)){
-				//check if user is signed up
-				$this->db->select('id');
-				$chk_stmt = $this->db->get_where('CRUser',array('facebook_id' => $fb_id), 1);
-				if($chk_stmt->num_rows() > 0){
-					//fetch user details
-					$cr_user = $chk_stmt->row();
-					$this->user_model->setID($cr_user->id);
-					$this->user_model->fetchNotifications();
-					$this->user_model->fetchFriends();
-					$this->user_model->defaultResult();
-				}
-				else{
-					//create new user
-					$this->db->set('created', 'NOW()', FALSE)->set('facebook_id', $fb_id);
-					$this->db->set('modified', 'NOW()', FALSE);					
-					$this->db->insert('CRUser');
-					$this->user_model->setID($this->db->insert_id());
-					$this->user_model->defaultResult();
-				}
-			}
+			if($fb_id){
+		      	//We have a Facebook ID, so probably a logged in user.
+		      	//If not, we'll get an exception, which we handle below.
+	     		try {
+	     			//Query Facebook API for /me object
+	        		$user_profile = $facebook->api('/me','GET');
+	        		$facebook_username = $user_profile['name'];
+					//check if user is signed up
+					$this->db->select('id');
+					$chk_stmt = $this->db->get_where('CRUser',array('facebook_id' => $fb_id), 1);
+					if($chk_stmt->num_rows() > 0){
+						//fetch user details
+						$cr_user = $chk_stmt->row();
+						$this->user_model->setID($cr_user->id);
+						$this->user_model->fetchNotifications();
+						$this->user_model->fetchFriends();
+						$this->user_model->defaultResult();
+					}
+					else{
+						//create new user
+						$this->db->set('created', 'NOW()', FALSE)->set('facebook_id', $fb_id)->set('modified', 'NOW()', FALSE)->set('facebook_username', $facebook_username);					
+						$this->db->insert('CRUser');
+						$this->user_model->setID($this->db->insert_id());
+						$this->user_model->defaultResult();
+					}
+	      		} catch(FacebookApiException $e) {
+	      			$this->_generateError('Facebook Username Could Not Be Found', $this->config->item('error_entity_not_found'));
+	      		}   
+		    } 
 			else{
 				$this->_generateError('Facebook ID Could Not Be Found', $this->config->item('error_entity_not_found'));
 			}
@@ -221,13 +229,13 @@ class User extends CI_Controller{
 						$this->db->set('modified', 'NOW()', FALSE);						
 						$this->db->insert('CRFriends');
 						$this->user_model->setID($user_id);
-						$this->user_model->fetchUsername();
+						$this->user_model->fetchName();
 						//check if friend is ignoring user and is not our friend already
 						$this->db->select('ignore');
 						$friends_stmt = $this->db->get_where('CRFriends',array('user_id' => $friend_id, 'friend_id' => $user_id), 1);
 						if($friends_stmt->num_rows() == 0){		
 							//and let's send them a notification so they know
-							$this->db->set('created', 'NOW()', FALSE)->set('from_user_id', $user_id)->set('to_user_id', $friend_id)->set('message', $this->user_model->getUsername().' wants to be your Critter friend!');
+							$this->db->set('created', 'NOW()', FALSE)->set('from_user_id', $user_id)->set('to_user_id', $friend_id)->set('message', $this->user_model->getName().' wants to be your Critter friend!');
 							$this->db->set('modified', 'NOW()', FALSE);													
 							$this->db->insert('CRNotification');
 							$notification_id = $this->db->insert_id();

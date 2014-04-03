@@ -7,10 +7,10 @@
  
 class User_model extends CR_Model {
 	private $id;
-	private $username;
+	private $name;
 	private $email;
 	private $facebook_id;
-	private $full_name;
+	private $facebook_username;
 	private $photo_url;
 	private $notifications;
 	private $friends;
@@ -72,11 +72,11 @@ class User_model extends CR_Model {
 	/*
 	 * Fetch username
 	 */
-	public function fetchUsername(){
-		$this->db->select('username');
+	public function fetchName(){
+		$this->db->select('name');
 		$query = $this->db->get_where('CRUser', array('id' => $this->getID()), 1);
 		$row = $query->row();
-		$this->setUsername($row->username);
+		$this->setName($row->name);
 	}
 	
 	/*
@@ -154,11 +154,11 @@ class User_model extends CR_Model {
 				$friend = $result->row();
 				$friends[] = array(
 					'id' => hashids_encrypt($friend->id),
-					'username' => $friend->username,
+					'name' => $friend->name,
 					'email' => $friend->email,
 					'facebook_id' => $friend->facebook_id,
-					'full_name' => $friend->full_name,
-					'photo_url' => $friend->photo_url
+					'facebook_username' => $friend->facebook_username,
+ 				    'photo_url' => $friend->photo_url
 				);
 			}
 		}
@@ -207,12 +207,12 @@ class User_model extends CR_Model {
 		return $this->id;
 	}
 	
-	public function setUsername($username){
-		$this->username = $username;
+	public function setName($name){
+		$this->name = $name;
 	}
 	
-	public function getUsername(){
-		return $this->username;
+	public function getName(){
+		return $this->name;
 	}
 	
 	public function setEmail($email){
@@ -231,12 +231,12 @@ class User_model extends CR_Model {
 		return $this->facebook_id;
 	}
 	
-	public function setFullName($full_name){
-		$this->full_name = $full_name;
+	public function setFacebookUsername($username){
+		$this->facebook_username = $username;
 	}
 	
-	public function getFullName(){
-		return $this->full_name;
+	public function getFacebookUsername(){
+		return $this->facebook_username;
 	}
 	
 	public function setPhotoURL($photo_url){
