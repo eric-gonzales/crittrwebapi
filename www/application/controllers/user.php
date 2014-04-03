@@ -19,6 +19,7 @@ class User extends CI_Controller{
 		if($chk_stmt->num_rows() == 0){
 			//create new entry in CRUser table
 			$this->db->set('created', 'NOW()', FALSE);
+			$this->db->set('modified', 'NOW()', FALSE);			
 			$this->db->set('username', $this->post->username);
 			$this->db->set('password_hash', $this->phpass->hash($this->post->password));
 			$this->db->set('email', $this->post->email);
@@ -78,6 +79,7 @@ class User extends CI_Controller{
 				else{
 					//create new user
 					$this->db->set('created', 'NOW()', FALSE)->set('facebook_id', $fb_id);
+					$this->db->set('modified', 'NOW()', FALSE);					
 					$this->db->insert('CRUser');
 					$this->user_model->setID($this->db->insert_id());
 					$this->user_model->defaultResult();
@@ -216,6 +218,7 @@ class User extends CI_Controller{
 					if($friends_chk_stmt->num_rows() == 0){
 						//if both user and friend exists, let's make them friends 
 						$this->db->set('created', 'NOW()', FALSE)->set('user_id', $user_id)->set('friend_id', $friend_id);
+						$this->db->set('modified', 'NOW()', FALSE);						
 						$this->db->insert('CRFriends');
 						$this->user_model->setID($user_id);
 						$this->user_model->fetchUsername();
@@ -225,6 +228,7 @@ class User extends CI_Controller{
 						if($friends_stmt->num_rows() == 0){		
 							//and let's send them a notification so they know
 							$this->db->set('created', 'NOW()', FALSE)->set('from_user_id', $user_id)->set('to_user_id', $friend_id)->set('message', $this->user_model->getUsername().' wants to be your Critter friend!');
+							$this->db->set('modified', 'NOW()', FALSE);													
 							$this->db->insert('CRNotification');
 							$notification_id = $this->db->insert_id();
 							//set a push notification to each device linked to the friend
@@ -242,6 +246,7 @@ class User extends CI_Controller{
 								$this->db->update('CRDevice');
 								//now create push notification
 								$this->db->set('created', 'NOW()', FALSE)->set('device_id', $device_id)->set('notification_id', $notification_id)->set('badge', $badge);
+								$this->db->set('modified', 'NOW()', FALSE);														
 								$this->db->insert('CRPushNotification');
 							}
 						}
@@ -284,6 +289,7 @@ class User extends CI_Controller{
 					if($friends_stmt->num_rows() == 0){
 						//add matching entry in CRFriend table
 						$this->db->set('created', 'NOW()', FALSE)->set('user_id', $user_id)->set('friend_id', $friend_id)->set('ignore', 1);
+						$this->db->set('modified', 'NOW()', FALSE);						
 						$this->db->insert('CRFriends');
 					}
 					else{

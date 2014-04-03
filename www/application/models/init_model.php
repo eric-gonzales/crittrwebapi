@@ -23,6 +23,7 @@ class Init_model extends CR_Model {
 		if($chk_stmt->num_rows() == 0){
 			//if the device does not exist in the DB, we will add an entry
 			$this->db->set('created', 'NOW()', FALSE)->set('appID', $this->post->appID)->set('appName', $this->post->appName)->set('appVersion',$this->post->appVersion)->set('device_vendor_id', $this->post->deviceID);
+			$this->db->set('modified', 'NOW()', FALSE);									
 			$this->db->insert('CRDevice');
 		}
 		else{

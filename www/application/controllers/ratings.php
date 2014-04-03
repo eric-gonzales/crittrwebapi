@@ -33,6 +33,7 @@ class Ratings extends CI_Controller{
 				else{
 					//create record
 					$this->db->set('created', 'NOW()', FALSE)->set('user_id', $user_id)->set('movie_id', $movie_id)->set('rating', $this->post->rating)->set('comment', $this->post->comment);
+					$this->db->set('modified', 'NOW()', FALSE);						
 					$this->db->insert('CRRating');
 					//grab id
 					$rating_id = $this->db->insert_id();

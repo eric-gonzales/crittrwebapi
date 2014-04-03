@@ -116,6 +116,7 @@ class Movie_model extends CR_Model {
 		}
 		else{
 			$this->db->set('created', 'NOW()', FALSE);
+			$this->db->set('modified', 'NOW()', FALSE);									
 			$this->db->set('rotten_tomatoes_id', $this->getRottenTomatoesID());
 			$this->db->set('itunes_id', $this->getiTunesID());
 			$this->db->set('imdb_id', $this->getIMDBID());

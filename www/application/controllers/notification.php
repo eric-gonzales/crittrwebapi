@@ -34,6 +34,7 @@ class Notification extends CI_Controller{
 					if($rating_chk_stmt->num_rows() > 0){
 						//add entry to notification table
 						$this->db->set('created', 'NOW()', FALSE);
+						$this->db->set('modified', 'NOW()', FALSE);						
 						$this->db->set('from_user_id', $from_user_id);
 						$this->db->set('to_user_id', $to_user_id);
 						$this->db->set('rating_id', $rating_id);
@@ -56,6 +57,7 @@ class Notification extends CI_Controller{
 							$this->db->update('CRDevice');
 							//now create push notification
 							$this->db->set('created', 'NOW()', FALSE);
+							$this->db->set('modified', 'NOW()', FALSE);							
 							$this->db->set('device_id', $device_id);
 							$this->db->set('notification_id', $notification_id);
 							$this->db->set('message', $this->input->post('message'));

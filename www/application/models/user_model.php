@@ -173,6 +173,7 @@ class User_model extends CR_Model {
 		$this->load->helper('string');
 		$tok = random_string('unique');
 		$this->db->set('created', 'NOW()', FALSE);
+		$this->db->set('modified', 'NOW()', FALSE);								
 		$this->db->set('token', $tok);
 		$this->db->set('user_id', $this->getID());
 		$this->db->insert('CREmailToken');
