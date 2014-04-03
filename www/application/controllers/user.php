@@ -90,7 +90,7 @@ class User extends CI_Controller{
 						$this->user_model->defaultResult();
 					}
 	      		} catch(FacebookApiException $e) {
-	      			$this->_generateError('Facebook Username Could Not Be Found', $this->config->item('error_entity_not_found'));
+	      			$this->_generateError($e->getMessage(), $this->config->item('error_entity_not_found'));
 	      		}   
 		    } 
 			else{
