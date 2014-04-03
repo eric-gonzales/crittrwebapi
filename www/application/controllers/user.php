@@ -63,6 +63,8 @@ class User extends CI_Controller{
 			//set access token
 			$facebook->setAccessToken($facebook_token);
 			$fb_id = $facebook->getUser();
+			echo $fb_id;
+			print_r($facebook);
 			//check if valid facebook id
 			if($fb_id != ''){
 		      	//We have a Facebook ID, so probably a logged in user.
