@@ -70,7 +70,7 @@ class User extends CI_Controller{
 	     		try {
 	     			//Query Facebook API for /me object
 	        		$user_profile = $facebook->api('/me','GET');
-	        		$facebook_username = $user_profile['name'];
+	        		$facebook_username = $user_profile['username'];
 					//check if user is signed up
 					$this->db->select('id');
 					$chk_stmt = $this->db->get_where('CRUser',array('facebook_id' => $fb_id), 1);
