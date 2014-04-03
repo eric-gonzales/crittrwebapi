@@ -81,7 +81,7 @@ $autoload['helper'] = array();
 |
 */
 
-$autoload['config'] = array('push_notifications','facebook','movie_apis','amazon','critter');
+$autoload['config'] = array('push_notifications','facebook','movie_apis','amazon','critter','error');
 
 
 /*

@@ -16,8 +16,8 @@ class Ratings extends CI_Controller{
 	//Update Movie Rating for User
 	function update($hashedUserID){
 		if($this->post->movieID != '' && $this->post->rating != ''){
-			$user_id = hashids_decrypt($hashedUserID);
-			if(!empty($user_id)){
+			if($hashedUserID != ''){
+				$user_id = hashids_decrypt($hashedUserID);
 				$movie_id = hashids_decrypt($this->post->movieID);
 				$rating_id = 0;
 				$this->db->select('int');
@@ -48,20 +48,20 @@ class Ratings extends CI_Controller{
 				$this->ratings_model->setResult(array(hashids_encrypt($rating_id)));
 			}
 			else{
-				$this->_generateError('user not found');
+				$this->_generateError('User Not Found', $this->config->item('error_entity_not_found'));
 			}
 		}
 		else{
-			$this->_generateError('required fields missing');
+			$this->_generateError('Required Fields Missing', $this->config->item('error_required_fields'));
 		}
 		$this->_response();
 	}
 	
 	//Fetch Movie Rating for Specific User and Movie
 	function movie($hashedUserID, $hashedMovieID){
-		$user_id = hashids_decrypt($hashedUserID);
-		$movie_id = hashids_decrypt($hashedMovieID);
-		if(!empty($user_id) || !empty($movie_id)){
+		if($hashedUserID != '' || $hashedMovieID != ''){
+			$user_id = hashids_decrypt($hashedUserID);
+			$movie_id = hashids_decrypt($hashedMovieID);
 			$chk_stmt = $this->db->get_where('CRRating',array('user_id' => $user_id, 'movie_id' => $movie_id), 1);
 			if($chk_stmt->num_rows() > 0){
 				$rating = $chk_stmt->row();
@@ -77,19 +77,19 @@ class Ratings extends CI_Controller{
 				$this->ratings_model->setResponse($result);
 			}
 			else{
-				$this->_generateError('record with specified user/movie combination not found');
+				$this->_generateError('User or Movie Not Found', $this->config->item('error_entity_not_found'));
 			}
 		}
 		else{
-			$this->_generateError('user and/or movie not found');
+			$this->_generateError('Required Fields Missing', $this->config->item('error_required_fields'));
 		}
 		$this->_response();
 	}
 	
 	//Fetch Movie Ratings for User
 	function user($hashedUserID, $modifiedSinceDateTime = ''){
-		$user_id = hashids_decrypt($hashedUserID);
-		if(!empty($user_id)){
+		if($hashedUserID != ''){
+			$user_id = hashids_decrypt($hashedUserID);
 			$results = array();
 			if($modifiedSinceDateTime == ''){
 				$chk_stmt = $this->db->get_where('CRRating',array('user_id' => $user_id), 1);
@@ -109,20 +109,20 @@ class Ratings extends CI_Controller{
 					$this->ratings_model->setResponse($results);
 				}
 				else{
-					$this->_generateError('ratings not found for the user specified');
+					$this->_generateError('Rating Not Found', $this->config->item('error_entity_not_found'));
 				}
 			}
 		}
 		else{
-			$this->_generateError('user not found');
+			$this->_generateError('Required Fields Missing', $this->config->item('error_required_fields'));
 		}
 		$this->_response();
 	}
 	
 	//Fetch All Ratings for Movie
 	function all($hashedMovieID, $limit, $offset){
-		$movie_id = hashids_decrypt($hashedMovieID);
-		if(!empty($movie_id)){
+		if($hashedMovieID != ''){
+			$movie_id = hashids_decrypt($hashedMovieID);
 			$results = array();
 			$this->db->order_by('created', 'desc'); //newest first
 			$chk_stmt = $this->db->get_where('CRRating',array('movie_id' => $movie_id), $limit, $offset);
@@ -141,12 +141,18 @@ class Ratings extends CI_Controller{
 			$this->ratings_model->setResponse($results);
 		}
 		else{
-			$this->_generateError('movie not found');
+			$this->_generateError('Required Fields Missing', $this->config->item('error_required_fields'));
 		}
 		$this->_response();
 	}
 	
-	//Generate Error
+	/*
+	 * Generate Error
+	 * Status Codes:
+	 * 1 -- General Error
+	 * 100 -- Required Post Fields Missing
+	 * 200 -- Entity(s) Not Found
+	 */
 	public function _generateError($message, $status = 1){
 		$this->ratings_model->setStatus($status);
 		$this->ratings_model->setMessage('Error: '.$message);

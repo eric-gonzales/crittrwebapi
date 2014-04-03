@@ -23,7 +23,7 @@ class Device extends CI_Controller{
 			$this->db->update('CRDevice');
 		}
 		else{
-			$this->_generateError('device not found');
+			$this->_generateError('Device Not Found', $this->config->item('error_entity_not_found'));
 		}
 		$this->_response();
 	}

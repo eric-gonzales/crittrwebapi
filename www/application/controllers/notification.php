@@ -9,16 +9,17 @@ class Notification extends CI_Controller{
 	public function __construct(){
 		parent::__construct();
 		$this->load->model('notification_model');
+		$this->post = json_decode(file_get_contents('php://input'));
 	}
 	
 	//Send Notification
 	public function send(){
-		$from_user_id = $this->input->post('fromUserID');
-		$to_user_id = $this->input->post('toUserID');
-		$notification_type = $this->input->post('notificationType');
-		$rating_id = $this->input->post('ratingID');
+		$from_user_id = $this->post->fromUserID;
+		$to_user_id = $this->post->toUserID;
+		$notification_type = $this->post->notificationType;
+		$rating_id = $this->post->ratingID;
 		//check required post fields
-		if(!empty($from_user_id) && !empty($to_user_id) && !empty($notification_type) && !empty($rating_id)){
+		if($from_user_id != '' && $to_user_id != '' && $notification_type != '' && $rating_id != ''){
 			//decrypt information
 			$from_user_id = hashids_decrypt($from_user_id);
 			$to_user_id = hashids_decrypt($to_user_id);
@@ -38,8 +39,8 @@ class Notification extends CI_Controller{
 						$this->db->set('from_user_id', $from_user_id);
 						$this->db->set('to_user_id', $to_user_id);
 						$this->db->set('rating_id', $rating_id);
-						$this->db->set('notification_type', $this->input->post('notificationType'));
-						$this->db->set('message', $this->input->post('message'));
+						$this->db->set('notification_type', $this->post->notificationType);
+						$this->db->set('message', $this->post->message);
 						$this->db->insert('CRNotification');
 						//now to get all of the user's devices and send push notifications to each
 						$this->load->model('user_model');
@@ -60,25 +61,25 @@ class Notification extends CI_Controller{
 							$this->db->set('modified', 'NOW()', FALSE);							
 							$this->db->set('device_id', $device_id);
 							$this->db->set('notification_id', $notification_id);
-							$this->db->set('message', $this->input->post('message'));
+							$this->db->set('message', $this->post->message);
 							$this->db->set('badge', $badge);
 							$this->db->insert('CRPushNotification');
 						}
 					}
 					else{
-						$this->_generateError('rating not exist.');	
+						$this->_generateError('Rating Not Found',$this->config->item('error_entity_not_found'));	
 					}
 				}
 				else{
-					$this->_generateError('to user does not exist.');
+					$this->_generateError('To User Not Found',$this->config->item('error_entity_not_found'));
 				}
 			}
 			else{
-				$this->_generateError('from user does not exist.');
+				$this->_generateError('From User Not Found',$this->config->item('error_entity_not_found'));
 			}
 		}
 		else{
-			$this->_generateError('required field(s) missing');
+			$this->_generateError('Required Fields Missing', $this->config->item('error_required_fields'));
 		}
 		$this->_response();
 	}
@@ -96,7 +97,7 @@ class Notification extends CI_Controller{
 			$this->db->update('CRNotification');
 		}
 		else{
-			$this->_generateError('could not find notification with the specified id');
+			$this->_generateError('Notification Not Found',$this->config->item('error_entity_not_found'));
 		}
 		$this->_response();
 	}
