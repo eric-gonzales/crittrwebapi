@@ -20,7 +20,7 @@ class User extends CI_Controller{
 			//create new entry in CRUser table
 			$this->db->set('created', 'NOW()', FALSE);
 			$this->db->set('modified', 'NOW()', FALSE);			
-			$this->db->set('name', $this->post->name);
+			$this->db->set('username', $this->post->username);
 			$this->db->set('password_hash', $this->phpass->hash($this->post->password));
 			$this->db->set('email', $this->post->email);
 			$this->db->insert('CRUser');
@@ -229,13 +229,13 @@ class User extends CI_Controller{
 						$this->db->set('modified', 'NOW()', FALSE);						
 						$this->db->insert('CRFriends');
 						$this->user_model->setID($user_id);
-						$this->user_model->fetchName();
+						$this->user_model->fetchUsername();
 						//check if friend is ignoring user and is not our friend already
 						$this->db->select('ignore');
 						$friends_stmt = $this->db->get_where('CRFriends',array('user_id' => $friend_id, 'friend_id' => $user_id), 1);
 						if($friends_stmt->num_rows() == 0){		
 							//and let's send them a notification so they know
-							$this->db->set('created', 'NOW()', FALSE)->set('from_user_id', $user_id)->set('to_user_id', $friend_id)->set('message', $this->user_model->getName().' wants to be your Critter friend!');
+							$this->db->set('created', 'NOW()', FALSE)->set('from_user_id', $user_id)->set('to_user_id', $friend_id)->set('message', $this->user_model->getUsername().' wants to be your Critter friend!');
 							$this->db->set('modified', 'NOW()', FALSE);													
 							$this->db->insert('CRNotification');
 							$notification_id = $this->db->insert_id();

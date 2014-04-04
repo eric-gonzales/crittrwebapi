@@ -7,7 +7,7 @@
  
 class User_model extends CR_Model {
 	private $id;
-	private $name;
+	private $username;
 	private $email;
 	private $facebook_id;
 	private $facebook_username;
@@ -72,11 +72,11 @@ class User_model extends CR_Model {
 	/*
 	 * Fetch username
 	 */
-	public function fetchName(){
-		$this->db->select('name');
+	public function fetchUsername(){
+		$this->db->select('username');
 		$query = $this->db->get_where('CRUser', array('id' => $this->getID()), 1);
 		$row = $query->row();
-		$this->setName($row->name);
+		$this->setUsername($row->username);
 	}
 	
 	/*
@@ -154,7 +154,7 @@ class User_model extends CR_Model {
 				$friend = $result->row();
 				$friends[] = array(
 					'id' => hashids_encrypt($friend->id),
-					'name' => $friend->name,
+					'username' => $friend->username,
 					'email' => $friend->email,
 					'facebook_id' => $friend->facebook_id,
 					'facebook_username' => $friend->facebook_username,
@@ -207,12 +207,12 @@ class User_model extends CR_Model {
 		return $this->id;
 	}
 	
-	public function setName($name){
-		$this->name = $name;
+	public function setUsername($username){
+		$this->username = $username;
 	}
 	
-	public function getName(){
-		return $this->name;
+	public function getUsername(){
+		return $this->$username;
 	}
 	
 	public function setEmail($email){
