@@ -10,6 +10,14 @@ class User extends CI_Controller{
 		parent::__construct();
 		$this->load->model('user_model');
 		$this->post = json_decode(file_get_contents('php://input'));
+		 /* get all the Mixpanel files */
+        $this->mixpanel_dir = $_SERVER['DOCUMENT_ROOT'].'/application/third_party/mixpanel-php/lib/';
+		$this->_mixpanel_req();
+		$this->mp = Mixpanel::getInstance($this->config->item('mixpanel_project_token'));
+	}
+	
+	private function _mixpanel_req(){
+		require_once $this->mixpanel_dir.'Mixpanel.php';
 	}
 	
 	//Create new Account
@@ -26,6 +34,8 @@ class User extends CI_Controller{
 			$this->db->insert('CRUser');
 			//grab the user id from the last insert
 			$this->user_model->setID($this->db->insert_id());
+			//Track the user sign up
+			$this->mp->track("User Signed Up", array("label" => "sign-up"));
 			//First, select id from CRDevice where device_vendor_id = critter-device
 			$this->db->select('id');
 			$query = $this->db->get_where('CRDevice', array('device_vendor_id' => $this->input->get_request_header('critter-device', TRUE)), 1);
