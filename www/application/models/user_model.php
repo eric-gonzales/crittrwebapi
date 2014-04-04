@@ -43,7 +43,7 @@ class User_model extends CR_Model {
 		
 		//set result
 		$this->setResult(array(
-			'image_url' => $this->getPhotoURL(),
+			'user' => $this->fetchUser($this->getID()),
 			'friends' => $this->getFriends(),
 			'notifications' => $this->getNotifications(),
 			'url_profilephoto' => $this->config->item('base_url').'user/photo/'.$hashedUserID,
@@ -55,18 +55,27 @@ class User_model extends CR_Model {
 			'url_updatepushtoken' => $this->config->item('base_url').'device/update',
 			'url_moviespriority' => $this->config->item('base_url').'movies/priority/'.$hashedUserID,
 			'url_moviesunrated' => $this->config->item('base_url').'movies/unreated/'.$hashedUserID,
-			'url_moviesboxoffice' => $this->config->item('base_url').'movies/boxoffice/'.$hashedUserID.'/Limit/CountryCode',
-			'url_moviesopening' => $this->config->item('base_url').'movies/opening/'.$hashedUserID.'/Limit/CountryCode',
-			'url_moviesupcoming' => $this->config->item('base_url').'movies/upcoming/'.$hashedUserID.'/Limit/Page/CountryCode',
-			'url_moviesnewreleasedvd' => $this->config->item('base_url').'movies/newreleasedvds/'.$hashedUserID.'/Limit/Page/CountryCode',
-			'url_moviescurrentdvd' => $this->config->item('base_url').'movies/currentdvds/'.$hashedUserID.'/Limit/Page/CountryCode',
-			'url_moviesupcomingdvd' => $this->config->item('base_url').'movies/upcomingdvds/'.$hashedUserID.'/Limit/Page/CountryCode',
-			'url_moviessearch' => $this->config->item('base_url').'movies/search/'.$hashedUserID.'/searchTerm/Limit/Page',
+			'url_moviesboxoffice' => $this->config->item('base_url').'movies/boxoffice/'.$hashedUserID,
+			'url_moviesopening' => $this->config->item('base_url').'movies/opening/'.$hashedUserID,
+			'url_moviesupcoming' => $this->config->item('base_url').'movies/upcoming/'.$hashedUserID,
+			'url_moviesnewreleasedvd' => $this->config->item('base_url').'movies/newreleasedvds/'.$hashedUserID,
+			'url_moviescurrentdvd' => $this->config->item('base_url').'movies/currentdvds/'.$hashedUserID,
+			'url_moviesupcomingdvd' => $this->config->item('base_url').'movies/upcomingdvds/'.$hashedUserID,
+			'url_moviessearch' => $this->config->item('base_url').'movies/search/'.$hashedUserID,
 			'url_ratingupdate' => $this->config->item('base_url').'ratings/update/'.$hashedUserID,
 			'url_ratingusermovie' => $this->config->item('base_url').'ratings',
-			'url_ratingallmovie' => $this->config->item('base_url').'ratings/'.$hashedUserID.'/hashedMovieID',
+			'url_ratingallmovie' => $this->config->item('base_url').'ratings/'.$hashedUserID,
 			'url_ratingalluser' => $this->config->item('base_url').'ratings/user',
 		));
+	}
+	
+	public function fetchUser($userID)
+	{
+		$query = $this->db->get_where('CRUser', array('id' => $this->getID()), 1);
+		$row = $query->row();
+		unset($row->password_hash);
+		$row->id = hashids_encrypt($row->id);
+		return $row;
 	}
 	
 	/*
