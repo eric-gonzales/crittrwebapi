@@ -80,11 +80,28 @@ class User extends CI_Controller{
 	     		try {
 	     			//Query Facebook API for /me object
 	        		$user_profile = $facebook->api('/me','GET');
+	        		$facebook_name = $user_profile['name'];	        		
 	        		$facebook_username = $user_profile['username'];
+	        		$facebook_email = $user_profile['email'];
+	        		$facebook_photo_url = "http://graph.facebook.com/$facebook_username/picture?type=large";
+
 					//check if user is signed up
 					$this->db->select('id');
 					$chk_stmt = $this->db->get_where('CRUser',array('facebook_id' => $fb_id), 1);
+					
+					//Update DB fields - we will either be doing a create, or an update
+					$this->db->set('name', $facebook_email);						
+					$this->db->set('email', $facebook_email);
+					$this->db->set('facebook_username', $facebook_username);
+					$this->db->set('photo_url', $facebook_photo_url);
+					$this->db->set('modified', 'NOW()', FALSE);
+					
+					//If user exists, update it 
 					if($chk_stmt->num_rows() > 0){
+						//Update user account details (FB may have changed)
+						$this->db->where('facebook_id', $fb_id);
+						$this->db->update('CRUser');
+					
 						//fetch user details
 						$cr_user = $chk_stmt->row();
 						$this->user_model->setID($cr_user->id);
@@ -94,7 +111,12 @@ class User extends CI_Controller{
 					}
 					else{
 						//create new user
-						$this->db->set('created', 'NOW()', FALSE)->set('facebook_id', $fb_id)->set('modified', 'NOW()', FALSE)->set('facebook_username', $facebook_username);					
+						$this->db->set('created', 'NOW()', FALSE);
+						$this->db->set('facebook_id', $fb_id);
+							
+						//Set a default junk password so the account isn't blank - users can reset
+						$this->db->set('password_hash', sha1($fb_id . "junk")); //Just to put something in so we don't have an empty login for this account - user can run pw reset if they need to log in later without FB
+						
 						$this->db->insert('CRUser');
 						$this->user_model->setID($this->db->insert_id());
 						$this->user_model->defaultResult();
