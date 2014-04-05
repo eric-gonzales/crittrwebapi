@@ -1,7 +1,7 @@
 <?php
 class AmazonVideo{
 	function __construct($access_key, $secret_access_key){
-		require('amazon.php');
+		require_once('amazon.php');
 		$this->access_key = $access_key;
 		$this->secret_access_key = $secret_access_key;
 	}
@@ -14,7 +14,7 @@ class AmazonVideo{
 			"ResponseGroup" => "ItemAttributes"
 		);
 		$amazon = new Amazon();
-		$results = $amazon->get_results("com", $amazon_access_key, $amazon_secret_access_key, $query);
+		$results = $amazon->get_results("com", $this->access_key, $this->secret_access_key, $query);
 		$videoResult = array();
 		foreach($results as $array){
 			foreach($array as $item){
