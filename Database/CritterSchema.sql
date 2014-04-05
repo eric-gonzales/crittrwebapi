@@ -131,6 +131,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`CRMovie` (
   `dvd_release_date` DATETIME NULL,
   `tmdb_poster_path` VARCHAR(255) NULL,
   `priority` INT NULL,
+  `critter_rating` INT NOT NULL DEFAULT 0,
   `created` DATETIME NOT NULL,
   `modified` DATETIME NOT NULL,
   PRIMARY KEY (`id`))
