@@ -392,11 +392,35 @@ class Movie_model extends CR_Model {
 	public function fetchCritterRating(){
 		$rating = 0;
 		if(!$this->cache->memcached->get('critter_rating_'.$this->getID())){
-			$this->db->select_avg('rating');
-			$rating_stmt = $this->db->get_where('CRRating',array('movie_id' => $this->getID()), 1);
-			$row = $rating_stmt->row();
-			$rating = $row->rating;
-			$this->cache->memcached->save('critter_rating_'.$this->getID(), $rating, $this->config->item('critter_rating_cache_seconds'));
+		
+/*	
+ 	User rating values:	    
+    CRMovieActionNone, 0
+    CRMovieActionRecommend, 1
+    CRMovieActionDontRecommend, 2
+    CRMovieActionWatchList, 3
+    CRMovieActionScrapPile 4 */
+		
+			//Count likes
+			$this->db->where('movie_id', $this->getID());
+			$this->db->where('rating', 1);
+			$likeCount = $this->db-count_all_results();
+			
+			//Count dislikes
+			$this->db->where('movie_id', $this->getID());
+			$this->db->where('rating', 2);
+			$dislikeCount = $this->db-count_all_results();
+			
+			//Calculate average
+			$average = 0;
+			if ($likeCount + $dislikeCount > 0)
+			{
+				$average = (($likeCount / ($likeCount + $dislikeCount)) * 100);
+			}
+		
+			//Update cache
+			$this->cache->memcached->save('critter_rating_'.$this->getID(), $average, $this->config->item('critter_rating_cache_seconds'));
+			
 			//update db record
 			$this->db->where('id', $this->getID())->set('critter_rating', $rating);
 			$this->db->update('CRMovie');
