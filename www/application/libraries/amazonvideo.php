@@ -6,7 +6,7 @@ class AmazonVideo{
 		$this->secret_access_key = $secret_access_key;
 	}
 	function search($movie_title, $movie_year){
-		$querystr = $movieTitle.' '.$movieYear;
+		$querystr = $movie_title.' '.$movie_year;
 		$query = array(
 			"Operation" => "ItemSearch",
 			"Keywords" => $querystr,
