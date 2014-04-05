@@ -390,8 +390,8 @@ class Movie_model extends CR_Model {
 	}
 
 	public function fetchCritterRating(){
-		$rating = 0;
-		if(!$this->cache->memcached->get('critter_rating_'.$this->getID())){
+		$rating = $this->cache->memcached->get('critter_rating_'.$this->getID());
+		if($rating === FALSE)
 		
 /*	
  	User rating values:	    
@@ -412,21 +412,17 @@ class Movie_model extends CR_Model {
 			$dislikeCount = $this->db-count_all_results();
 			
 			//Calculate average
-			$average = 0;
 			if ($likeCount + $dislikeCount > 0)
 			{
-				$average = (($likeCount / ($likeCount + $dislikeCount)) * 100);
+				$rating = (($likeCount / ($likeCount + $dislikeCount)) * 100);
 			}
 		
 			//Update cache
-			$this->cache->memcached->save('critter_rating_'.$this->getID(), $average, $this->config->item('critter_rating_cache_seconds'));
+			$this->cache->memcached->save('critter_rating_'.$this->getID(), $rating, $this->config->item('critter_rating_cache_seconds'));
 			
 			//update db record
 			$this->db->where('id', $this->getID())->set('critter_rating', $rating);
 			$this->db->update('CRMovie');
-		}
-		else{
-			$rating = $this->_getCache('critter_rating_'.$this->getID());
 		}
 		$this->setCritterRating($rating);
 	}
