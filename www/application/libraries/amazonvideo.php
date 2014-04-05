@@ -1,7 +1,7 @@
 <?php
 class AmazonVideo{
 	function __construct($access_key, $secret_access_key){
-		require_once('amazon.php');
+		require_once(dirname(__FILE__).'amazon.php');
 		$this->access_key = $access_key;
 		$this->secret_access_key = $secret_access_key;
 	}
