@@ -98,8 +98,10 @@ class Movies extends CI_Controller{
 			$user_id = hashids_decrypt($hashedUserID);
 			//configure URL
 			$url = sprintf($this->config->item('rotten_tomatoes_box_office_url'), $this->config->item('rotten_tomatoes_api_key'), $limit, $countryCode);
+			
+			$results = $this->cache->memcached->get($url);
 			//get movie results from this URL
-			if(!$this->cache->memcached->get($url)){
+			if(!$results){
 				//get search results
 				$movie_info = $this->_fetchFromURL($url);
 				$response = json_decode($movie_info);
@@ -111,9 +113,6 @@ class Movies extends CI_Controller{
 					array_push($results, $result);
 				}
 				$this->cache->memcached->save($url, $results, $this->config->item('rotten_tomatoes_cache_seconds'));
-			}
-			else{
-				$results = $this->_getCache($url);
 			}
 
 			//return an array of CRMovie records with associated details attached from RT, IMDB, TMDB, iTunes, and TMS
