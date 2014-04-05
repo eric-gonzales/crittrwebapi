@@ -412,11 +412,14 @@ class Movie_model extends CR_Model {
 	}
 	
 	public function fetchAmazonOnlineVideo(){
-		require_once(dirname(__FILE__).'/../libraries/amazonvideo.php');
-		$amazon_video = new AmazonVideo($this->config->item('aws_key'), $this->config->item('aws_secret'));
+		$title = $this->getTitle();
 		$releaseYear = substr($this->getBoxOfficeReleaseDate(), 0, 4);
-		$result = $amazon_video->search($this->getTitle(), $releaseYear);
-		$this->setAmazonDetails($result);
+		if($title != '' && $releaseYear != ''){
+			require_once(dirname(__FILE__).'/../libraries/amazonvideo.php');
+			$amazon_video = new AmazonVideo($this->config->item('aws_key'), $this->config->item('aws_secret'));
+			$result = $amazon_video->search($title, $releaseYear);
+			$this->setAmazonDetails($result);
+		}
 	}
 
 	/*	

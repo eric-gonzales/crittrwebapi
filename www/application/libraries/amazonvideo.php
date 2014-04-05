@@ -43,7 +43,7 @@ class AmazonVideo{
 				}
 			}
 		}
-		return stripslashes(urldecode(json_encode($videoResult)));
+		return $videoResult;
 	}
 }
 
