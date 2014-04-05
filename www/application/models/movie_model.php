@@ -401,20 +401,21 @@ class Movie_model extends CR_Model {
 		$query = $this->db->get_where('CRNetflix', array('title' => $this->getTitle(), 'release_year' => $releaseYear, 'season' => 0), 1);
 		if($query->num_rows() > 0){
 			$result = $query->row();
-			$this->setNetflixLink($this->config->item('netflix_base_url').$result->netflix_id);
+			if($result->netflix_id != ''){
+				$this->setNetflixLink($this->config->item('netflix_base_url').$result->netflix_id);
+			}
 		}
 	}
 	
 	public function fetchAmazonOnlineVideo(){}
 
-/*	
- 	User rating values:	    
-    CRMovieActionNone, 0
-    CRMovieActionRecommend, 1
-    CRMovieActionDontRecommend, 2
-    CRMovieActionWatchList, 3
-    CRMovieActionScrapPile 4 */
-
+	/*	
+	 	User rating values:	    
+	    CRMovieActionNone, 0
+	    CRMovieActionRecommend, 1
+	    CRMovieActionDontRecommend, 2
+	    CRMovieActionWatchList, 3
+	    CRMovieActionScrapPile 4 */
 	public function fetchCritterRating()
 	{
 		$cacheKey = 'critter_rating_'.$this->getID();
