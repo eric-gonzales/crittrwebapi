@@ -75,12 +75,19 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `mydb`.`CREmailToken`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`CREmailToken` (
-  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_id` INT UNSIGNED NOT NULL,
   `token` VARCHAR(100) NOT NULL,
-  `user_id` INT(11) NOT NULL,
-  `used` TINYINT(4) NULL DEFAULT '0',
-  `created` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`))
+  `used` TINYINT(1) NOT NULL DEFAULT '0',
+  `created` DATETIME NOT NULL,
+  `modified` DATETIME NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_CREmailToken_CRUser1_idx` (`user_id` ASC),
+  CONSTRAINT `fk_CREmailToken_CRUser1`
+    FOREIGN KEY (`user_id`)
+    REFERENCES `mydb`.`CRUser` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB
 AUTO_INCREMENT = 16
 DEFAULT CHARACTER SET = utf8
