@@ -15,8 +15,6 @@ class AmazonVideo{
 		);
 		$amazon = new Amazon();
 		$results = $amazon->get_results("com", $this->access_key, $this->secret_access_key, $query);
-		print_r($results);
-		die();
 		$videoResult = array();
 		foreach($results as $array){
 			foreach($array as $item){
