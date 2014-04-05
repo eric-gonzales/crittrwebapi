@@ -36,6 +36,9 @@
 	$config['itunes_title_url'] = 'https://itunes.apple.com/search?country=us&entity=movie&attribute=movieTerm&term=%1$s';
 	$config['itunes_cache_seconds'] = 60 * 60 * 24;
 	
+	//Netflix
+	$config['netflix_base_url'] = 'http://www.netflix.com/WiPlayer?movieid=';
+	
 	//Critter
 	$config['critter_rating_cache_seconds'] = 60 * 60 * 24;
 	?>

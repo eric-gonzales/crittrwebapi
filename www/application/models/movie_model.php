@@ -28,6 +28,8 @@ class Movie_model extends CR_Model {
 	private $tmdb_trailer_details;
 	private $tms_trailer_details;
 	private $tms_trailer_image_details;
+	private $netflix_link;
+	private $amazon_details;
 	
 	//Construct from RT ID
 	public function __construct($rotten_tomatoes_id){
@@ -389,6 +391,10 @@ class Movie_model extends CR_Model {
 		$this->setTMSDetails($finalRes);
 	}
 
+	public function fetchNetflixOnlineVideo(){}
+	
+	public function fetchAmazonOnlineVideo(){}
+
 /*	
  	User rating values:	    
     CRMovieActionNone, 0
@@ -615,6 +621,22 @@ class Movie_model extends CR_Model {
 	
 	public function setCritterRating($rating){
 		$this->critter_rating = $rating;
+	}
+	
+	public function getAmazonDetails(){
+		return $this->amazon_details;
+	}
+	
+	public function setAmazonDetails($details){
+		$this->amazon_details = $details;
+	}
+	
+	public function getNetflixLink(){
+		return $this->netflix_link;
+	}
+	
+	public function setNetflixLink($link){
+		$this->netflix_link = $link;
 	}
 	
 	public function _getCachedData($url, $expiration, $mode = ''){
