@@ -97,6 +97,9 @@ class Movie_model extends CR_Model {
 			
 		}
 		
+		//Netflix Link
+		$this->fetchNetflixOnlineVideo();
+		
 		//Critter Rating
 		$this->fetchCritterRating();
 		
@@ -156,7 +159,8 @@ class Movie_model extends CR_Model {
 			'itunes_details' => $this->getiTunesDetails(),
 			'tms_details' => $this->getTMSDetails(),
 			'tms_trailer_image_details' => $this->getTMSTrailerImageDetails(),
-			'tms_trailer_details' => $this->getTMSTrailerDetails()
+			'tms_trailer_details' => $this->getTMSTrailerDetails(),
+			'netflix_details' => $this->getNetflixLink()
 		);
 		
 		$this->setResult($result);
@@ -391,7 +395,15 @@ class Movie_model extends CR_Model {
 		$this->setTMSDetails($finalRes);
 	}
 
-	public function fetchNetflixOnlineVideo(){}
+	public function fetchNetflixOnlineVideo(){
+		$releaseYear = substr($this->getBoxOfficeReleaseDate(), 0, 4);
+		$this->db->select('netflix_id');
+		$query = $this->db->get_where('CRNetflix', array('title' => $this->getTitle(), 'release_year' => $releaseYear, 'season' => 0), 1);
+		if($query->num_rows() > 0){
+			$result = $query->row();
+			$this->setNetflixLink($result->netflix_id);
+		}
+	}
 	
 	public function fetchAmazonOnlineVideo(){}
 
