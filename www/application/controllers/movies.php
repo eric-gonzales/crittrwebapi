@@ -115,14 +115,7 @@ class Movies extends CI_Controller{
 			else{
 				$results = $this->_getCache($url);
 			}
-			//before returning the array, remove any movies the user has already rated
-			foreach($results as $key => $movie){
-				$movie_id = hashids_decrypt($movie['id']);
-				$chk_stmt = $this->db->get_where('CRRating',array('movie_id' => $movie_id, 'user_id' => $user_id), 1);
-				if($chk_stmt->num_rows() > 0){
-					unset($results[$key]);
-				}
-			}
+
 			//return an array of CRMovie records with associated details attached from RT, IMDB, TMDB, iTunes, and TMS
 			$this->movies_model->setResult($results);
 		}
