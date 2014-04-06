@@ -176,7 +176,7 @@ class Movie_model extends CR_Model {
 				'tmdb_id' => $this->getTMDBID(),
 				'tms_root_id' => $this->getTMSRootID(),
 				'tms_movie_id' => $this->getTMSMovieID(),
-				'url_string_amazon' => $this->getAmazonDetails()->DetailPageURL,
+				'url_string_amazon' => $this->getAmazonDetails()["DetailPageURL"],
 				'url_string_imdb' => "http://www.imdb.com/title/" . $this->getIMDBID(),
 				'url_string_netflix' => $this->getNetflixLink(),
 				'url_string_rottentomatoes' => $this->getRTDetails()->links->alternate,
@@ -329,7 +329,6 @@ class Movie_model extends CR_Model {
 		$info = $this->_getCachedData($url, $this->config->item('tmdb_cache_seconds'));
 		$res = json_decode($info);
 		$this->setTMDBTrailerDetails($res);
-		error_log("Set Trailers $info");
 	}
 	
 	public function fetchTMSTrailerDetails(){
@@ -357,7 +356,7 @@ class Movie_model extends CR_Model {
 		if(isset($res->results)){
 			foreach($res->results as $itunes){
 				$iTunesReleaseYear = substr($itunes->releaseDate, 0, 4);
-				$releaseYear = substr($this->getBoxOfficeReleaseDate(), 0, 4);
+				$releaseYear = $this->getRTDetails()->year;
 				//Sometimes the year is +/- 1 year, so get that as a fallback
 				if((($releaseYear-1) <= $iTunesReleaseYear) && ($iTunesReleaseYear <= ($releaseYear+1))){
 					$this->setiTunesID($itunes->trackId);
@@ -376,7 +375,7 @@ class Movie_model extends CR_Model {
 		$res = json_decode($info);
 		if(isset($res->hits)){
 			$matched = false;
-			$releaseYear = substr($this->getBoxOfficeReleaseDate(), 0, 4);
+			$releaseYear = $this->getRTDetails()->year;
 			$secondTMSMovieID = '';
 			$secondTMSRootID = '';
 			$secondRes = array();
@@ -425,7 +424,7 @@ class Movie_model extends CR_Model {
 	}
 
 	public function fetchNetflixOnlineVideo(){
-		$releaseYear = substr($this->getBoxOfficeReleaseDate(), 0, 4);
+		$releaseYear = $this->getRTDetails()->year;
 		$this->db->select('netflix_id');
 		$query = $this->db->get_where('CRNetflix', array('title' => $this->getTitle(), 'release_year' => $releaseYear, 'season' => 0), 1);
 		if($query->num_rows() > 0){
@@ -438,7 +437,7 @@ class Movie_model extends CR_Model {
 	
 	public function fetchAmazonOnlineVideo(){
 		$title = $this->getTitle();
-		$releaseYear = substr($this->getBoxOfficeReleaseDate(), 0, 4);
+		$releaseYear = $this->getRTDetails()->year;
 		if($title != '' && $releaseYear != ''){
 			require_once(dirname(__FILE__).'/../libraries/amazonvideo.php');
 			$amazon_video = new AmazonVideo($this->config->item('aws_key'), $this->config->item('aws_secret'));
