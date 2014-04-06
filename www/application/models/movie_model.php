@@ -32,140 +32,164 @@ class Movie_model extends CR_Model {
 	private $amazon_details;
 	
 	//Construct from RT ID
-	public function __construct($rotten_tomatoes_id){
+	public function __construct($rotten_tomatoes_id)
+	{
 		parent::__construct();
-		$inDB = false;
 		
-		//Try to get data from DB first
-		$this->setRottenTomatoesID($rotten_tomatoes_id);
-		$chk_stmt = $this->db->get_where('CRMovie',array('rotten_tomatoes_id' => $this->getRottenTomatoesID()), 1);
-		if($chk_stmt->num_rows() > 0){
-			$inDB = true; //this record is in the database, so we will update instead of insert
-			$movie_info = $chk_stmt->row();
-			$this->setID($movie_info->id);
-		}
+		//Check the cache first
+		$cacheKey = "CRMovie_" . $rotten_tomatoes_id;
+		$result = $result = $this->cache->memcached->get($cacheKey);
 		
-		//RT data
-		$this->fetchRottenTomatoesData();
-		if($inDB){
-			if($movie_info->title != ''){
-				$this->setTitle($movie_info->title);
-				$this->setHashtag($this->makeHashtag($movie_info->title));
+		if (!$result)
+		{
+			//Try to get data from DB first
+			$inDB = FALSE;
+			$movie_info = NULL;
+			$this->setRottenTomatoesID($rotten_tomatoes_id);
+			$chk_stmt = $this->db->get_where('CRMovie',array('rotten_tomatoes_id' => $this->getRottenTomatoesID()), 1);
+			if($chk_stmt->num_rows() > 0)
+			{
+				$inDB = TRUE; //this record is in the database, so we will update instead of insert
+				$movie_info = $chk_stmt->row();
+				$this->setID($movie_info->id);
 			}
-			if($movie_info->box_office_release_date != ''){
-				$this->setBoxOfficeReleaseDate($movie_info->box_office_release_date);
-			}
-			if($movie_info->dvd_release_date != ''){
-				$this->setDVDReleaseDate($movie_info->dvd_release_date);
-			}
-			if($movie_info->imdb_id != ''){
-				$this->setIMDBID($movie_info->imdb_id);
-			}
-		}
 		
-		//IMDB Data
-		$this->fetchIMDBData();
+			//RT data
+			$this->fetchRottenTomatoesData();
+			if($inDB)
+			{
+				if($movie_info->title != '')
+				{
+					$this->setTitle($movie_info->title);
+					$this->setHashtag($this->makeHashtag($movie_info->title));
+				}
+				if($movie_info->box_office_release_date != '')
+				{
+					$this->setBoxOfficeReleaseDate($movie_info->box_office_release_date);
+				}
+				if($movie_info->dvd_release_date != '')
+				{
+					$this->setDVDReleaseDate($movie_info->dvd_release_date);
+				}
+				if($movie_info->imdb_id != '')
+				{
+					$this->setIMDBID($movie_info->imdb_id);
+				}
+			}
 		
-		//TMDB data
-		$this->fetchTMDBData();
-		if($inDB){
-			if($movie_info->tmdb_id != ''){
-				$this->setTMDBID($movie_info->tmdb_id);
-			}
-			if($movie_info->tmdb_poster_path != ''){
-				$this->setTMDBPosterPath($movie_info->tmdb_poster_path);
-			}
-		}
+			//IMDB Data
+			$this->fetchIMDBData();
 		
-		//iTunes Data
-		$this->fetchiTunesData();
-		if($inDB){
-			if($movie_info->itunes_id != ''){
-				$this->setiTunesID($movie_info->itunes_id);
+			//TMDB data
+			$this->fetchTMDBData();
+			if($inDB)
+			{
+				if($movie_info->tmdb_id != '')
+				{
+					$this->setTMDBID($movie_info->tmdb_id);
+				}
+				if($movie_info->tmdb_poster_path != '')
+				{
+					$this->setTMDBPosterPath($movie_info->tmdb_poster_path);
+				}
 			}
-		}
 		
-		//TMS Data 
-		$this->fetchTMSData();
-		if($inDB){
-			if($movie_info->tms_movie_id != ''){
-				$this->setTMSMovieID($movie_info->tms_movie_id);
+			//iTunes Data
+			$this->fetchiTunesData();
+			if($inDB)
+			{
+				if($movie_info->itunes_id != '')
+				{
+					$this->setiTunesID($movie_info->itunes_id);
+				}
 			}
-			if($movie_info->tms_root_id != ''){
-				$this->setTMSRootID($movie_info->tms_root_id);
+		
+			//TMS Data 
+			$this->fetchTMSData();
+			if($inDB)
+			{
+				if($movie_info->tms_movie_id != '')
+				{
+					$this->setTMSMovieID($movie_info->tms_movie_id);
+				}
+				if($movie_info->tms_root_id != '')
+				{
+					$this->setTMSRootID($movie_info->tms_root_id);
+				}
+			}
+		
+			//Netflix Link
+			$this->fetchNetflixOnlineVideo();
+			
+			//Amazon Results 
+			$this->fetchAmazonOnlineVideo();
+			
+			//Critter Rating
+			$this->fetchCritterRating();
+		
+			//Database Operations
+			$this->db->set('rotten_tomatoes_id', $this->getRottenTomatoesID());
+			$this->db->set('itunes_id', $this->getiTunesID());
+			$this->db->set('imdb_id', $this->getIMDBID());
+			$this->db->set('tmdb_id', $this->getTMDBID());
+			$this->db->set('tms_root_id', $this->getTMSRootID());
+			$this->db->set('tms_movie_id', $this->getTMSMovieID());
+			$this->db->set('hashtag', $this->getHashtag());
+			$this->db->set('title', $this->getTitle());
+			$this->db->set('box_office_release_date', $this->getBoxOfficeReleaseDate());
+			$this->db->set('dvd_release_date', $this->getDVDReleaseDate());
+			$this->db->set('tmdb_poster_path', $this->getTMDBPosterPath());
+			$this->db->set('modified', 'NOW()', FALSE);		
+			if ($inDB)
+			{
+				//Update
+				$this->db->where('id', $this->getID());
+				$this->db->update('CRMovie');
+			}
+			else
+			{
+				//Insert
+				$this->db->set('created', 'NOW()', FALSE);
+				$this->db->insert('CRMovie');
+				$this->setID($this->db->insert_id());
 			}
 			
+			//Setting Result
+			$result = array
+			(
+				'id' => hashids_encrypt($this->getID()),
+				'rotten_tomatoes_id' => $this->getRottenTomatoesID(),
+				'itunes_id' => $this->getiTunesID(),
+				'imdb_id' => $this->getIMDBID(),
+				'tmdb_id' => $this->getTMDBID(),
+				'tms_root_id' => $this->getTMSRootID(),
+				'tms_movie_id' => $this->getTMSMovieID(),
+				'hashtag' => $this->getHashtag(),
+				'title' => $this->getTitle(),
+				'box_office_release_date' => $this->getBoxOfficeReleaseDate(),
+				'dvd_release_date' => $this->getDVDReleaseDate(),
+				'tmdb_poster_path' => $this->getTMDBPosterPath(),
+				'critter_rating' => $this->getCritterRating(),
+				
+				//TODO: DJS - I need to go through and lean this up to the bare minimum we need from each service, payloads too large
+	/*
+				'rt_details' => $this->getRTDetails(),
+				'imdb_details' => $this->getIMDBDetails(),
+				'tmdb_details' => $this->getTMDBDetails(),
+				'tmdb_trailer_details' => $this->getTMDBTrailerDetails(),
+				'itunes_details' => $this->getiTunesDetails(),
+				'tms_details' => $this->getTMSDetails(),
+				'tms_trailer_image_details' => $this->getTMSTrailerImageDetails(),
+				'tms_trailer_details' => $this->getTMSTrailerDetails(),
+				'netflix_details' => $this->getNetflixLink(),
+				'amazon_details' => $this->getAmazonDetails()
+	*/
+			);			
+			
+			//Save to cache
+			//TODO: Get a cache key
+			$this->cache->memcached->save($cacheKey, $result, $this->config->item('critter_rating_cache_seconds'));
 		}
-		
-		//Netflix Link
-		$this->fetchNetflixOnlineVideo();
-		
-		//Amazon Results 
-		$this->fetchAmazonOnlineVideo();
-		
-		//Critter Rating
-		$this->fetchCritterRating();
-		
-		//Database Operations
-		if($inDB){
-			$this->db->where('id', $this->getID());
-			$this->db->set('rotten_tomatoes_id', $this->getRottenTomatoesID());
-			$this->db->set('itunes_id', $this->getiTunesID());
-			$this->db->set('imdb_id', $this->getIMDBID());
-			$this->db->set('tmdb_id', $this->getTMDBID());
-			$this->db->set('tms_root_id', $this->getTMSRootID());
-			$this->db->set('tms_movie_id', $this->getTMSMovieID());
-			$this->db->set('hashtag', $this->getHashtag());
-			$this->db->set('title', $this->getTitle());
-			$this->db->set('box_office_release_date', $this->getBoxOfficeReleaseDate());
-			$this->db->set('dvd_release_date', $this->getDVDReleaseDate());
-			$this->db->set('tmdb_poster_path', $this->getTMDBPosterPath());
-			$this->db->update('CRMovie');
-		}
-		else{
-			$this->db->set('created', 'NOW()', FALSE);
-			$this->db->set('modified', 'NOW()', FALSE);									
-			$this->db->set('rotten_tomatoes_id', $this->getRottenTomatoesID());
-			$this->db->set('itunes_id', $this->getiTunesID());
-			$this->db->set('imdb_id', $this->getIMDBID());
-			$this->db->set('tmdb_id', $this->getTMDBID());
-			$this->db->set('tms_root_id', $this->getTMSRootID());
-			$this->db->set('tms_movie_id', $this->getTMSMovieID());
-			$this->db->set('hashtag', $this->getHashtag());
-			$this->db->set('title', $this->getTitle());
-			$this->db->set('box_office_release_date', $this->getBoxOfficeReleaseDate());
-			$this->db->set('dvd_release_date', $this->getDVDReleaseDate());
-			$this->db->set('tmdb_poster_path', $this->getTMDBPosterPath());
-			$this->db->insert('CRMovie');
-			$this->setID($this->db->insert_id());
-		}
-		
-		//Setting Result
-		$result = array(
-			'id' => hashids_encrypt($this->getID()),
-			'rotten_tomatoes_id' => $this->getRottenTomatoesID(),
-			'itunes_id' => $this->getiTunesID(),
-			'imdb_id' => $this->getIMDBID(),
-			'tmdb_id' => $this->getTMDBID(),
-			'tms_root_id' => $this->getTMSRootID(),
-			'tms_movie_id' => $this->getTMSMovieID(),
-			'hashtag' => $this->getHashtag(),
-			'title' => $this->getTitle(),
-			'box_office_release_date' => $this->getBoxOfficeReleaseDate(),
-			'dvd_release_date' => $this->getDVDReleaseDate(),
-			'tmdb_poster_path' => $this->getTMDBPosterPath(),
-			'critter_rating' => $this->getCritterRating(),
-			'rt_details' => $this->getRTDetails(),
-			'imdb_details' => $this->getIMDBDetails(),
-			'tmdb_details' => $this->getTMDBDetails(),
-			'tmdb_trailer_details' => $this->getTMDBTrailerDetails(),
-			'itunes_details' => $this->getiTunesDetails(),
-			'tms_details' => $this->getTMSDetails(),
-			'tms_trailer_image_details' => $this->getTMSTrailerImageDetails(),
-			'tms_trailer_details' => $this->getTMSTrailerDetails(),
-			'netflix_details' => $this->getNetflixLink(),
-			'amazon_details' => $this->getAmazonDetails()
-		);
 		
 		$this->setResult($result);
 	}
@@ -665,13 +689,12 @@ class Movie_model extends CR_Model {
 		$this->netflix_link = $link;
 	}
 	
-	public function _getCachedData($url, $expiration, $mode = ''){
-		$result = '';
-		if(!$this->cache->memcached->get(urlencode($url))){
+	public function _getCachedData($url, $expiration, $mode = '')
+	{
+		$result = $this->cache->memcached->get($url);
+		if(!$result)
+		{
 			$result = $this->_fetchFromURL($url, $expiration, true, $mode);
-		}
-		else{
-			$result = $this->_getCache(urlencode($url));
 		}
 		return $result;
 	}
@@ -692,7 +715,7 @@ class Movie_model extends CR_Model {
 					}
 					else{
 						if($shouldBeCached){
-							$this->cache->memcached->save(urlencode($url), $info, $expiration);
+							$this->cache->memcached->save($url, $info, $expiration);
 						}
 						break;
 					}
@@ -705,7 +728,7 @@ class Movie_model extends CR_Model {
 					$curlInfo = $this->curl->info;
 					if($curlInfo['http_code'] < 400){
 						if($shouldBeCached){
-							$this->cache->memcached->save(urlencode($url), $info, $expiration);
+							$this->cache->memcached->save($url, $info, $expiration);
 						}
 						break;
 					}
@@ -717,9 +740,5 @@ class Movie_model extends CR_Model {
 		}
 		
 		return $info;
-	}
-	
-	public function _getCache($key){
-		return $this->cache->memcached->get($key);
 	}
 }
