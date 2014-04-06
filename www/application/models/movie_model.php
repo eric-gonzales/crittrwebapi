@@ -30,6 +30,7 @@ class Movie_model extends CR_Model {
 	private $tms_trailer_image_details;
 	private $netflix_link;
 	private $amazon_details;
+	private $youtube_trailer_id;	
 	
 	//Construct from RT ID
 	public function __construct($rotten_tomatoes_id)
@@ -42,7 +43,7 @@ class Movie_model extends CR_Model {
 		
 		if (!$result)
 		{
-			//Try to get data from DB first
+			//Try to get data from DB 
 			$inDB = FALSE;
 			$movie_info = NULL;
 			$this->setRottenTomatoesID($rotten_tomatoes_id);
@@ -117,7 +118,7 @@ class Movie_model extends CR_Model {
 					$this->setTMSRootID($movie_info->tms_root_id);
 				}
 			}
-		
+			
 			//Netflix Link
 			$this->fetchNetflixOnlineVideo();
 			
@@ -158,36 +159,35 @@ class Movie_model extends CR_Model {
 			$result = array
 			(
 				'id' => hashids_encrypt($this->getID()),
-				'rotten_tomatoes_id' => $this->getRottenTomatoesID(),
-				'itunes_id' => $this->getiTunesID(),
+				'critter_rating' => $this->getCritterRating(),
+				'hashtag' => $this->getHashtag(),
 				'imdb_id' => $this->getIMDBID(),
+				'imdb_rating' => $this->getIMDBDetails()->imdbRating, 
+				'itunes_id' => $this->getiTunesID(),
+				'rotten_tomatoes_id' => $this->getRottenTomatoesID(),
+				'mpaa_rating' => $this->getRTDetails()->mpaa_rating,
+				'original_image_url' => $this->getRTDetails()->posters->original,
+				'poster_path' => $this->getTMDBPosterPath(),
+				'release_date_dvd' => $this->getDVDReleaseDate(),
+				'release_date_theater' => $this->getBoxOfficeReleaseDate(),
+				'runtime' => $this->getRTDetails()->runtime,
+				'synopsis' => $this->getRTDetails()->synopsis,				
+				'title' => $this->getTitle(),				
 				'tmdb_id' => $this->getTMDBID(),
 				'tms_root_id' => $this->getTMSRootID(),
 				'tms_movie_id' => $this->getTMSMovieID(),
-				'hashtag' => $this->getHashtag(),
-				'title' => $this->getTitle(),
-				'box_office_release_date' => $this->getBoxOfficeReleaseDate(),
-				'dvd_release_date' => $this->getDVDReleaseDate(),
-				'tmdb_poster_path' => $this->getTMDBPosterPath(),
-				'critter_rating' => $this->getCritterRating(),
-				
-				//TODO: DJS - I need to go through and lean this up to the bare minimum we need from each service, payloads too large
-	/*
-				'rt_details' => $this->getRTDetails(),
-				'imdb_details' => $this->getIMDBDetails(),
-				'tmdb_details' => $this->getTMDBDetails(),
-				'tmdb_trailer_details' => $this->getTMDBTrailerDetails(),
-				'itunes_details' => $this->getiTunesDetails(),
-				'tms_details' => $this->getTMSDetails(),
-				'tms_trailer_image_details' => $this->getTMSTrailerImageDetails(),
-				'tms_trailer_details' => $this->getTMSTrailerDetails(),
-				'netflix_details' => $this->getNetflixLink(),
-				'amazon_details' => $this->getAmazonDetails()
-	*/
+				'url_string_amazon' => $this->getAmazonDetails()->DetailPageURL,
+				'url_string_imdb' => "http://www.imdb.com/title/" . $this->getIMDBID(),
+				'url_string_netflix' => $this->getNetflixLink(),
+				'url_string_rottentomatoes' => $this->getRTDetails()->links->alternate,
+				'year' => $this->getRTDetails()->year,
+				'youTubeTrailerID' => $this->getYouTubeTrailerID(),
+				'cast' => $this->getRTDetails()->abridged_cast,
+				'directors' => $this->getRTDetails()->abridged_directors,				
+				'genres' => $this->getRTDetails()->genres
 			);			
 			
-			//Save to cache
-			//TODO: Get a cache key
+			//Save to cache (only caching as long as we cache the rating)
 			$this->cache->memcached->save($cacheKey, $result, $this->config->item('critter_rating_cache_seconds'));
 		}
 		
@@ -270,7 +270,7 @@ class Movie_model extends CR_Model {
 			if(!empty($res->movie_results[0]->poster_path)){
 				$this->setTMDBPosterPath($res->movie_results[0]->poster_path);
 			}
-			$this->fetchTMSTrailerDetails();
+			$this->fetchTMDBTrailerDetails();
 			return $res->movie_results[0];
 		}
 		else{
@@ -329,6 +329,7 @@ class Movie_model extends CR_Model {
 		$info = $this->_getCachedData($url, $this->config->item('tmdb_cache_seconds'));
 		$res = json_decode($info);
 		$this->setTMDBTrailerDetails($res);
+		error_log("Set Trailers $info");
 	}
 	
 	public function fetchTMSTrailerDetails(){
@@ -647,6 +648,21 @@ class Movie_model extends CR_Model {
 	
 	public function setTMDBTrailerDetails($details){
 		$this->tmdb_trailer_details = $details;
+		foreach($details->youtube as $trailer)
+		{
+			$this->setYouTubeTrailerID($trailer->source);
+			break;
+		}
+	}
+	
+	public function setYouTubeTrailerID($trailerID)
+	{
+		$this->youtube_trailer_id = $trailerID;
+	}
+	
+	public function getYouTubeTrailerID()
+	{
+		return $this->youtube_trailer_id;
 	}
 	
 	public function getTMSTrailerDetails(){
