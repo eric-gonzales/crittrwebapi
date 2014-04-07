@@ -119,6 +119,16 @@ class Movie_model extends CR_Model {
 				}
 			}
 			
+			//Fetch Trailer Details
+			//Check to see if this movie is in the database and has a Youtube Trailer ID. If so, we will set this as the Youtube Trailer ID.
+			if($inDB && !empty($movie_info->youtube_trailer_id)){
+				$this->setYouTubeTrailerID($movie_info->youtube_trailer_id);
+			}
+			else{
+				$this->fetchTrailerDetails();
+			}
+			
+			
 			//Netflix Link
 			$this->fetchNetflixOnlineVideo();
 			
@@ -250,7 +260,6 @@ class Movie_model extends CR_Model {
 			if(!empty($res->poster_path)){
 				$this->setTMDBPosterPath($res->poster_path);
 			}
-			$this->fetchTMDBTrailerDetails();
 			return $res;
 		}
 		else{
@@ -270,7 +279,6 @@ class Movie_model extends CR_Model {
 			if(!empty($res->movie_results[0]->poster_path)){
 				$this->setTMDBPosterPath($res->movie_results[0]->poster_path);
 			}
-			$this->fetchTMDBTrailerDetails();
 			return $res->movie_results[0];
 		}
 		else{
@@ -294,7 +302,6 @@ class Movie_model extends CR_Model {
 			if(!empty($res->results[0]->poster_path)){
 				$this->setTMDBPosterPath($res->results[0]->poster_path);
 			}
-			$this->fetchTMDBTrailerDetails();
 			return $res->results[0];
 		}
 		else{
@@ -316,11 +323,27 @@ class Movie_model extends CR_Model {
 			if(!empty($res->results[0]->poster_path)){
 				$this->setTMDBPosterPath($res->results[0]->poster_path);
 			}
-			$this->fetchTMDBTrailerDetails();
 			return $res->results[0];
 		}
 		else{
 			return array();
+		}
+	}
+	
+	public function fetchTrailerDetails(){
+		//if the movie has a TMDB ID, query TMDB for details
+		if($this->getTMDBID() != ''){
+			$this->fetchTMDBTrailerDetails();
+		}
+		//Now we will check if there is not a Youtube ID. (Database and TMDB has no results)
+		if($this->getYouTubeTrailerID() == ''){
+			if($this->getTMSRootID() != ''){
+				$this->fetchTMSTrailerDetails();
+			}
+			else{
+				//write to the log that no trailer was found from DB, TMDB, or TMS
+				log_message('info', '[no-trailer] No Trailer Found for: '.$this->getTitle(), 'no-trailer');	
+			}
 		}
 	}
 	
@@ -332,18 +355,16 @@ class Movie_model extends CR_Model {
 	}
 	
 	public function fetchTMSTrailerDetails(){
-		if($this->getTMSRootID() != ''){
-			log_message('error', 'Fetching trailer for '.$this->getTMSRootID(), 'tms-trailer');
-			$url = sprintf($this->config->item('tms_trailer_url'), $this->getTMSRootID(), $this->config->item('tms_api_key'));
-			$info = $this->_getCachedData($url, $this->config->item('tms_cache_seconds'));
-			$res = json_decode($info);
-			$this->setTMSTrailerDetails($res);
-			$this->fetchTMSTrailerImageDetails();
-		}
+		log_message('info', '[tms-trailer] Fetch '.$this->getTMSRootID(), 'tms-trailer');
+		$url = sprintf($this->config->item('tms_trailer_url'), $this->getTMSRootID(), $this->config->item('tms_api_key'));
+		$info = $this->_getCachedData($url, $this->config->item('tms_cache_seconds'));
+		$res = json_decode($info);
+		$this->setTMSTrailerDetails($res);
+		$this->fetchTMSTrailerImageDetails();
 	}
 	
 	public function fetchTMSTrailerImageDetails(){
-		log_message('error', 'Fetching trailer for '.$this->getTMSRootID(), 'tms-trailer-image');
+		log_message('info', '[tms-trailer-image] Fetch '.$this->getTMSRootID(), 'tms-trailer-image');
 		$url = sprintf($this->config->item('tms_trailer_image_url'), $this->getTMSRootID(), $this->config->item('tms_api_key'));
 		$info = $this->_getCachedData($url, $this->config->item('tms_cache_seconds'));
 		$res = json_decode($info);
@@ -406,7 +427,6 @@ class Movie_model extends CR_Model {
 							$this->setTMSRootID($tms->program->rootId);
 						}
 						$finalRes = $tms->program;
-						$this->fetchTMSTrailerDetails();
 						break;
 					}
 				}
@@ -417,7 +437,6 @@ class Movie_model extends CR_Model {
 				}
 				if($secondTMSRootID  != ''){
 					$this->setTMSRootID($secondTMSRootID);
-					$this->fetchTMSTrailerDetails();
 					$finalRes = $secondRes;
 				}
 			}
