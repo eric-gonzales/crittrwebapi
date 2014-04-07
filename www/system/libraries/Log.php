@@ -63,13 +63,16 @@ class CI_Log {
 	 * Write Log File
 	 *
 	 * Generally this function will be called using the global log_message() function
+	 * 
+	 * MODIFIED: 4/7/2014 Eric Gonzales -- allow for seperate log files
 	 *
 	 * @param	string	the error level
 	 * @param	string	the error message
 	 * @param	bool	whether the error is a native PHP error
+	 * @param   string  the log file path
 	 * @return	bool
 	 */
-	public function write_log($level = 'error', $msg, $php_error = FALSE)
+	public function write_log($level = 'error', $msg, $php_error = FALSE, $file_path)
 	{
 		if ($this->_enabled === FALSE)
 		{
@@ -82,8 +85,14 @@ class CI_Log {
 		{
 			return FALSE;
 		}
-
-		$filepath = $this->_log_path.'log-'.date('Y-m-d').'.php';
+		
+		if($file_path  == ''){
+			$filepath = $this->_log_path.'log-'.date('Y-m-d').'.php';
+		}
+		else{
+			$filepath = $this->_log_path.$file_path.'log-'.date('Y-m-d').'.php';
+		}
+		
 		$message  = '';
 
 		if ( ! file_exists($filepath))

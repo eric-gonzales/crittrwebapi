@@ -243,6 +243,29 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
 
+-- -----------------------------------------------------
+-- Table `mydb`.`CRNetflix`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`CRNetflix` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `title` VARCHAR(255) NULL,
+  `release_year` YEAR NULL,
+  `season` INT NULL DEFAULT 0,
+  `netflix_id` VARCHAR(100) NULL,
+  `avail_us` TINYINT NULL DEFAULT 0,
+  `avail_ca` TINYINT NULL DEFAULT 0,
+  `avail_uk` TINYINT NULL DEFAULT 0,
+  `movie_id` INT UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_CRNetflix_CRMovie1_idx` (`movie_id` ASC),
+  CONSTRAINT `fk_CRNetflix_CRMovie1`
+    FOREIGN KEY (`movie_id`)
+    REFERENCES `mydb`.`CRMovie` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

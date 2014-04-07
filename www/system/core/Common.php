@@ -340,13 +340,15 @@ if ( ! function_exists('show_404'))
 *
 * We use this as a simple mechanism to access the logging
 * class and send messages to be logged.
+* 
+* MODIFIED: 4/7/2014 Eric Gonzales -- allow for seperate log files
 *
 * @access	public
 * @return	void
 */
 if ( ! function_exists('log_message'))
 {
-	function log_message($level = 'error', $message, $php_error = FALSE)
+	function log_message($level = 'error', $message, $php_error = FALSE, $file_path = '')
 	{
 		static $_log;
 
@@ -356,7 +358,7 @@ if ( ! function_exists('log_message'))
 		}
 
 		$_log =& load_class('Log');
-		$_log->write_log($level, $message, $php_error);
+		$_log->write_log($level, $message, $php_error, $file_path);
 	}
 }
 
