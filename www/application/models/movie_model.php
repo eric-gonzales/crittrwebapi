@@ -150,6 +150,7 @@ class Movie_model extends CR_Model {
 			$this->db->set('box_office_release_date', $this->getBoxOfficeReleaseDate());
 			$this->db->set('dvd_release_date', $this->getDVDReleaseDate());
 			$this->db->set('tmdb_poster_path', $this->getTMDBPosterPath());
+			$this->db->set('youtube_trailer_id', $this->getYouTubeTrailerID());
 			$this->db->set('modified', 'NOW()', FALSE);		
 			if ($inDB)
 			{
