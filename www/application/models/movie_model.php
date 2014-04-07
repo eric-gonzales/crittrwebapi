@@ -343,7 +343,7 @@ class Movie_model extends CR_Model {
 			}
 			else{
 				//write to the log that no trailer was found from DB, TMDB, or TMS
-				log_message('info', '[no-trailer] No Trailer Found for: '.$this->getTitle(), 'no-trailer');	
+				log_message('error', '[no-trailer] No Trailer Found for: '.$this->getTitle(), false,  'no-trailer');	
 			}
 		}
 	}
@@ -356,7 +356,7 @@ class Movie_model extends CR_Model {
 	}
 	
 	public function fetchTMSTrailerDetails(){
-		log_message('info', '[tms-trailer] Fetch '.$this->getTMSRootID(), 'tms-trailer');
+		log_message('error', '[tms-trailer] Fetch '.$this->getTMSRootID(), false, 'tms-trailer');
 		$url = sprintf($this->config->item('tms_trailer_url'), $this->getTMSRootID(), $this->config->item('tms_api_key'));
 		$info = $this->_getCachedData($url, $this->config->item('tms_cache_seconds'));
 		$res = json_decode($info);
@@ -365,7 +365,7 @@ class Movie_model extends CR_Model {
 	}
 	
 	public function fetchTMSTrailerImageDetails(){
-		log_message('info', '[tms-trailer-image] Fetch '.$this->getTMSRootID(), 'tms-trailer-image');
+		log_message('error', '[tms-trailer-image] Fetch '.$this->getTMSRootID(), false, 'tms-trailer-image');
 		$url = sprintf($this->config->item('tms_trailer_image_url'), $this->getTMSRootID(), $this->config->item('tms_api_key'));
 		$info = $this->_getCachedData($url, $this->config->item('tms_cache_seconds'));
 		$res = json_decode($info);
