@@ -157,6 +157,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`CRRating` (
   `notified_box_office` TINYINT(1) NOT NULL DEFAULT 0,
   `notified_dvd` TINYINT(1) NOT NULL DEFAULT 0,
   `rating` INT NOT NULL DEFAULT 0,
+  `comments` TEXT NULL,
   `created` DATETIME NOT NULL,
   `modified` DATETIME NOT NULL,
   PRIMARY KEY (`int`),
