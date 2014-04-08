@@ -176,6 +176,7 @@ class Movie_model extends CR_Model {
 				'imdb_rating' => $this->getIMDBDetails()->imdbRating, 
 				'itunes_id' => $this->getiTunesID(),
 				'rotten_tomatoes_id' => $this->getRottenTomatoesID(),
+				'rotten_tomatoes_critics_score' => $this->getRTDetails()->ratings->critics_score,
 				'mpaa_rating' => $this->getRTDetails()->mpaa_rating,
 				'original_image_url' => $this->getRTDetails()->posters->original,
 				'poster_path' => $this->getTMDBPosterPath(),
