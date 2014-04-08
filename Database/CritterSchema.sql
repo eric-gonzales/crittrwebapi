@@ -75,7 +75,7 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `mydb`.`CREmailToken`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`CREmailToken` (
-  `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `user_id` INT UNSIGNED NOT NULL,
   `token` VARCHAR(100) NOT NULL,
   `used` TINYINT(1) NOT NULL DEFAULT '0',
@@ -151,7 +151,7 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `mydb`.`CRRating`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`CRRating` (
-  `int` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `user_id` INT UNSIGNED NOT NULL,
   `movie_id` INT UNSIGNED NOT NULL,
   `notified_box_office` TINYINT(1) NOT NULL DEFAULT 0,
@@ -160,7 +160,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`CRRating` (
   `comments` TEXT NULL,
   `created` DATETIME NOT NULL,
   `modified` DATETIME NOT NULL,
-  PRIMARY KEY (`int`),
+  PRIMARY KEY (`id`),
   INDEX `fk_CRRating_CRUser1_idx` (`user_id` ASC),
   INDEX `fk_CRRating_CRMovie1_idx` (`movie_id` ASC),
   CONSTRAINT `fk_CRRating_CRUser1`
@@ -206,7 +206,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`CRNotification` (
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_CRNotification_CRRating1`
     FOREIGN KEY (`rating_id`)
-    REFERENCES `mydb`.`CRRating` (`int`)
+    REFERENCES `mydb`.`CRRating` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
