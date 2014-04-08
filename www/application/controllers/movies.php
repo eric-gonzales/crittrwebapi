@@ -295,4 +295,26 @@ class Movies extends CI_Controller
 		$this->movies_model->setResult($results);
 		$this->_response();
 	}
+
+	public function rottentomatoes($rottenTomatoesID){
+		$url = sprintf($this->config->item('rotten_tomatoes_movie_url'), $rottenTomatoesID, $this->config->item('rotten_tomatoes_api_key'));
+		//Check memcache first
+		$results = $this->cache->memcached->get($url);
+		if(!$results){
+			//Do RT hit and clean up result
+			$movie_info = $this->curl->simple_get($url);
+			$movie_info = str_replace("\n", "", $movie_info);
+			$response = json_decode($movie_info);
+			
+			$results = array();
+			$movieModel = new Movie_model($response->id);
+			$result = $movieModel->getResult();
+			array_push($results, $result);
+			
+			//Cache it
+			$this->cache->memcached->save($url, $results, $this->config->item('rotten_tomatoes_cache_seconds'));
+		}
+		$this->movies_model->setResult($results);
+		$this->_response();
+	}
 }

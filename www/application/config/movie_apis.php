@@ -41,4 +41,4 @@
 	
 	//Critter
 	$config['critter_rating_cache_seconds'] = 60 * 60 * 24;
-	?>
+?>
