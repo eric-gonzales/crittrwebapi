@@ -251,7 +251,7 @@ class Movies extends CI_Controller
 				array_push($results, $result);
 			}
 			//TODO: Fix cache config item
-			$this->cache->memcached->save('priority_movies', $results, $this->config->item('rotten_tomatoes_cache_seconds'));
+			$this->cache->memcached->save('priority_movies', $results, $this->config->item('critter_priority_cache_seconds'));
 		}
 		
 		//Prune already rated
@@ -296,7 +296,7 @@ class Movies extends CI_Controller
 		$this->_response();
 	}
 
-	//Return a single result based on the rotten tomatoes URL
+	//Return a single result based on the rotten tomatoes ID
 	public function rottentomatoes($rottenTomatoesID){
 		//Sanity check
 		if($rottenTomatoesID === NULL){
@@ -304,12 +304,10 @@ class Movies extends CI_Controller
 			$this->_response();
 			return;
 		}
-		//create a movie model based on the rotten tomatoes ID
+		//create a movie model based on the rotten tomatoes ID and generate response
 		$movieModel = new Movie_model($rottenTomatoesID);
 		$result = $movieModel->getResult();
 		$this->movies_model->setResult($result);
 		$this->_response();
-		return;
-		
 	}
 }
