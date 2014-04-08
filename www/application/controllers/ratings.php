@@ -87,33 +87,38 @@ class Ratings extends CI_Controller{
 	}
 	
 	//Fetch Movie Ratings for User
-	function user($hashedUserID, $modifiedSinceDateTime = ''){
-		if($hashedUserID != ''){
+	function user($hashedUserID, $modifiedSinceDateTime = NULL)
+	{
+		$results = array();
+		if ($hashedUserID != '')
+		{
+			//Set up the query
 			$user_id = hashids_decrypt($hashedUserID);
-			$results = array();
-			if($modifiedSinceDateTime == ''){
-				$chk_stmt = $this->db->get_where('CRRating',array('user_id' => $user_id), 1);
-				if($chk_stmt->num_rows() > 0){
-					foreach($chk_stmt->result() as $rating){
-						$result = array(
-							'int' => hashids_encrypt($rating->int),
-							'user_id' => $rating->user_id,
-							'movie_id' => hashids_encrypt($rating->movie_id),
-							'notified_box_office' => $rating->notified_box_office,
-							'notified_dvd' => $rating->notified_dvd,
-							'rating' => $rating->rating,
-							'comment' => $rating->comment
-						);
-						$results[] = $result;
-					}
-					$this->ratings_model->setResponse($results);
-				}
-				else{
-					$this->_generateError('Rating Not Found', $this->config->item('error_entity_not_found'));
-				}
+			$this->db->select('CRRating.*, CRMovie.title, CRMovie.hashtag, CRMovie.rotten_tomatoes_id, CRMovie.tmdb_poster_path');			
+			$this->db->from('CRRating');
+			$this->db->join('CRMovie', 'CRMovie.id = CRRating.movie_id');
+			$this->db->where('user_id', $user_id);
+			$this->db->order_by('CRRating.created', 'asc'); //creation order
+			
+			//Add filter on modified field if present
+			if ($modifiedSinceDateTime)
+			{
+				$this->db->where('CRRating.modified >=', $modifiedSinceDateTime);
 			}
+
+			//Query and clean up the results
+			$chk_stmt = $this->db->get();
+			$results = $chk_stmt->result();	
+			foreach($results as $rating)
+			{
+				$rating->id = hashids_encrypt($rating->id);
+				$rating->user_id = hashids_encrypt($rating->user_id);
+				$rating->movie_id = hashids_encrypt($rating->movie_id);
+			}
+			$this->ratings_model->setResult($results);
 		}
-		else{
+		else
+		{
 			$this->_generateError('Required Fields Missing', $this->config->item('error_required_fields'));
 		}
 		$this->_response();
