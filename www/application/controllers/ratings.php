@@ -5,8 +5,10 @@
  * @copyright 2014 Critter
  */
 
-class Ratings extends CI_Controller{
-	function __construct(){
+class Ratings extends CI_Controller
+{
+	function __construct()
+	{
 		parent::__construct();
 		$this->load->model('ratings_model');
 		$this->load->driver('cache');
@@ -14,44 +16,50 @@ class Ratings extends CI_Controller{
 	}
 	
 	//Update Movie Rating for User
-	function update($hashedUserID){
-		if($this->post->movieID != '' && $this->post->rating != ''){
-			if($hashedUserID != ''){
-				$user_id = hashids_decrypt($hashedUserID);
-				$movie_id = hashids_decrypt($this->post->movieID);
-				$rating_id = 0;
-				$this->db->select('int');
-				$chk_stmt = $this->db->get_where('CRRating',array('user_id' => $user_id, 'movie_id' => $movie_id), 1);
-				if($chk_stmt->num_rows() > 0){
-					//grab id
-					$rating = $chk_stmt->row();
-					$rating_id = $rating->int;
-					//update record
-					$this->db->where('int', $rating_id)->set('rating', $this->post->rating)->set('comment', $this->post->comment);
-					$this->db->update('CRRating');
-				}
-				else{
-					//create record
-					$this->db->set('created', 'NOW()', FALSE)->set('user_id', $user_id)->set('movie_id', $movie_id)->set('rating', $this->post->rating)->set('comment', $this->post->comment);
-					$this->db->set('modified', 'NOW()', FALSE);						
-					$this->db->insert('CRRating');
-					//grab id
-					$rating_id = $this->db->insert_id();
-				}
-				$this->db->select_avg('rating');
-				$rating_stmt = $this->db->get_where('CRRating',array('movie_id' => $movie_id), 1);
-				$row = $rating_stmt->row();
-				$rating = $row->rating;
-				$this->cache->memcached->save('critter_rating_'.$movie_id, $rating, $this->config->item('critter_rating_cache_seconds'));
-				$this->db->where('id', $movie_id)->set('critter_rating', $rating);
-				$this->db->update('CRMovie');
-				$this->ratings_model->setResult(array(hashids_encrypt($rating_id)));
+	function update($hashedUserID)
+	{
+		if($hashedUserID!= NULL && $this->post->movie_id != '' && $this->post->rating != '')
+		{
+			//Find existing rating for user and movie
+			$rating_id = NULL;
+			$user_id = hashids_decrypt($hashedUserID);
+			$movie_id = hashids_decrypt($this->post->movie_id);			
+			$this->db->from('CRRating');
+			$this->db->where('user_id', $user_id);
+			$this->db->where('movie_id', $movie_id);
+			$query = $this->db->get();
+			if ($query->num_rows() == 0)
+			{
+				//Insert a new rating
+				$this->db->set('user_id', $user_id);
+				$this->db->set('movie_id', $movie_id);
+				$this->db->set('rating', $this->post->rating);
+				if (array_key_exists("comment", $this->post)) $this->db->set('comments', $this->post->comment);
+				if (array_key_exists("notified_box_office", $this->post)) $this->db->set('notified_box_office', $this->post->notified_box_office);
+				if (array_key_exists("notified_dvd", $this->post)) $this->db->set('notified_dvd', $this->post->notified_dvd);					$this->db->set('created', 'NOW()', FALSE);
+				$this->db->set('modified', 'NOW()', FALSE);				
+				$this->db->insert('CRRating');
+				$rating_id = $this->db->insert_id();
 			}
-			else{
-				$this->_generateError('User Not Found', $this->config->item('error_entity_not_found'));
+			else
+			{
+				//Update existing rating
+				$rating_id = $query->row()->id;
+				$this->db->where('id', $rating_id);
+				$this->db->set('rating', $this->post->rating);
+				if (array_key_exists("comment", $this->post)) $this->db->set('comments', $this->post->comment);
+				if (array_key_exists("notified_box_office", $this->post)) $this->db->set('notified_box_office', $this->post->notified_box_office);
+				if (array_key_exists("notified_dvd", $this->post)) $this->db->set('notified_dvd', $this->post->notified_dvd);	
+				$this->db->set('modified', 'NOW()', FALSE);				
+				$this->db->update('CRRating');				
 			}
+			
+			//NOTE: Intentionally not updating critter ratings on every insert; they are re-calculated as they expire from cache.
+			
+			$this->ratings_model->setResult(array(hashids_encrypt($rating_id)));
 		}
-		else{
+		else
+		{
 			$this->_generateError('Required Fields Missing', $this->config->item('error_required_fields'));
 		}
 		$this->_response();
@@ -123,27 +131,32 @@ class Ratings extends CI_Controller{
 	}
 	
 	//Fetch All Ratings for Movie
-	function all($hashedMovieID, $limit, $offset){
-		if($hashedMovieID != ''){
+	function all($hashedMovieID, $limit = 100, $offset = 0)
+	{
+		if($hashedMovieID != '')
+		{
+			//Set up the query
 			$movie_id = hashids_decrypt($hashedMovieID);
-			$results = array();
-			$this->db->order_by('created', 'desc'); //newest first
-			$chk_stmt = $this->db->get_where('CRRating',array('movie_id' => $movie_id), $limit, $offset);
-			foreach($chk_stmt->result() as $rating){
-				$result = array(
-					'int' => hashids_encrypt($rating->int),
-					'user_id' => $rating->user_id,
-					'movie_id' => hashids_encrypt($rating->movie_id),
-					'notified_box_office' => $rating->notified_box_office,
-					'notified_dvd' => $rating->notified_dvd,
-					'rating' => $rating->rating,
-					'comment' => $rating->comment
-				);
-				$results[] = $result;
+			$this->db->select('CRRating.*, CRMovie.title, CRMovie.hashtag, CRMovie.rotten_tomatoes_id, CRMovie.tmdb_poster_path');			$this->db->from('CRRating');
+			$this->db->join('CRMovie', 'CRMovie.id = CRRating.movie_id');
+			$this->db->where('movie_id', $movie_id);
+			$this->db->order_by('CRRating.created', 'desc'); //Newest first
+			$this->db->limit($limit);
+			$this->db->offset($offset);
+			
+			//Query and clean up the results
+			$chk_stmt = $this->db->get();
+			$results = $chk_stmt->result();	
+			foreach($results as $rating)
+			{
+				$rating->id = hashids_encrypt($rating->id);
+				$rating->user_id = hashids_encrypt($rating->user_id);
+				$rating->movie_id = hashids_encrypt($rating->movie_id);
 			}
-			$this->ratings_model->setResponse($results);
+			$this->ratings_model->setResult($results);
 		}
-		else{
+		else
+		{
 			$this->_generateError('Required Fields Missing', $this->config->item('error_required_fields'));
 		}
 		$this->_response();
