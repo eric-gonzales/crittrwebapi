@@ -232,7 +232,7 @@ class Movie_model extends CR_Model {
 		$url = sprintf($this->config->item('omdb_title_url'), urlencode($this->getTitle()));
 		if ($imdbID != NULL)
 		{
-			if (strpos($imdbID, "tt") === 0) $imdbID = "tt" . $imdbID;
+			if (strpos($imdbID, "tt") !== 0) $imdbID = "tt" . $imdbID;
 			$url = sprintf($this->config->item('omdb_imdb_id_url'), $imdbID);	
 		}
 		
