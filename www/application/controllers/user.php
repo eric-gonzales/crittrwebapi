@@ -242,112 +242,113 @@ class User extends CI_Controller{
 	}
 	
 	//Add Friend
-	function addfriend($hashedUserID){
+	function addfriend($hashedUserID)
+	{
 		//check if friend or user id is empty
-		if($this->post->friendID != '' && $user_id != ''){
+		if ($this->post->friendID != '' && $hashedUserID != '')
+		{
 			//decrypt userID and friendID
 			$user_id = hashids_decrypt($hashedUserID);
 			$friend_id = hashids_decrypt($this->post->friendID);
-			//check if user id exists
-			$chk_stmt = $this->db->get_where('CRUser',array('id' => $user_id), 1);
-			if($chk_stmt->num_rows() > 0){
-				//check if friend id exists
-				$friend_chk_stmt = $this->db->get_where('CRUser',array('id' => $friend_id), 1);
-				if($friend_chk_stmt->num_rows() > 0){
-					$friends_chk_stmt = $this->db->get_where('CRFriends',array('user_id' => $user_id, 'friend_id' => $friend_id), 1);
-					if($friends_chk_stmt->num_rows() == 0){
-						//if both user and friend exists, let's make them friends 
-						$this->db->set('created', 'NOW()', FALSE)->set('user_id', $user_id)->set('friend_id', $friend_id);
-						$this->db->set('modified', 'NOW()', FALSE);						
-						$this->db->insert('CRFriends');
-						$this->user_model->setID($user_id);
-						$this->user_model->fetchName();
-						//check if friend is ignoring user and is not our friend already
-						$this->db->select('ignore');
-						$friends_stmt = $this->db->get_where('CRFriends',array('user_id' => $friend_id, 'friend_id' => $user_id), 1);
-						if($friends_stmt->num_rows() == 0){		
-							//and let's send them a notification so they know
-							$this->db->set('created', 'NOW()', FALSE)->set('from_user_id', $user_id)->set('to_user_id', $friend_id)->set('message', $this->user_model->getName().' wants to be your Critter friend!');
-							$this->db->set('modified', 'NOW()', FALSE);													
-							$this->db->insert('CRNotification');
-							$notification_id = $this->db->insert_id();
-							//set a push notification to each device linked to the friend
-							$this->load->model('user_model', 'friend');
-							$this->friend->setID($friend_id);
-							$this->friend->fetchDevices();
-							foreach($this->friend->getDevices() as $device_id){
-								//how many push notifications does this device currently have?
-								$this->db->select('badge_count');
-								$badge_stmt = $this->db->get_where('CRDevice',array('id' => $device_id), 1);
-								$r = $badge_stmt->row();
-								//increment badge value
-								$badge = $r->badge_count + 1;
-								$this->db->where('id', $device_id)->set('badge_count', $badge);
-								$this->db->update('CRDevice');
-								//now create push notification
-								$this->db->set('created', 'NOW()', FALSE)->set('device_id', $device_id)->set('notification_id', $notification_id)->set('badge', $badge);
-								$this->db->set('modified', 'NOW()', FALSE);														
-								$this->db->insert('CRPushNotification');
-							}
+			$this->db->from('CRUser');
+			$this->db->where('id', $user_id);
+			$user = $this->db->get()->row();
+			
+			//check if user->friend friendship exiss
+			$this->db->from('CRFriends');
+			$this->db->where('user_id', $user_id);
+			$this->db->where('friend_id', $friend_id);
+			$chk_stmt = $this->db->get();
+			if ($chk_stmt->num_rows() == 0)
+			{
+				//Check for friend->user friendship (or ignore)
+				$this->db->from('CRFriends');
+				$this->db->where('user_id', $friend_id);
+				$this->db->where('friend_id', $user_id);				
+				$friends_stmt = $this->db->get();
+				$existingFriendship = $friends_stmt->row();
+				if (!$existingFriendship || $existingFriendship->ignore==0)
+				{
+					//Establish the friendship
+					$this->db->set('user_id', $user_id);
+					$this->db->set('friend_id', $friend_id);
+					$this->db->set('created', 'NOW()', FALSE);
+					$this->db->set('modified', 'NOW()', FALSE);						
+					$this->db->insert('CRFriends');
+					$this->user_model->setID($user_id);
+					$this->user_model->fetchName();
+					
+					if (!$existingFriendship)
+					{
+						//Send them a notification
+						$message = $user->name . ' wants to be your Critter friend!';
+						$this->db->set('from_user_id', $user_id);
+						$this->db->set('to_user_id', $friend_id);
+						$this->db->set('notification_type', 'friendrequest');
+						$this->db->set('message', $message);
+						$this->db->set('created', 'NOW()', FALSE);
+						$this->db->set('modified', 'NOW()', FALSE);
+						$this->db->insert('CRNotification');
+						$notification_id = $this->db->insert_id();
+
+						//set a push notification to each device linked to the friend
+						$this->db->select('CRDevice.*');						
+						$this->db->from('CRDevice');
+						$this->db->join('CRDeviceUser', 'CRDevice.id = CRDeviceUser.user_id');
+						$this->db->where('CRDeviceUser.user_id', $friend_id);
+						$query = $this->db->get();
+						foreach ($query->result() as $device)
+						{
+							//increment badge value
+							$badge = $device->badge_count + 1;
+							$this->db->where('id', $device->id);
+							$this->db->set('badge_count', $badge);
+							$this->db->update('CRDevice');
+							
+							//now create push notification
+							$this->db->set('device_id', $device->id);
+							$this->db->set('message', $message);
+							$this->db->set('notification_id', $notification_id);							
+							$this->db->set('badge', $badge);
+							$this->db->set('created', 'NOW()', FALSE);
+							$this->db->set('modified', 'NOW()', FALSE);														
+							$this->db->insert('CRPushNotification');
 						}
 					}
-					else{
-						$this->_generateError('Users Are Already Friends', $this->config->item('error_invalid_request'));
-					}
 				}
-				else{
-					$this->_generateError('Friend Not Found', $this->config->item('error_entity_not_found'));
+				else
+				{
+					$this->_generateError('Friendship Denied By Recipient', $this->config->item('error_entity_not_found'));
 				}
 			}
-			else{
-				$this->_generateError('User Not Found', $this->config->item('error_entity_not_found'));
+			else
+			{
+				$this->_generateError('Friendship Already Exists', $this->config->item('error_entity_not_found'));
 			}
 		}
-		else{
+		else
+		{
 			$this->_generateError('Required Fields Missing', $this->config->item('error_required_fields'));
 		}
 		$this->_response();
 	}
 	
 	//Remove Friend
-	function removefriend($hashedUserID){
+	function removefriend($hashedUserID)
+	{
 		//decrypt userID and friendID
 		$user_id = hashids_decrypt($hashedUserID);
 		$friend_id = hashids_decrypt($this->post->friendID);
-		//check if friend id is empty
-		if(!empty($friend_id) && !empty($user_id)){
-			//check if user id exists
-			$chk_stmt = $this->db->get_where('CRUser',array('id' => $user_id), 1);
-			if($chk_stmt->num_rows() > 0){
-				//check if friend id exists
-				$friend_chk_stmt = $this->db->get_where('CRUser',array('id' => $friend_id), 1);
-				if($friend_chk_stmt->num_rows() > 0){
-					//get most recent record
-					$this->db->order_by('created', 'desc');
-					$this->db->select('id');
-					$friends_stmt = $this->db->get_where('CRFriends',array('user_id' => $user_id, 'friend_id' => $friend_id), 1);
-					if($friends_stmt->num_rows() == 0){
-						//add matching entry in CRFriend table
-						$this->db->set('created', 'NOW()', FALSE)->set('user_id', $user_id)->set('friend_id', $friend_id)->set('ignore', 1);
-						$this->db->set('modified', 'NOW()', FALSE);						
-						$this->db->insert('CRFriends');
-					}
-					else{
-						//update current entry in CRFriend table
-						$friends = $friends_stmt->row();
-						$this->db->where('id', $friends->id)->set('ignore', 1);
-						$this->db->update('CRFriends');
-					}
-				}
-				else{
-					$this->_generateError('Friend Not Found', $this->config->item('error_entity_not_found'));
-				}
-			}
-			else{
-				$this->_generateError('User Not Found', $this->config->item('error_entity_not_found'));
-			}
+		
+		if ($user_id && $friend_id)
+		{
+			//Remove friendship if it exists
+			$this->db->where('user_id', $user_id);
+			$this->db->where('friend_id', $friend_id);
+			$this->db->delete('CRFriends');
 		}
-		else{
+		else
+		{
 			$this->_generateError('Required Fields Missing', $this->config->item('error_required_fields'));
 		}
 		$this->_response();

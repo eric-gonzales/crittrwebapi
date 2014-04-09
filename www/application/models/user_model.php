@@ -101,15 +101,14 @@ class User_model extends CR_Model {
 	/*
 	 * Fetch Devices
 	 */
-	public function fetchDevices(){
-		$devices = array();
-		$query = $this->db->get_where('CRDeviceUser', array('user_id' => $this->getID()));
-		if($query->num_rows > 0){
-			foreach($query->result() as $device){
-				$devices[] = $device->device_id;
-			}
-		}
-		$this->setDevices($devices);
+	public function fetchDevices()
+	{
+		$this->db->select('CRDevice.*');	
+		$this->db->from('CRDevice');
+		$this->db->join('CRDeviceUser', 'CRDevice.id = CRDeviceUser.device_id');
+		$this->db->where('CRDeviceUser.user_id', $this->getID());
+		$query = $this->db->get();
+		$this->setDevices($query->result());
 	}
 	
 	/*
