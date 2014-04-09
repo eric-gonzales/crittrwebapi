@@ -36,7 +36,9 @@ class Init_model extends CR_Model {
 			'url_newaccount' => $this->config->item('base_url').'user/signup',
 			'url_facebook' => $this->config->item('base_url').'user/facebook',
 			'url_login' => $this->config->item('base_url').'user/login',
-			'url_resetpassword' => $this->config->item('base_url').'user/reset'
+			'url_resetpassword' => $this->config->item('base_url').'user/reset',
+			'url_updatepushtoken' => $this->config->item('base_url').'device/update',
+			'url_resetbadgecount' => $this->config->item('base_url').'device/resetbadgecount'
 		));
 	}
 }

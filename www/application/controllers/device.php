@@ -28,6 +28,14 @@ class Device extends CI_Controller{
 		$this->_response();
 	}
 	
+	function resetBadgeCount()
+	{
+		$this->db->where('device_vendor_id', $this->input->get_request_header('critter-device', TRUE));
+		$this->db->set('badge_count', 0);
+		$this->db->update('CRDevice');
+		$this->_response();
+	}
+	
 	//Generate Error
 	public function _generateError($message, $status = 1){
 		$this->device_model->setStatus($status);

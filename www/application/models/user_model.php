@@ -52,7 +52,6 @@ class User_model extends CR_Model {
 			'url_sendnotification' => $this->config->item('base_url').'notification/send',
 			'url_clearnotification' => $this->config->item('base_url').'notification/viewed',
 			'url_unreadnotification' => $this->config->item('base_url').'notification/unread/'.$hashedUserID,
-			'url_updatepushtoken' => $this->config->item('base_url').'device/update',
 			'url_moviespriority' => $this->config->item('base_url').'movies/priority/'.$hashedUserID,
 			'url_moviesunrated' => $this->config->item('base_url').'movies/unrated/'.$hashedUserID,
 			'url_moviesboxoffice' => $this->config->item('base_url').'movies/boxoffice/'.$hashedUserID,
