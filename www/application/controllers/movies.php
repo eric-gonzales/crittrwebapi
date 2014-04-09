@@ -41,16 +41,17 @@ class Movies extends CI_Controller
 	
 	function pruneResults($userID, $results)
 	{
-		foreach($results as $key => $movie)
+		$newResults = array();
+		foreach($results as $movie)
 		{
 			$movie_id = hashids_decrypt($movie['id']);
 			$chk_stmt = $this->db->get_where('CRRating',array('movie_id' => $movie_id, 'user_id' => $userID), 1);
-			if($chk_stmt->num_rows() > 0)
+			if($chk_stmt->num_rows() == 0)
 			{
-				unset($results[$key]);
+				array_push($newResults, $movie);
 			}
 		}
-		return $results;		
+		return $newResults;		
 	}
 	
 	function fetchFromURL($hashedUserID, $url, $pruneAlreadyRated = TRUE)
