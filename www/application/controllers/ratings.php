@@ -15,6 +15,139 @@ class Ratings extends CI_Controller
 		$this->post = json_decode(file_get_contents('php://input'));
 	}
 	
+	function notifyFriendsForRating($friends, $rating_id)
+	{
+		error_log("Notifying friends for rating $rating_id:.".json_encode($friends));
+	
+		//Look up rating
+		$this->db->from('CRRating');
+		$this->db->where('id', $rating_id);
+		$rating = $this->db->get()->row();
+		
+		//Look up movie
+		$this->db->from('CRMovie');
+		$this->db->where('id', $rating->movie_id);
+		$movie = $this->db->get()->row();
+				
+		//Look up user
+		$this->db->from('CRUser');
+		$this->db->where('id', $rating->user_id);
+		$user = $this->db->get()->row();
+
+		//Set up the notification tyoe and message
+		$notification_type = "invite";
+		$message = NULL;
+		switch($this->post->rating)
+		{
+			case 1: $message = $user->name . " recommends:"; break;
+			case 2: $message = $user->name . " does not recommend:"; break;
+			case 2: $message = $user->name . " sent you an invite to:"; break;						
+		}
+			
+		//Loop and notify friends
+		foreach($friends as $friendHashedID)
+		{
+			//Get the friend id
+			$friend_id = hashids_decrypt($friendHashedID);
+			
+			//If this friend already sent _us_ a notification on this movie, we need to frame this as a reply
+			$this->db->select('CRRating.*');
+			$this->db->from('CRNotification');
+			$this->db->join('CRRating', 'CRNotification.rating_id=CRRating.id');
+			$this->db->join('CRMovie', 'CRRating.movie_id=CRMovie.id');
+			$this->db->where('CRNotification.from_user_id', $friend_id);
+			$this->db->where('CRNotification.to_user_id', $user->id);
+			$this->db->where('CRNotification.notification_type','invite');
+			$this->db->where('CRRating.movie_id',$movie_id);
+			$originalRating = $this->db->get()->row();
+			if($originalRating)
+			{
+				/*	
+	 	User rating values:	    
+	    CRMovieActionNone, 0
+	    CRMovieActionRecommend, 1
+	    CRMovieActionDontRecommend, 2
+	    CRMovieActionWatchList, 3
+	    CRMovieActionScrapPile 4 */
+			
+
+				//User did send us a rating first - frame the reply
+				$notification_type = "reply";
+				switch($originalRating->rating)
+				{
+                     case 1: //CRMovieActionRecommend:
+                     {
+                         switch ($rating)
+                         {
+							 case 1: $message = $user->name . " agreed and liked:"; break;
+							 case 2: $message = $user->name . " disagreed and disliked:"; break;
+							 case 3: $message = $user->name . " took note and watchlisted:"; break;
+							 case 4: $message = $user->name . " ignored your recommendation and rejected:"; break;							 							 							 
+                         }
+                         break;
+                     }
+                     case 2: //CRMovieActionDontRecommend:
+                     {
+                         switch ($rating)
+                         {
+							 case 1: $message = $user->name . " disagreed and liked:"; break;
+							 case 2: $message = $user->name . " agreed and disliked:"; break;
+							 case 3: $message = $user->name . " ignored your warning and watchlisted:"; break;
+							 case 4: $message = $user->name . " took note and rejected:"; break;							 							 							 
+                         }
+                         break;
+                     }
+                     case 3: //CRMovieActionWatchList:
+                     {
+                         switch ($rating)
+                         {
+							 case 1: $message = $user->name . " watched and recommended:"; break;
+							 case 2: $message = $user->name . " watched and did not recommend:"; break;
+							 case 3: $message = $user->name . " accepted your invitation to watch:"; break;
+							 case 4: $message = $user->name . " was not interested in watching:"; break;							 							 							 
+                         }
+                         break;
+                     }						
+				}
+			}
+			
+			//Add a CRNotification
+			$this->db->set("notification_type", $notification_type);
+			$this->db->set("from_user_id", $user->id);
+			$this->db->set("to_user_id", $friend_id);					
+			$this->db->set("rating_id", $rating_id);	
+			$this->db->set("message", $message);
+			$this->db->set("created", "NOW()", FALSE);
+			$this->db->set("modified", "NOW()", FALSE);
+			$this->db->insert("CRNotification");		
+			$notification_id = $this->db->insert_id();
+
+			//set a push notification to each device linked to the friend
+			$this->db->select('CRDevice.*');						
+			$this->db->from('CRDevice');
+			$this->db->join('CRDeviceUser', 'CRDevice.id = CRDeviceUser.user_id');
+			$this->db->where('CRDeviceUser.user_id', $friend_id);
+			$query = $this->db->get();
+			foreach ($query->result() as $device)
+			{
+				//increment badge value
+				$badge = $device->badge_count + 1;
+				$this->db->where('id', $device->id);
+				$this->db->set('badge_count', $badge);
+				$this->db->update('CRDevice');
+				
+				//now create push notification
+				$this->db->set('device_id', $device->id);
+				$this->db->set('message', $message . "\n" . $movie->title);
+				$this->db->set('notification_id', $notification_id);							
+				$this->db->set('badge', $badge);
+				$this->db->set('created', 'NOW()', FALSE);
+				$this->db->set('modified', 'NOW()', FALSE);														
+				$this->db->insert('CRPushNotification');
+			}
+		}
+	}
+	
 	//Update Movie Rating for User
 	function update($hashedUserID)
 	{
@@ -55,8 +188,14 @@ class Ratings extends CI_Controller
 			}
 			
 			//NOTE: Intentionally not updating critter ratings on every insert; they are re-calculated as they expire from cache.
-			
 			$this->ratings_model->setResult(hashids_encrypt($rating_id));
+			
+			//Loop and notify friends?
+			if ($this->post->notify_friends)
+			{
+				$this->notifyFriendsForRating($this->post->notify_friends, $rating_id);
+			}
+			
 		}
 		else
 		{
