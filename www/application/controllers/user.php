@@ -21,10 +21,12 @@ class User extends CI_Controller{
 	}
 	
 	//Create new Account
-	function signup(){
+	function signup()
+	{
 		//first we check if the email is already in use
 		$chk_stmt = $this->db->get_where('CRUser',array('email' => $this->post->email), 1);
-		if($chk_stmt->num_rows() == 0){
+		if($chk_stmt->num_rows() == 0)
+		{
 			//create new entry in CRUser table
 			$this->db->set('created', 'NOW()', FALSE);
 			$this->db->set('modified', 'NOW()', FALSE);			
@@ -32,23 +34,14 @@ class User extends CI_Controller{
 			$this->db->set('password_hash', $this->phpass->hash($this->post->password));
 			$this->db->set('email', $this->post->email);
 			$this->db->insert('CRUser');
-			//grab the user id from the last insert
 			$this->user_model->setID($this->db->insert_id());
+			
+			//Associate device
+			$this->associateDeviceWithUser();
+			
 			//Track the user sign up
 			$this->mp->track("User Signed Up", array("label" => "sign-up"));
-			//First, select id from CRDevice where device_vendor_id = critter-device
-			$this->db->select('id');
-			$query = $this->db->get_where('CRDevice', array('device_vendor_id' => $this->input->get_request_header('critter-device', TRUE)), 1);
-			//if we have a match, lets insert a new record into the table
-			if($query->num_rows > 0){
-				$row = $query->row();
-				$this->db->set('device_id', $row->id);
-				$this->db->set('user_id', $this->user_model->getID());
-				$this->db->insert('CRDeviceUser');
-			}
-			else{
-				$this->_generateError('Device Not Found',$this->config->item('error_entity_not_found'));
-			}
+
 			//finally, generate the default result
 			$this->user_model->defaultResult();
 		}
@@ -58,11 +51,35 @@ class User extends CI_Controller{
 		$this->_response();
 	}
 	
+	function associateDeviceWithUser()
+	{
+		//Find the device, bail on fail
+		$deviceVendorID = $this->input->get_request_header('critter-device', TRUE);
+		$this->db->from('CRDevice');
+		$this->db->where('device_vendor_id',$deviceVendorID);
+		$row = $this->db->get()->row();
+		if (!$row)
+		{
+			return;
+		}		
+
+		//Delete existing linkages for this device (so we only push to the most recent user on a single device)
+		$this->db->where('device_id', $row->id);
+		$this->db->delete('CRDeviceUser');
+		
+		//Insert a new linkage
+		$this->db->set('device_id', $row->id);
+		$this->db->set('user_id', $this->user_model->getID());
+		$this->db->insert('CRDeviceUser');
+	}
+	
 	//Login or Create New Account via Facebook
-	function facebook(){
+	function facebook()
+	{
 		//get facebook token
 		$facebook_token = $this->post->facebook_token;
-		if($facebook_token != ''){
+		if($facebook_token != '')
+		{
 			//load facebook library
 			$this->load->library('facebook');
 			$facebook = new Facebook(array(
@@ -70,14 +87,18 @@ class User extends CI_Controller{
 				'secret' => $this->config->item('facebook_secret'),
 				'cookie' => false
 			));
+			
 			//set access token
 			$facebook->setAccessToken($facebook_token);
 			$fb_id = $facebook->getUser();
+			
 			//check if valid facebook id
-			if($fb_id){
+			if($fb_id)
+			{
 		      	//We have a Facebook ID, so probably a logged in user.
 		      	//If not, we'll get an exception, which we handle below.
-	     		try {
+	     		try 
+	     		{
 	     			//Query Facebook API for /me object
 	        		$user_profile = $facebook->api('/me','GET');
 	        		$facebook_name = $user_profile['name'];	        		
@@ -87,8 +108,10 @@ class User extends CI_Controller{
 
 					//check if user is signed up
 					$this->db->select('id');
-					$chk_stmt = $this->db->get_where('CRUser',array('facebook_id' => $fb_id), 1);
-					
+					$this->db->where('facebook_id', $fb_id);
+					$query = $this->db->get('CRUser');
+					$user = $query->row();
+
 					//Update DB fields - we will either be doing a create, or an update
 					$this->db->set('name', $facebook_name);						
 					$this->db->set('email', $facebook_email);
@@ -97,19 +120,20 @@ class User extends CI_Controller{
 					$this->db->set('modified', 'NOW()', FALSE);
 					
 					//If user exists, update it 
-					if($chk_stmt->num_rows() > 0){
+					if($user)
+					{
 						//Update user account details (FB may have changed)
 						$this->db->where('facebook_id', $fb_id);
 						$this->db->update('CRUser');
 					
 						//fetch user details
-						$cr_user = $chk_stmt->row();
-						$this->user_model->setID($cr_user->id);
+						$this->user_model->setID($user->id);
 						$this->user_model->fetchNotifications();
 						$this->user_model->fetchFriends();
 						$this->user_model->defaultResult();
 					}
-					else{
+					else
+					{
 						//create new user
 						$this->db->set('created', 'NOW()', FALSE);
 						$this->db->set('facebook_id', $fb_id);
@@ -121,40 +145,56 @@ class User extends CI_Controller{
 						$this->user_model->setID($this->db->insert_id());
 						$this->user_model->defaultResult();
 					}
-	      		} catch(FacebookApiException $e) {
+					
+					//Associate device
+					$this->associateDeviceWithUser();
+					
+	      		} 
+	      		catch(FacebookApiException $e) 
+	      		{
 	      			$this->_generateError($e->getMessage(), $this->config->item('error_entity_not_found'));
 	      		}   
 		    } 
-			else{
+			else
+			{
 				$this->_generateError('Facebook ID Could Not Be Found', $this->config->item('error_entity_not_found'));
 			}
 		}
-		else{
+		else
+		{
 			$this->_generateError('Required Fields Missing', $this->config->item('error_required_fields'));
 		}
 		$this->_response();
 	}
 	
 	//Login
-	function login(){		
+	function login()
+	{		
 		$this->db->select('id, password_hash');
 		//look for matching email in CRUser table
 		$chk_stmt = $this->db->get_where('CRUser',array('email' => $this->post->email), 1);
-		if($chk_stmt->num_rows() == 0){
+		if($chk_stmt->num_rows() == 0)
+		{
 			$this->_generateError('User Could Not Be Found', $this->config->item('error_entity_not_found'));
 		}
-		else{
+		else
+		{
 			//fetch the row
 			$cr_user = $chk_stmt->row();
 			//check if credentials match
-			if($this->phpass->check($this->post->password, $cr_user->password_hash)){
+			if($this->phpass->check($this->post->password, $cr_user->password_hash))
+			{
 				//set the proper result for the user
 				$this->user_model->setID($cr_user->id);
 				$this->user_model->fetchNotifications();
 				$this->user_model->fetchFriends();
 				$this->user_model->defaultResult();
+				
+				//Associate device
+				$this->associateDeviceWithUser();
 			}
-			else{
+			else
+			{
 				$this->_generateError('Invalid Credentials', $this->config->item('error_not_authorized'));
 			}
 		}
