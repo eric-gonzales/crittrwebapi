@@ -312,6 +312,36 @@ class Movies extends CI_Controller
 		$this->_response();
 	}
 	
+	//Return a single result based on the hashed movie ID
+	public function get($hashedMovieID)
+	{
+		//Sanity check
+		$movie_id = hashids_decrypt($hashedMovieID);
+		if($movie_id === NULL)
+		{
+			$this->_generateError('Required Fields Missing', $this->config->item('error_required_fields'));		
+			$this->_response();
+			return;
+		}
+		
+		//Look up the movie from the DB
+		$this->db->from('CRMovie');
+		$this->db->where('id', $movie_id);
+		$row = $this->db->get()->row();
+		if (!$row)
+		{
+			$this->_generateError('Movie not found', $this->config->item('error_entity_not_found'));		
+			$this->_response();
+			return;
+		}
+		
+		//create a movie model based on the rotten tomatoes ID and generate response
+		$movieModel = new Movie_model($row->rotten_tomatoes_id);
+		$result = $movieModel->getResult();
+		$this->movies_model->setResult($result);
+		$this->_response();
+	}
+	
 	public function warmcache()
 	{
 		$this->db->from('CRMovie');
