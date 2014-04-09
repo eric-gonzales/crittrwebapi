@@ -226,8 +226,16 @@ class Movie_model extends CR_Model {
 		$this->setRTDetails($res);
 	}
 	
-	public function fetchIMDBData(){
+	public function fetchIMDBData()
+	{
+		$imdbID = $this->getIMDBID();
 		$url = sprintf($this->config->item('omdb_title_url'), urlencode($this->getTitle()));
+		if ($imdbID != NULL)
+		{
+			if (strpos($imdbID, "tt") === 0) $imdbID = "tt" . $imdbID;
+			$url = sprintf($this->config->item('omdb_imdb_id_url'), $imdbID);	
+		}
+		
 		$info = $this->_getCachedData($url, $this->config->item('omdb_cache_seconds'));
 		$res = json_decode($info);
 		if(isset($res->imdbID)){
