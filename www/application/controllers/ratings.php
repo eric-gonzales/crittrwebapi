@@ -56,7 +56,7 @@ class Ratings extends CI_Controller
 			
 			//NOTE: Intentionally not updating critter ratings on every insert; they are re-calculated as they expire from cache.
 			
-			$this->ratings_model->setResult(array(hashids_encrypt($rating_id)));
+			$this->ratings_model->setResult(hashids_encrypt($rating_id));
 		}
 		else
 		{
