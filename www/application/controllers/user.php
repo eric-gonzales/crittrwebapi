@@ -394,6 +394,19 @@ class User extends CI_Controller{
 		$this->_response();
 	}
 	
+	//Get friends for a given user
+	function friendsForUser($hashedUserID)
+	{
+		//decrypt userID
+		$user_id = hashids_decrypt($hashedUserID);
+		
+		//Look up their friends
+		$this->user_model->setID($user_id);
+		$this->user_model->fetchFriends();
+		$this->user_model->setResult($this->user_model->getFriends());
+		$this->_response();
+	}
+	
 	//Password Update
 	function updatepass(){
 		if(!empty($this->post->user) && !empty($this->post->pass)){
