@@ -41,7 +41,7 @@ class Ratings extends CI_Controller
 		{
 			case 1: $message = $user->name . " recommends:"; break;
 			case 2: $message = $user->name . " does not recommend:"; break;
-			case 2: $message = $user->name . " sent you an invite to:"; break;						
+			case 3: $message = $user->name . " sent you an invite to:"; break;						
 		}
 			
 		//Loop and notify friends
