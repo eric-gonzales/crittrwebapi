@@ -40,5 +40,5 @@
 	$config['netflix_base_url'] = 'http://www.netflix.com/WiPlayer?movieid=';
 	
 	//Critter
-	$config['critter_rating_cache_seconds'] = 60 * 60 * 24;
+	$config['critter_rating_cache_seconds'] = 60 * 30;
 ?>
