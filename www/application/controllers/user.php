@@ -30,7 +30,7 @@ class User extends CI_Controller{
 			//create new entry in CRUser table
 			$this->db->set('created', 'NOW()', FALSE);
 			$this->db->set('modified', 'NOW()', FALSE);			
-			$this->db->set('name', $this->post->name);
+			$this->db->set('name', $this->post->username);
 			$this->db->set('password_hash', $this->phpass->hash($this->post->password));
 			$this->db->set('email', $this->post->email);
 			$this->db->insert('CRUser');
