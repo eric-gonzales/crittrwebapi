@@ -73,6 +73,66 @@ class User extends CI_Controller{
 		$this->db->insert('CRDeviceUser');
 	}
 	
+	function linkfacebook($hashedUserID)
+	{
+		//Check for required fields
+		$facebook_token = $this->post->facebook_token;
+		$user_id = hashids_decrypt($hashedUserID);
+		if (!$user_id)
+		{
+			$this->_generateError('Required Fields Missing', $this->config->item('error_required_fields'));		
+			$this->_response();				
+			return;
+		}
+		
+		//Load the user, bail on fail
+		$this->db->from('CRUser');
+		$this->db->where('id', $user_id);
+		$user = $this->db->get()->row();
+		if (!$user)
+		{
+			$this->_generateError('User not found', $this->config->item('error_entity_not_found'));		
+			$this->_response();				
+			return;
+		}
+		
+		//load facebook library
+		$this->load->library('facebook');
+		$facebook = new Facebook(array(
+			'appId' => $this->config->item('facebook_app_id'),
+			'secret' => $this->config->item('facebook_secret'),
+			'cookie' => false
+		));
+		
+		//set access token
+		$facebook->setAccessToken($facebook_token);
+		$fb_id = $facebook->getUser();
+		if($fb_id)
+		{
+			//See if another user account is already linked
+			$this->db->from('CRUser');
+			$this->db->where('facebook_id', $fb_id);
+			$user = $this->db->get()->row();
+			if ($user && $user->id != $user_id)
+			{
+				$this->_generateError('Facebook account already linked to another Critter user.', $this->config->item('error_already_in_use'));		
+				$this->_response();				
+				return;
+			}
+			
+			//All is well, link the account
+			$this->db->set('facebook_id', $fb_id);
+			$this->db->where('id', $user_id);
+			$this->db->update('CRUser');
+			$this->_response();							
+		}
+		else
+		{
+			$this->_generateError('Facebook user not found', $this->config->item('error_entity_not_found'));		
+			$this->_response();				
+		}
+	}
+	
 	//Login or Create New Account via Facebook
 	function facebook()
 	{
