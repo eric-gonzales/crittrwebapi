@@ -90,7 +90,7 @@ class User extends CI_Controller{
 					$chk_stmt = $this->db->get_where('CRUser',array('facebook_id' => $fb_id), 1);
 					
 					//Update DB fields - we will either be doing a create, or an update
-					$this->db->set('name', $facebook_email);						
+					$this->db->set('name', $facebook_name);						
 					$this->db->set('email', $facebook_email);
 					$this->db->set('facebook_username', $facebook_username);
 					$this->db->set('photo_url', $facebook_photo_url);
