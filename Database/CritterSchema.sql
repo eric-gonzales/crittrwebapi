@@ -54,11 +54,12 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `mydb`.`CRDeviceUser`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`CRDeviceUser` (
-  `id` VARCHAR(45) NULL,
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `device_id` INT UNSIGNED NOT NULL,
   `user_id` INT UNSIGNED NOT NULL,
   INDEX `fk_CRUserDevices_CRDevice_idx` (`device_id` ASC),
   INDEX `fk_CRUserDevices_CRUser1_idx` (`user_id` ASC),
+  PRIMARY KEY (`id`),
   CONSTRAINT `fk_CRUserDevices_CRDevice`
     FOREIGN KEY (`device_id`)
     REFERENCES `mydb`.`CRDevice` (`id`)
