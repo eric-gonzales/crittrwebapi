@@ -199,8 +199,15 @@ class Movie_model extends CR_Model {
 				'genres' => $this->getRTDetails()->genres
 			);			
 			
+			
+			
 			//Save to cache (only caching as long as we cache the rating)
-			$this->cache->memcached->save($cacheKey, $result, $this->config->item('critter_rating_cache_seconds'));
+			$this->cache->memcached->save($cacheKey, $result, $this->config->item('critter_movie_cache_seconds'));
+		}
+		else
+		{
+			//(Potentially) update the calculated critter rating - they refresh every 15 mins where the movie itself refreshes every 24 hrs.
+			$result['critter_rating'] = $this->getCritterRating();
 		}
 		
 		$this->setResult($result);
