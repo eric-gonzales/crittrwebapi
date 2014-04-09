@@ -311,4 +311,16 @@ class Movies extends CI_Controller
 		$this->movies_model->setResult($result);
 		$this->_response();
 	}
+	
+	public function warmcache()
+	{
+		$this->db->from('CRMovie');
+		$this->db->order_by('box_office_release_date', 'DESC');
+		$query = $this->db->get();
+		foreach($query->result() as $movie)
+		{
+			echo "Warming cache: " . $movie->title . " \n";
+			$movieModel = new Movie_model($movie->rotten_tomatoes_id);
+		}
+	}
 }
