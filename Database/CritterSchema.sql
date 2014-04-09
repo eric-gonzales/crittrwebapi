@@ -43,7 +43,9 @@ CREATE TABLE IF NOT EXISTS `mydb`.`CRUser` (
   PRIMARY KEY (`id`),
   INDEX `email_idx` (`email` ASC),
   INDEX `facebook_id_idx` (`facebook_id` ASC),
-  INDEX `username_idx` (`name` ASC))
+  INDEX `username_idx` (`name` ASC),
+  UNIQUE INDEX `email_UNIQUE` (`email` ASC),
+  UNIQUE INDEX `facebook_id_UNIQUE` (`facebook_id` ASC))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
@@ -142,7 +144,8 @@ CREATE TABLE IF NOT EXISTS `mydb`.`CRMovie` (
   `critter_rating` INT NOT NULL DEFAULT 0,
   `created` DATETIME NOT NULL,
   `modified` DATETIME NOT NULL,
-  PRIMARY KEY (`id`))
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `rotten_tomatoes_id_UNIQUE` (`rotten_tomatoes_id` ASC))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
@@ -163,6 +166,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`CRRating` (
   PRIMARY KEY (`id`),
   INDEX `fk_CRRating_CRUser1_idx` (`user_id` ASC),
   INDEX `fk_CRRating_CRMovie1_idx` (`movie_id` ASC),
+  UNIQUE INDEX `uniqueratingsbyuser_idx` (`user_id` ASC, `movie_id` ASC),
   CONSTRAINT `fk_CRRating_CRUser1`
     FOREIGN KEY (`user_id`)
     REFERENCES `mydb`.`CRUser` (`id`)
