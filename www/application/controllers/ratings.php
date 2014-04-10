@@ -277,10 +277,12 @@ class Ratings extends CI_Controller
 		{
 			//Set up the query
 			$movie_id = hashids_decrypt($hashedMovieID);
-			$this->db->select('CRRating.*, CRMovie.title, CRMovie.hashtag, CRMovie.rotten_tomatoes_id, CRMovie.tmdb_poster_path');
+			$this->db->select('CRRating.*, CRMovie.title, CRMovie.hashtag, CRMovie.rotten_tomatoes_id, CRMovie.tmdb_poster_path, CRUser.name as user_name, CRUser.photo_url as user_photo_url');
 			$this->db->from('CRRating');
 			$this->db->join('CRMovie', 'CRMovie.id = CRRating.movie_id');
+			$this->db->join('CRUser', 'CRUser.id = CRRating.user_id');			
 			$this->db->where('movie_id', $movie_id);
+			$this->db->where_in('rating', array(1,2)); //Only likes/dislikes
 			$this->db->order_by('CRRating.created', 'desc'); //Newest first
 			$this->db->limit($limit);
 			$this->db->offset($offset);
