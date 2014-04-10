@@ -566,12 +566,19 @@ class User extends CI_Controller{
 	}
 	
 	//Password Update
-	function updatepass(){
-		if(!empty($this->post->user) && !empty($this->post->pass)){
-			$this->db->where('id', $this->post->user)->set('password_hash', $this->phpass->hash($this->post->pass));
+	function update($hashedUserID)
+	{
+		$user_id = hashids_decrypt($hashedUserID);
+		if ($user_id)
+		{
+			if ($this->post->email) $this->db->set('email', $this->post->email);
+			if ($this->post->password) $this->db->set('password_hash', $this->phpass->hash($this->post->password));
+			if ($this->post->push_enabled) $this->db->set('push_enabled', $this->post->push_enabled);
+			$this->db->where('id', $user_id);
 			$this->db->update('CRUser');
 		}
-		else{
+		else
+		{
 			$this->_generateError('Required Fields Missing', $this->config->item('error_required_fields'));
 		}
 		$this->_response();

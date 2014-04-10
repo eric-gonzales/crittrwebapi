@@ -47,6 +47,7 @@ class User_model extends CR_Model {
 			'friends' => $this->getFriends(),
 			'notifications' => $this->getNotifications(),
 			'url_profilephoto' => $this->config->item('base_url').'user/photo/'.$hashedUserID,
+			'url_updateuserprofile' => $this->config->item('base_url').'user/update/'.$hashedUserID,
 			'url_addfriend' => $this->config->item('base_url').'user/addfriend/'.$hashedUserID,
 			'url_linkfacebook' => $this->config->item('base_url').'user/linkfacebook/'.$hashedUserID,
 			'url_friendsforuser' => $this->config->item('base_url').'user/friendsforuser',			
