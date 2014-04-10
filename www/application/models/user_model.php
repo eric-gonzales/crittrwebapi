@@ -63,7 +63,7 @@ class User_model extends CR_Model {
 			'url_moviesnewreleasedvd' => $this->config->item('base_url').'movies/newreleasedvds/'.$hashedUserID,
 			'url_moviescurrentdvd' => $this->config->item('base_url').'movies/currentdvds/'.$hashedUserID,
 			'url_moviesupcomingdvd' => $this->config->item('base_url').'movies/upcomingdvds/'.$hashedUserID,
-			'url_moviessearch' => $this->config->item('base_url').'movies/search/'.$hashedUserID,
+			'url_moviessearch' => $this->config->item('base_url').'movies/search',
 			'url_moviebycritterid' => $this->config->item('base_url').'movies/get',
 			'url_moviebyrottentomatoesid' => $this->config->item('base_url').'movies/rottentomatoes',			
 			'url_ratingupdate' => $this->config->item('base_url').'ratings/update/'.$hashedUserID,
