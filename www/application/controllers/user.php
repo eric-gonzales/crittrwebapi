@@ -301,43 +301,52 @@ class User extends CI_Controller{
 	}
 	
 	//Update User Profile Photo
-	function photo($hashedUserID){
-		if($hashedUserID != ''){
-			$user_id = hashids_decrypt($hashedUserID);
-			$chk_stmt = $this->db->get_where('CRUser',array('id' => $user_id), 1);
-			if($chk_stmt->num_rows() > 0){
-				//load aws library
-				$this->load->library('awslib');
-				//initiate Amazon class
-				$awslib = new Awslib();
-				$client = $awslib->S3();
-				//convert Base64 encoded photo to jpg
-				$base64 = urldecode($this->post('photo'));
-				$data = str_replace(' ', '+', $base64);
-				$photo_data = base64_decode($data);
-				$photo = imagecreatefromstring($photo_data);
-				//create a JPG
-				ob_start();
-				imagejpeg($photo);
-				$image = ob_get_clean();
-				//put object into S3 bucket
-				$result = $client->putObject(array(
-				    'Bucket' => 'critterphotos',
-				    'Key' => $hashedUserID.'/photo.jpg',
-				    'Body' => $image,
-				    'ACL' => 'public-read'
-				));
-				//update database record
-				$this->db->where('id', $user_id)->set('photo_url', $result['ObjectURL']);
-				$this->db->update('CRUser');
-			}
-			else{
-				$this->_generateError('User Could Not Be Found', $this->config->item('error_entity_not_found'));
-			}
-		}
-		else{
+	function photo($hashedUserID)
+	{
+		//Sanity check
+		$user_id = hashids_decrypt($hashedUserID);
+		if (!$hashedUserID || !$user_id)
+		{
 			$this->_generateError('Required Fields Missing', $this->config->item('error_required_fields'));
+			$this->_response();
+			return;
 		}
+	
+		//Get the user, bail on fail
+		$this->db->from('CRUser');
+		$this->db->where('id', $user_id);
+		$user = $this->db->get()->row();
+		if (!$user)
+		{
+			$this->_generateError('User not found', $this->config->item('error_entity_not_found'));
+			$this->_response();
+			return;
+		}
+		
+		//load aws library
+		$this->load->library('awslib');
+		$client = $this->awslib->S3();
+
+		//Decode base64 photo data
+		$photo_data = base64_decode($this->post->photo);
+				
+		//Save it to S3
+		$fileKey = md5($photo_data) . ".jpg";
+		$bucket = "critterphotos"; //TODO: Read this from a config
+		$client->upload($bucket, $fileKey, $photo_data, 'private');
+		
+		//Generate the URL
+		$expires = time() + (31536000 * 20); //URLs good for 20 years
+		$command = $client->getCommand('GetObject', array('Bucket' => $bucket,'Key' => $fileKey));
+		$photo_url = $command->createPresignedUrl($expires);		
+
+		//Update the user account
+		$this->db->set('photo_url', $photo_url);
+		$this->db->set('modified', 'NOW()', FALSE);
+		$this->db->where('id', $user_id);
+		$this->db->update('CRUser');
+
+		//Done!
 		$this->_response();
 	}
 	
