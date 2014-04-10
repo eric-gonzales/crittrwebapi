@@ -571,6 +571,21 @@ class User extends CI_Controller{
 		$user_id = hashids_decrypt($hashedUserID);
 		if ($user_id)
 		{
+			//If the user specified an email, ensure it's not used by any other accounts
+			if ($this->post->email)
+			{
+				$this->db->where('email', $this->post->email);
+				$this->db->where('id <>', $user_id);
+				$this->db->from('CRUser');
+				$user = $this->db->get()->row();
+				if ($user)
+				{
+					$this->_generateError('Email address is already in use.', $this->config->item('error_already_in_use'));		
+					$this->_response();							
+					return;
+				}
+			}
+		
 			if ($this->post->email) $this->db->set('email', $this->post->email);
 			if ($this->post->password) $this->db->set('password_hash', $this->phpass->hash($this->post->password));
 			if ($this->post->push_enabled) $this->db->set('push_enabled', $this->post->push_enabled);
