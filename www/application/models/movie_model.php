@@ -40,13 +40,16 @@ class Movie_model extends CR_Model {
 		//Check the cache first
 		$cacheKey = "CRMovie_" . $rotten_tomatoes_id;
 		$result = $result = $this->cache->memcached->get($cacheKey);
+		$this->setRottenTomatoesID($rotten_tomatoes_id);
+		
+		//Fetch critter rating
+		$this->fetchCritterRating();
 		
 		if (!$result)
 		{
 			//Try to get data from DB 
 			$inDB = FALSE;
 			$movie_info = NULL;
-			$this->setRottenTomatoesID($rotten_tomatoes_id);
 			$chk_stmt = $this->db->get_where('CRMovie',array('rotten_tomatoes_id' => $this->getRottenTomatoesID()), 1);
 			if($chk_stmt->num_rows() > 0)
 			{
@@ -135,9 +138,6 @@ class Movie_model extends CR_Model {
 			//Amazon Results 
 			$this->fetchAmazonOnlineVideo();
 			
-			//Critter Rating
-			$this->fetchCritterRating();
-		
 			//Database Operations
 			$this->db->set('rotten_tomatoes_id', $this->getRottenTomatoesID());
 			$this->db->set('itunes_id', $this->getiTunesID());
@@ -198,8 +198,6 @@ class Movie_model extends CR_Model {
 				'directors' => $this->getRTDetails()->abridged_directors,				
 				'genres' => $this->getRTDetails()->genres
 			);			
-			
-			
 			
 			//Save to cache (only caching as long as we cache the rating)
 			$this->cache->memcached->save($cacheKey, $result, $this->config->item('critter_movie_cache_seconds'));
@@ -493,20 +491,22 @@ class Movie_model extends CR_Model {
 	    CRMovieActionScrapPile 4 */
 	public function fetchCritterRating()
 	{
-		$cacheKey = 'critter_rating_'.$this->getID();
+		$cacheKey = 'critter_rating_'.$this->getRottenTomatoesID();
 		$rating = $this->cache->memcached->get($cacheKey);
 		if(!$rating)
 		{		
 			//Count likes
-			$this->db->where('movie_id', $this->getID());
-			$this->db->where('rating', 1);
 			$this->db->from('CRRating');
+			$this->db->join('CRMovie', 'CRMovie.id = CRRating.movie_id');			
+			$this->db->where('CRMovie.rotten_tomatoes_id', $this->getRottenTomatoesID());
+			$this->db->where('CRRating.rating', 1);
 			$likeCount = $this->db->count_all_results();
 			
 			//Count dislikes
-			$this->db->where('movie_id', $this->getID());
-			$this->db->where('rating', 2);
-			$this->db->from('CRRating');			
+			$this->db->from('CRRating');
+			$this->db->join('CRMovie', 'CRMovie.id = CRRating.movie_id');			
+			$this->db->where('CRMovie.rotten_tomatoes_id', $this->getRottenTomatoesID());
+			$this->db->where('CRRating.rating', 2);
 			$dislikeCount = $this->db->count_all_results();
 			
 			//Calculate average
