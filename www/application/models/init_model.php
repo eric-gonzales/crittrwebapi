@@ -51,7 +51,8 @@ class Init_model extends CR_Model {
 			'url_login' => $this->config->item('base_url').'user/login',
 			'url_resetpassword' => $this->config->item('base_url').'user/reset',
 			'url_updatepushtoken' => $this->config->item('base_url').'device/update',
-			'url_resetbadgecount' => $this->config->item('base_url').'device/resetbadgecount'
+			'url_resetbadgecount' => $this->config->item('base_url').'device/resetbadgecount',
+			'url_moviesboxoffice' => $this->config->item('base_url').'movies/boxoffice'
 		));
 	}
 }

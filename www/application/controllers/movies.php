@@ -98,11 +98,11 @@ class Movies extends CI_Controller
 		$this->_response();
 	}	
 	
-	//Fetch Box Office Movies for User
-	public function boxoffice($hashedUserID, $limit, $countryCode)
+	//Fetch Box Office Movies
+	public function boxoffice($limit, $countryCode)
 	{
 		//Sanity check
-		if ($hashedUserID === NULL || $limit === NULL || $countryCode === NULL)
+		if ($limit === NULL || $countryCode === NULL)
 		{
 			$this->_generateError('Required Fields Missing', $this->config->item('error_required_fields'));		
 			$this->_response();
@@ -114,7 +114,7 @@ class Movies extends CI_Controller
 		error_log("Hitting $url");
 		
 		//Do it
-		$this->fetchFromURL($hashedUserID, $url, FALSE);
+		$this->fetchFromURL(NULL, $url, FALSE);
 	}
 	
 	//Fetch Opening Movies for User
