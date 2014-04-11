@@ -125,8 +125,9 @@ class Ratings extends CI_Controller
 			//set a push notification to each device linked to the friend
 			$this->db->select('CRDevice.*');						
 			$this->db->from('CRDevice');
-			$this->db->join('CRDeviceUser', 'CRDevice.id = CRDeviceUser.user_id');
+			$this->db->join('CRDeviceUser', 'CRDevice.id = CRDeviceUser.device_id');
 			$this->db->where('CRDeviceUser.user_id', $friend_id);
+			$this->db->where('CRDevice.push_token IS NOT NULL');			
 			$query = $this->db->get();
 			foreach ($query->result() as $device)
 			{

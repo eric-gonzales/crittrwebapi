@@ -20,7 +20,7 @@ class Push extends CI_Controller
 	
 	public function send()
 	{
-		$this->db->select('CRPushNotification.id, CRDevice.push_token');
+		$this->db->select('CRPushNotification.*, CRDevice.push_token');
 		$this->db->from('CRPushNotification');
 		$this->db->join('CRDevice', 'CRDevice.id = CRPushNotification.device_id');
 		$this->db->where('sent', FALSE);
@@ -30,7 +30,6 @@ class Push extends CI_Controller
 		foreach($query->result() as $row)
 		{
 			$this->notification_model->send_ios($row->push_token, $row->message, intval($row->badge));
-			
 			$this->db->where('id', $row->id);
 			$this->db->set('sent', TRUE);
 			$this->db->update('CRPushNotification');
