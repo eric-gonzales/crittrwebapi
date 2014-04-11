@@ -54,7 +54,7 @@ class User extends CI_Controller{
 	function associateDeviceWithUser()
 	{
 		//Find the device, bail on fail
-		$deviceVendorID = $this->input->get_request_header('critter-device', TRUE);
+		$deviceVendorID = $this->input->get_request_header('Critter-device', TRUE);
 		$this->db->from('CRDevice');
 		$this->db->where('device_vendor_id',$deviceVendorID);
 		$row = $this->db->get()->row();

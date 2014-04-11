@@ -5,32 +5,34 @@
  * @copyright 2014 Critter
  */
 
-class Device extends CI_Controller{
-	function __construct(){
+class Device extends CI_Controller
+{
+	function __construct()
+	{
 		parent::__construct();
 		$this->load->model('device_model');
 	}
 	
 	//Update Push Token
-	function update($pushtoken){
-		$this->db->select('id');
-		//First, select id from CRDevice where device_vendor_id = critter-device
-		$query = $this->db->get_where('CRDevice', array('device_vendor_id' => $this->input->get_request_header('critter-device', TRUE)), 1);
-		//if we have a match, lets insert a new record into the table
-		if($query->num_rows > 0){
-			$device = $query->row();
-			$this->db->where('id', $device->id)->set('push_token', $pushtoken);
-			$this->db->update('CRDevice');
-		}
-		else{
-			$this->_generateError('Device Not Found', $this->config->item('error_entity_not_found'));
-		}
+	function update($pushtoken)
+	{
+		//Clear the push token from any other devices that use it.
+		//This is because repeated install/uninstalls could create new "devices", and we don't want to multispam the user when we send the push.
+		$this->db->where('push_token', $pushtoken);
+		$this->db->set('push_token', NULL);
+		$this->db->update('CRDevice');
+	
+		//Update the device
+		$this->db->where('device_vendor_id', $this->input->get_request_header('Critter-device', TRUE));
+		$this->db->set('push_token', $pushtoken);
+		$this->db->update('CRDevice');
+		error_log(json_encode($this->db));
 		$this->_response();
 	}
 	
 	function resetBadgeCount()
 	{
-		$this->db->where('device_vendor_id', $this->input->get_request_header('critter-device', TRUE));
+		$this->db->where('device_vendor_id', $this->input->get_request_header('Critter-device', TRUE));
 		$this->db->set('badge_count', 0);
 		$this->db->update('CRDevice');
 		$this->_response();
