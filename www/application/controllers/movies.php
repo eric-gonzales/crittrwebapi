@@ -353,4 +353,40 @@ class Movies extends CI_Controller
 			$movieModel = new Movie_model($movie->rotten_tomatoes_id);
 		}
 	}
+	
+	public function import($filename)
+	{
+		$this->load->helper('file');
+		$string = read_file($filename);
+		$file = json_decode($string);
+		foreach($file->results as $result)
+		{
+			//Get the RT ID
+			$rtID = $result->rotten_tomatoes_id;
+			
+			//Find the movie
+			$this->db->from('CRMovie');
+			$this->db->where('rotten_tomatoes_id', $rtID);
+			$row = $this->db->get()->row();
+			
+			if ($row)
+			{
+				error_log("Skipping movie " . $result->title);
+			}
+			else
+			{
+				$this->db->set('box_office_release_date', $result->boxOfficeReleaseDate->iso);
+				$this->db->set('dvd_release_date', $result->dvdReleaseDate->iso);				
+				$this->db->set('hashtag', $result->hashtag ? $result->hashtag : "#" . str_replace(" ", "", $result->title));
+				$this->db->set('tmdb_poster_path', $result->poster_path);
+				$this->db->set('imdb_id', $result->imdb_id);				
+				$this->db->set('tmdb_id', $result->tmdb_id);
+				$this->db->set('itunes_id', $result->itunes_id);				
+				$this->db->set('title', $result->title);
+				$this->db->set('rotten_tomatoes_id', $rtID);				
+				$this->db->insert('CRMovie');
+				error_log("Imported " . $result->title);
+			}
+		}
+	}
 }
