@@ -26,7 +26,6 @@ class Device extends CI_Controller
 		$this->db->where('device_vendor_id', $this->input->get_request_header('Critter-device', TRUE));
 		$this->db->set('push_token', $pushtoken);
 		$this->db->update('CRDevice');
-		error_log(json_encode($this->db));
 		$this->_response();
 	}
 	
