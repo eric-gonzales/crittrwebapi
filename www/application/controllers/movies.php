@@ -279,7 +279,7 @@ class Movies extends CI_Controller
 		$results = array();
 		$this->db->from('CRMovie');
 		$this->db->join('CRRating', "CRMovie.id = CRRating.movie_id AND CRRating.user_id=$user_id", 'left outer');
-		$this->db->order_by('box_office_release_date', 'ASC');
+		$this->db->order_by('box_office_release_date', 'DESC');
 		$this->db->limit($limit);
 		$this->db->offset($offset);
 		$movie_stmt = $this->db->get();
