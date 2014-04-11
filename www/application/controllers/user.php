@@ -9,6 +9,7 @@ class User extends CI_Controller{
 	function __construct(){
 		parent::__construct();
 		$this->load->model('user_model');
+		$this->load->model('push_model');		
 		$this->post = json_decode(file_get_contents('php://input'));
 		 /* get all the Mixpanel files */
         $this->mixpanel_dir = $_SERVER['DOCUMENT_ROOT'].'/application/third_party/mixpanel-php/lib/';
@@ -439,6 +440,9 @@ class User extends CI_Controller{
 						$this->db->set('modified', 'NOW()', FALSE);														
 						$this->db->insert('CRPushNotification');
 					}
+					
+					//Send pending pushes now - we may change this to a cron and remove this call later, but for now send ASAP.
+					$this->push_model->send();
 				}
 			}
 		}
@@ -519,6 +523,9 @@ class User extends CI_Controller{
 						$this->db->set('modified', 'NOW()', FALSE);														
 						$this->db->insert('CRPushNotification');
 					}
+					
+					//Send pending pushes now - we may change this to a cron and remove this call later, but for now send ASAP.
+					$this->push_model->send();
 				}
 			}
 			else

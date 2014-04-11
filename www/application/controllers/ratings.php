@@ -13,6 +13,7 @@ class Ratings extends CI_Controller
 		$this->load->model('ratings_model');
 		$this->load->driver('cache');
 		$this->post = json_decode(file_get_contents('php://input'));
+		$this->load->model('push_model');		
 	}
 	
 	function notifyFriendsForRating($friends, $rating_id)
@@ -146,6 +147,9 @@ class Ratings extends CI_Controller
 				$this->db->set('modified', 'NOW()', FALSE);														
 				$this->db->insert('CRPushNotification');
 			}
+			
+			//Send pending pushes now - we may change this to a cron and remove this call later, but for now send ASAP.
+			$this->push_model->send();
 		}
 	}
 	
