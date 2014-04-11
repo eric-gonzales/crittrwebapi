@@ -58,7 +58,7 @@ class Ratings extends CI_Controller
 			$this->db->where('CRNotification.from_user_id', $friend_id);
 			$this->db->where('CRNotification.to_user_id', $user->id);
 			$this->db->where('CRNotification.notification_type','invite');
-			$this->db->where('CRRating.movie_id',$movie_id);
+			$this->db->where('CRRating.movie_id',$movie->id);
 			$originalRating = $this->db->get()->row();
 			if($originalRating)
 			{
