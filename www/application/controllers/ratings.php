@@ -178,6 +178,20 @@ class Ratings extends CI_Controller
 				$this->db->set('modified', 'NOW()', FALSE);				
 				$this->db->insert('CRRating');
 				$rating_id = $this->db->insert_id();
+				
+				//Add action to analytics
+				$this->db->set('subject', 'user');
+				$this->db->set('subject_id', $user_id);
+				$this->db->set('subject_type', 'user');
+				$this->db->set('event', 'rates');
+				$this->db->set('event_id', $rating_id);
+				$this->db->set('event_type', $this->post->rating);
+				$this->db->set('object', 'movie');
+				$this->db->set('object_id', $movie_id);
+				$this->db->set('device', 'iPad');
+				$this->db->set('device_id', 'n/a');
+				$this->db->set('modified', 'NOW()', FALSE);	
+				$this->db->insert('CRAnalytics');
 			}
 			else
 			{
@@ -189,7 +203,17 @@ class Ratings extends CI_Controller
 				if (array_key_exists("notified_box_office", $this->post)) $this->db->set('notified_box_office', $this->post->notified_box_office);
 				if (array_key_exists("notified_dvd", $this->post)) $this->db->set('notified_dvd', $this->post->notified_dvd);	
 				$this->db->set('modified', 'NOW()', FALSE);				
-				$this->db->update('CRRating');				
+				$this->db->update('CRRating');
+				
+				//Update analytics
+				$this->db->where('subject_id', $user_id);
+				$this->db->where('event', 'rates');
+				$this->db->where('event_id', $rating_id);
+				$this->db->set('event_type', $this->post->rating);
+				$this->db->set('device', 'iPad');
+				$this->db->set('device_id', 'n/a');
+				$this->db->set('modified', 'NOW()', FALSE);	
+				$this->db->insert('CRAnalytics');			
 			}
 			
 			//NOTE: Intentionally not updating critter ratings on every insert; they are re-calculated as they expire from cache.
