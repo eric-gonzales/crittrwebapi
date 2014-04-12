@@ -192,7 +192,7 @@ class Ratings extends CI_Controller
 				$this->db->set('device_id', 'n/a');
 				$this->db->set('modified', 'NOW()', FALSE);	
 				$this->db->insert('CRAnalytics');
-			}
+			} 
 			else
 			{
 				//Update existing rating
