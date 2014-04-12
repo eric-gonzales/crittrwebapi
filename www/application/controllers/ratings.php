@@ -265,7 +265,8 @@ class Ratings extends CI_Controller
 		{
 			//Set up the query
 			$user_id = hashids_decrypt($hashedUserID);
-			$this->db->select('CRRating.*, CRMovie.title, CRMovie.hashtag, CRMovie.rotten_tomatoes_id, CRMovie.tmdb_poster_path');			$this->db->from('CRRating');
+			$this->db->select('CRRating.*, CRMovie.title, CRMovie.hashtag, CRMovie.rotten_tomatoes_id, CRMovie.tmdb_poster_path');			
+			$this->db->from('CRRating');
 			$this->db->join('CRMovie', 'CRMovie.id = CRRating.movie_id');
 			$this->db->where('user_id', $user_id);
 			$this->db->order_by('CRRating.created', 'asc'); //creation order
@@ -273,7 +274,7 @@ class Ratings extends CI_Controller
 			//Add filter on modified field if present
 			if ($modifiedSinceDateTime)
 			{
-				$this->db->where('CRRating.modified >=', $modifiedSinceDateTime);
+				$this->db->where('CRRating.modified >', urldecode($modifiedSinceDateTime));
 			}
 
 			//Query and clean up the results
