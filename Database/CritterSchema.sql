@@ -26,6 +26,38 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
+-- Table `mydb`.`CRAnalytics`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`CRAnalytics` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `device_id` INT UNSIGNED NOT NULL,
+  `subject` VARCHAR(255) NOT NULL,
+  `subject_id` INT(11) NULL DEFAULT NULL,
+  `subject_type` VARCHAR(255) NULL DEFAULT NULL,
+  `event` VARCHAR(255) NOT NULL,
+  `event_id` INT(11) NULL DEFAULT NULL,
+  `event_type` VARCHAR(255) NULL DEFAULT NULL,
+  `object` VARCHAR(255) NOT NULL,
+  `object_id` INT(11) NULL DEFAULT NULL,
+  `object_type` VARCHAR(255) NULL DEFAULT NULL,
+  `device` VARCHAR(255) NOT NULL,
+  `params` TEXT NULL DEFAULT NULL,
+  `created` DATETIME NOT NULL,
+  `modified` DATETIME NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_CRAnalytics_CRDevice1_idx` (`device_id` ASC),
+  CONSTRAINT `fk_CRAnalytics_CRDevice1`
+    FOREIGN KEY (`device_id`)
+    REFERENCES `mydb`.`CRDevice` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+AUTO_INCREMENT = 146
+DEFAULT CHARACTER SET = utf8
+COLLATE = utf8_general_ci;
+
+
+-- -----------------------------------------------------
 -- Table `mydb`.`CRUser`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`CRUser` (
@@ -254,6 +286,7 @@ DEFAULT CHARACTER SET = utf8;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`CRNetflix` (
   `id` INT NOT NULL AUTO_INCREMENT,
+  `movie_id` INT UNSIGNED NOT NULL,
   `title` VARCHAR(255) NULL,
   `release_year` YEAR NULL,
   `season` INT NULL DEFAULT 0,
@@ -261,7 +294,6 @@ CREATE TABLE IF NOT EXISTS `mydb`.`CRNetflix` (
   `avail_us` TINYINT NULL DEFAULT 0,
   `avail_ca` TINYINT NULL DEFAULT 0,
   `avail_uk` TINYINT NULL DEFAULT 0,
-  `movie_id` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_CRNetflix_CRMovie1_idx` (`movie_id` ASC),
   CONSTRAINT `fk_CRNetflix_CRMovie1`
