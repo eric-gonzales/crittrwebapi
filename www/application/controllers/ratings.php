@@ -38,7 +38,7 @@ class Ratings extends CI_Controller
 		//Set up the notification tyoe and message
 		$notification_type = "invite";
 		$message = NULL;
-		switch($this->post->rating)
+		switch($rating->rating)
 		{
 			case 1: $message = $user->name . " recommends:"; break;
 			case 2: $message = $user->name . " does not recommend:"; break;
@@ -78,7 +78,7 @@ class Ratings extends CI_Controller
 				{
                      case 1: //CRMovieActionRecommend:
                      {
-                         switch ($rating)
+                         switch ($rating->rating)
                          {
 							 case 1: $message = $user->name . " agreed and liked:"; break;
 							 case 2: $message = $user->name . " disagreed and disliked:"; break;
@@ -89,7 +89,7 @@ class Ratings extends CI_Controller
                      }
                      case 2: //CRMovieActionDontRecommend:
                      {
-                         switch ($rating)
+                         switch ($rating->rating)
                          {
 							 case 1: $message = $user->name . " disagreed and liked:"; break;
 							 case 2: $message = $user->name . " agreed and disliked:"; break;
@@ -100,7 +100,7 @@ class Ratings extends CI_Controller
                      }
                      case 3: //CRMovieActionWatchList:
                      {
-                         switch ($rating)
+                         switch ($rating->rating)
                          {
 							 case 1: $message = $user->name . " watched and recommended:"; break;
 							 case 2: $message = $user->name . " watched and did not recommend:"; break;
