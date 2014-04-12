@@ -2,7 +2,15 @@
 
 if(!defined('BASEPATH')) exit('No direct script access allowed');
 
-class Notification_model extends CR_Model {
+$apnsPath = $_SERVER['DOCUMENT_ROOT'].'/application/third_party/ApnsPHP/';
+if (php_sapi_name() == 'cli')
+{
+	$apnsPath = "application/third_party/ApnsPHP/";
+}
+require_once $apnsPath.'Log/Interface.php';
+
+class Notification_model extends CR_Model implements ApnsPHP_Log_Interface
+{
 
     protected $apnsDir = '';
 
@@ -53,6 +61,9 @@ class Notification_model extends CR_Model {
         }
         $push = new ApnsPHP_Push($pushEnvironment, $pushCert);
 
+        // Suppress logging when not run from command line (prevents log spew in our returned JSON)
+		$push->setLogger($this);
+
         // Set the Root Certificate Autority to verify the Apple remote peer
         $push->setRootCertificationAuthority($this->apnsDir.'SSL/entrust_root_certification_authority.pem');
 
@@ -86,7 +97,7 @@ class Notification_model extends CR_Model {
                 $message->setCustomProperty($attr_key, $attr_val);
             }
         }
-
+        
         // Set the expiry value - in seconds
         $message->setExpiry(120);
 
@@ -125,6 +136,20 @@ class Notification_model extends CR_Model {
 		$pushFeedback->disconnect();		
 		return $aDeviceTokens;
 	}    
+	
+	public function log($sMessage)
+	{
+		if ($this->input->is_cli_request())
+		{
+			printf("%s ApnsPHP[%d]: %s\n",
+				date('r'), getmypid(), trim($sMessage)
+			);
+		}
+		else
+		{
+			error_log("ApnsPHP: $sMessage");
+		}
+	}
 
     // -----------------------------------------------
 
