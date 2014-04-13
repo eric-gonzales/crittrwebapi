@@ -353,7 +353,8 @@ class Movie_model extends CR_Model {
 		//Now we will check if there is not a Youtube ID. (Database and TMDB has no results)
 		if($this->getYouTubeTrailerID() == ''){
 			if($this->getTMSRootID() != ''){
-				$this->fetchTMSTrailerDetails();
+				//DJS - Commenting out TMS trailer fetch - unused
+				//$this->fetchTMSTrailerDetails();
 			}
 			else{
 				//write to the log that no trailer was found from DB, TMDB, or TMS
