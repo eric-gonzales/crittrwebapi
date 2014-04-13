@@ -56,7 +56,7 @@ class User_model extends CR_Model {
 			'url_addcontactfriends' => $this->config->item('base_url').'user/addcontactfriends/'.$hashedUserID,			
 			'url_sendnotification' => $this->config->item('base_url').'notification/send',
 			'url_clearnotification' => $this->config->item('base_url').'notification/viewed',
-			'url_unreadnotification' => $this->config->item('base_url').'notification/unread/'.$hashedUserID,
+			'url_notifications' => $this->config->item('base_url').'user/notifications/'.$hashedUserID,
 			'url_moviespriority' => $this->config->item('base_url').'movies/priority/'.$hashedUserID,
 			'url_moviesunrated' => $this->config->item('base_url').'movies/unrated/'.$hashedUserID,
 			'url_moviesopening' => $this->config->item('base_url').'movies/opening/'.$hashedUserID,

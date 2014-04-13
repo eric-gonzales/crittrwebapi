@@ -608,6 +608,74 @@ class User extends CI_Controller{
 		$this->_response();
 	}
 	
+	function notifications($hashedUserID, $modifiedSinceDateTime = NULL)
+	{
+		$user_id = hashids_decrypt($hashedUserID);
+		if ($user_id)
+		{
+			//Base query
+			$this->db->from('CRNotification');
+			$this->db->where('to_user_id', $user_id);
+			$this->db->order_by('modified', 'asc');
+			
+			//Add filter on modified field if present
+			if ($modifiedSinceDateTime)
+			{
+				$this->db->where('CRNotification.modified >', urldecode($modifiedSinceDateTime));
+			}
+			
+			//Loop and process
+			$notifications = array();
+			$query = $this->db->get();			
+			foreach($query->result() as $notification)
+			{
+				//Look up the from user
+				$this->db->select('id, name, email, photo_url, facebook_id, facebook_username');				
+				$this->db->from('CRUser');
+				$this->db->where('id', $notification->from_user_id);
+				$fromUser = $this->db->get()->row();
+				$fromUser->id = hashids_encrypt($fromUser->id);
+				
+				//Look up the rating, if we have one
+				$rating = NULL;
+				if ($notification->rating_id != NULL)
+				{
+					$ratingID = $notification->rating_id;
+					$this->db->select('CRRating.*, CRMovie.title, CRMovie.hashtag, CRMovie.rotten_tomatoes_id, CRMovie.tmdb_poster_path');
+					$this->db->from('CRRating');
+					$this->db->join('CRMovie', 'CRMovie.id = CRRating.movie_id');
+					$this->db->where('CRRating.id', $ratingID);
+					error_log(json_encode($this->db));
+					$rating = $this->db->get()->row();
+					$rating->id = hashids_encrypt($rating->id);
+					$rating->movie_id = hashids_encrypt($rating->movie_id);					
+				}
+				
+				//Add the notification
+				$notifications[] = array(
+					'id' => hashids_encrypt($notification->id),
+					'notification_type' => $notification->notification_type,
+					'rating' => $rating,
+					'from_user' => $fromUser,
+					'to_user_id' => hashids_encrypt($notification->to_user_id),
+					'is_viewed' => $notification->is_viewed,					
+					'message' => $notification->message,
+					'created' => $notification->created,
+					'modified' => $notification->modified,
+				);
+			}
+			
+			$this->user_model->setResult($notifications);			
+		}
+		else
+		{
+			$this->_generateError('Required Fields Missing', $this->config->item('error_required_fields'));
+		}
+		$this->_response();
+			
+	}
+	
+	
 	/*
 	 * Generate Error
 	 * Status Codes:
