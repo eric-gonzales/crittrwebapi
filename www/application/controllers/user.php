@@ -403,7 +403,15 @@ class User extends CI_Controller{
 				$this->db->where('friend_id', $user_id);
 				$friends_stmt = $this->db->get();
 				$existingFriendship = $friends_stmt->row();
-				if (!$existingFriendship)
+				
+				//Check for existing friend request
+				$this->db->from('CRNotification');
+				$this->db->where('from_user_id', $user_id);
+				$this->db->where('to_user_id', $friend_id);
+				$this->db->where('notification_type', 'friendrequest');
+				$existingRequest = $this->db->get()->row();
+				
+				if (!$existingFriendship && !$existingRequest)
 				{
 					//No existing friendship - Send them a notification
 					$message = $user->name . ' wants to be your Critter friend!';
@@ -486,7 +494,15 @@ class User extends CI_Controller{
 				$this->db->where('friend_id', $user_id);
 				$friends_stmt = $this->db->get();
 				$existingFriendship = $friends_stmt->row();
-				if (!$existingFriendship)
+				
+				//Check for existing friend request
+				$this->db->from('CRNotification');
+				$this->db->where('from_user_id', $user_id);
+				$this->db->where('to_user_id', $friend_id);
+				$this->db->where('notification_type', 'friendrequest');
+				$existingRequest = $this->db->get()->row();
+				
+				if (!$existingFriendship && !$existingRequest)
 				{
 					//No existing friendship - Send them a notification
 					$message = $user->name . ' wants to be your Critter friend!';
