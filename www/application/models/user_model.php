@@ -131,56 +131,6 @@ class User_model extends CR_Model {
 	}
 	
 	/*
-	 * Fetch unread notifications 
-	 */
-	public function fetchNotifications()
-	{
-		$notifications = array();
-		$this->db->order_by('created', 'desc'); //newest first
-		$query = $this->db->get_where('CRNotification', array('to_user_id' => $this->getID(), 'is_viewed' => 0));
-		if($query->num_rows > 0)
-		{
-			foreach($query->result() as $notification)
-			{
-				//Look up the from user
-				$this->db->select('id, name, email, photo_url, facebook_id, facebook_username');				
-				$this->db->from('CRUser');
-				$this->db->where('id', $notification->from_user_id);
-				$fromUser = $this->db->get()->row();
-				$fromUser->id = hashids_encrypt($fromUser->id);
-				
-				//Look up the rating, if we have one
-				$rating = NULL;
-				if ($notification->rating_id != NULL)
-				{
-					$ratingID = $notification->rating_id;
-					$this->db->select('CRRating.*, CRMovie.title, CRMovie.hashtag, CRMovie.rotten_tomatoes_id, CRMovie.tmdb_poster_path');
-					$this->db->from('CRRating');
-					$this->db->join('CRMovie', 'CRMovie.id = CRRating.movie_id');
-					$this->db->where('CRRating.id', $ratingID);
-					error_log(json_encode($this->db));
-					$rating = $this->db->get()->row();
-					$rating->id = hashids_encrypt($rating->id);
-					$rating->movie_id = hashids_encrypt($rating->movie_id);					
-				}
-				
-				//Add the notification
-				$notifications[] = array(
-					'id' => hashids_encrypt($notification->id),
-					'notification_type' => $notification->notification_type,
-					'rating' => $rating,
-					'from_user' => $fromUser,
-					'to_user_id' => hashids_encrypt($notification->to_user_id),
-					'message' => $notification->message,
-					'created' => $notification->created,
-					'modified' => $notification->modified,
-				);
-			}
-		}
-		$this->setNotifications($notifications);
-	}
-	
-	/*
 	 * Fetch friends that aren't ignoring me
 	 */
 	public function fetchFriends(){

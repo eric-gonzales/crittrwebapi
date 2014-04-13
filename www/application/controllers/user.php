@@ -189,7 +189,6 @@ class User extends CI_Controller{
 					
 						//fetch user details
 						$this->user_model->setID($user->id);
-						$this->user_model->fetchNotifications();
 						$this->user_model->fetchFriends();
 						$this->user_model->defaultResult();
 					}
@@ -247,7 +246,6 @@ class User extends CI_Controller{
 			{
 				//set the proper result for the user
 				$this->user_model->setID($cr_user->id);
-				$this->user_model->fetchNotifications();
 				$this->user_model->fetchFriends();
 				$this->user_model->defaultResult();
 				
