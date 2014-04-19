@@ -1,0 +1,160 @@
+html, body{
+	margin:0;
+	padding:0;
+	font:16px Lato, Arial, Helvetica, sans-serif;
+	background-image:url('img/bg_grey.jpg');
+}
+h1{
+	font-weight:bold;
+	font:36px "Titillium Web";
+	font-weight:bold;
+	padding:0;
+	margin:0;
+}
+h2{
+	padding:0;
+	margin:0;
+	font:30px "Titillium Web";
+}
+h1 a{
+	text-decoration:none;
+	color:#000;
+}
+main h2{
+	width:100%;
+	padding:0;
+	margin:0;
+	font:30px "Titillium Web";
+	background-image:url('img/bg_darker.jpg');
+	color:#fff;
+	font-weight:bold;
+}
+nav{
+	background-image:url('img/bg_darker.jpg');
+	width:25%;
+	display:block;
+	float:left;
+	height:750px;
+	overflow:hidden;
+}
+nav h1{
+	color: #fff;
+	font:34px "Titillium Web";
+	font-weight:bold;
+	padding:0;
+	margin:0;
+}
+nav ul{
+	list-style:none;
+	padding:0;
+	text-indent:0px;
+	margin:0;
+}
+nav ul li{
+	background-image:url('img/bg_dark.jpg');
+	margin-top:1px;
+	padding:5px;
+	width:100%;
+}
+nav ul li a{
+	color:#fff;
+	text-decoration:none;
+	font-weight:bold;
+	width:100%;
+}
+.navheading{
+	color:white;
+	font-weight:bold;
+	padding:5px 0;
+	background-image:url('img/bg_darker.jpg');
+	font:20px "Titillium Web";
+}
+nav ul li a:hover{
+	color:lightblue;
+	text-decoration:none;
+	font-weight:bold;
+	width:100%;
+}
+main{
+	width:75%;
+	display:block;
+	float:left;
+}
+main form{
+	width:100%;
+	background-image:url('img/bg_darker.jpg');
+	margin:0;
+	padding:0;
+	color:#fff;
+}
+main form p{
+	margin:0;
+	padding:0;
+}
+footer{
+	text-align:center;
+	float:left;
+	width:100%;
+	display:block;
+	z-index:1;
+}
+.summary{
+	background:#eee;
+	width:100%;
+	text-align:center;
+}
+
+#userfeed{
+	width:100%;
+	display:block;
+	background:#fff;
+	z-index:0;
+	overflow-y: scroll;
+	max-height:600px !important;
+}
+#userfeed td{
+	width:100%;
+	border-bottom:1px solid #eee;
+	padding:10px 0;
+}
+#userfeed td a{
+	color:#000;
+	font-weight:bold;
+	text-decoration:none;
+}
+
+#userlist{
+	width:100%;
+	display:block;
+	background:#fff;
+	z-index:0;
+	overflow-y: scroll;
+	max-height:600px !important;
+}
+#userlist td{
+	border-bottom:1px solid #eee;
+	padding:10px 25px;
+}
+#userlist td a{
+	color:#000;
+	font-weight:bold;
+	text-decoration:none;
+}
+
+#usertable{
+	width:100%;
+	background-image:url('img/bg_darker.jpg');
+	margin:0;
+	padding:0;
+	color:#fff;
+}
+#usertable th{
+	max-width:125px;
+	font:30px "Titillium Web";
+}
+#usertable td{
+	text-align:left;
+}
+#usertable h2{
+	
+}
