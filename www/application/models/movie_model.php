@@ -59,7 +59,6 @@ class Movie_model extends CR_Model {
 			}
 		
 			//RT data
-			$this->fetchRottenTomatoesData();
 			if($inDB)
 			{
 				if($movie_info->title != '')
@@ -80,12 +79,12 @@ class Movie_model extends CR_Model {
 					$this->setIMDBID($movie_info->imdb_id);
 				}
 			}
+			$this->fetchRottenTomatoesData();
 		
 			//IMDB Data
 			$this->fetchIMDBData();
 		
 			//TMDB data
-			$this->fetchTMDBData();
 			if($inDB)
 			{
 				if($movie_info->tmdb_id != '')
@@ -97,9 +96,9 @@ class Movie_model extends CR_Model {
 					$this->setTMDBPosterPath($movie_info->tmdb_poster_path);
 				}
 			}
+			$this->fetchTMDBData();
 		
 			//iTunes Data
-			$this->fetchiTunesData();
 			if($inDB)
 			{
 				if($movie_info->itunes_id != '')
@@ -107,9 +106,9 @@ class Movie_model extends CR_Model {
 					$this->setiTunesID($movie_info->itunes_id);
 				}
 			}
+			$this->fetchiTunesData();
 		
 			//TMS Data 
-			$this->fetchTMSData();
 			if($inDB)
 			{
 				if($movie_info->tms_movie_id != '')
@@ -121,6 +120,7 @@ class Movie_model extends CR_Model {
 					$this->setTMSRootID($movie_info->tms_root_id);
 				}
 			}
+			$this->fetchTMSData();
 			
 			//Fetch Trailer Details
 			//Check to see if this movie is in the database and has a Youtube Trailer ID. If so, we will set this as the Youtube Trailer ID.
@@ -130,7 +130,6 @@ class Movie_model extends CR_Model {
 			else{
 				$this->fetchTrailerDetails();
 			}
-			
 			
 			//Netflix Link
 			$this->fetchNetflixOnlineVideo();
