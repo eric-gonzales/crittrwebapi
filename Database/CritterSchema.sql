@@ -70,6 +70,8 @@ CREATE TABLE IF NOT EXISTS `mydb`.`CRUser` (
   `photo_url` VARCHAR(255) NULL,
   `tutorials_shown` TINYINT(1) NOT NULL DEFAULT 0,
   `push_enabled` TINYINT(1) NOT NULL DEFAULT 1,
+  `birthday` DATETIME NULL,
+  `gender` VARCHAR(1) NULL,
   `created` DATETIME NOT NULL,
   `modified` DATETIME NOT NULL,
   PRIMARY KEY (`id`),
