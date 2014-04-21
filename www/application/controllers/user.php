@@ -696,7 +696,7 @@ class User extends CI_Controller{
 		if ($user_id)
 		{
 			$this->db->from('CRUser');
-			$this->db->select(array('id','name','photo_url'));
+			$this->db->select(array('id','name','facebook_id','photo_url'));
 			$this->db->like('name', urldecode($searchText));
 			$this->db->limit(100);
 			$result = $this->db->get()->result();
