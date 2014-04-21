@@ -5,7 +5,7 @@
  * @copyright 2014 Critter
  */
 
-class User extends CI_Controller{
+class User extends CI_Controller{ 
 	function __construct(){
 		parent::__construct();
 		$this->load->model('user_model');
@@ -689,7 +689,32 @@ class User extends CI_Controller{
 			
 	}
 	
-	
+	//User search
+	function search($hashedUserID, $searchText)
+	{
+		$user_id = hashids_decrypt($hashedUserID);
+		if ($user_id)
+		{
+			$this->db->from('CRUser');
+			$this->db->select('id','name','photo_url');
+			$this->db->like('name', $searchText);
+			$this->db->limit(100);
+			$result = $this->db->get()->result();
+			foreach($result as $user)
+			{
+				$user->id = hashids_encrypt($user->id);
+			}
+
+			$this->user_model->setID($user_id);
+			$this->user_model->setResult($result);
+		}		
+		else
+		{
+			$this->_generateError('Required Fields Missing', $this->config->item('error_required_fields'));
+		}
+		$this->_response();
+	}
+
 	/*
 	 * Generate Error
 	 * Status Codes:
