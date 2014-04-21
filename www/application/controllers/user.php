@@ -354,23 +354,38 @@ class User extends CI_Controller{
 	{
 		//Sanity check - ensure require fields
 		$user_id = hashids_decrypt($hashedUserID);
-		if (!$user_id || !$this->post->emails || $this->post->facebook_ids)
+		if (!$user_id || (!$this->post->emails && !$this->post->facebook_ids))
 		{
+			echo("User $user_id emails: ". json_encode($this->post->emails) . " facebook_ids:" . json_encode($this->post->facebook_ids));
 			$this->_generateError('Required Fields Missing', $this->config->item('error_required_fields'));		
 			$this->_response();				
 			return;
 		}
 	
 		//Build the list of matching people
+		$this->db->select(array('id','name','facebook_id','facebook_username','photo_url'));
 		$this->db->from('CRUser');
-		$this->db->where_in('email', $this->post->emails);
-		$this->db->or_where_in('facebook_id', $this->post->facebook_ids);
+		if ($this->post->emails && $this->post->facebook_ids)
+		{
+			$this->db->where_in('email', $this->post->emails);
+			$this->db->or_where_in('facebook_id', $this->post->facebook_ids);
+		}
+		else if ($this->post->facebook_ids)
+		{
+			$this->db->where_in('facebook_id', $this->post->facebook_ids);
+		}
+		else
+		{
+			$this->db->where_in('email', $this->post->emails);
+		}
 		$query = $this->db->get();
 		
 		//Loop and add matching friends
 		$new_friends = array();
 		foreach($query->result() as $friend)
 		{
+			$friend_id = $friend->id;
+		
 			//Look up the friendship and add if 
 			$this->db->from('CRFriends');
 			$this->db->where('user_id', $user_id);
@@ -388,10 +403,6 @@ class User extends CI_Controller{
 				$this->user_model->fetchName();
 				
 				//Add the friend to the results
-				$this->db->select('id, name, email, facebook_id, facebook_username, photo_url');
-				$this->db->from('CRUser');
-				$this->db->where('id', $friend_id);
-				$friend = $this->db->get()->row();
 				$friend->id = hashids_encrypt($friend->id);
 				array_push($new_friends, $friend);
 
