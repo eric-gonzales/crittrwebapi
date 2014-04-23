@@ -162,7 +162,6 @@ class User extends CI_Controller{
 	     		{
 	     			//Query Facebook API for /me object
 	        		$user_profile = $facebook->api('/me','GET');
-	        		error_log("Got user profile " . json_encode($user_profile));
 	        		$facebook_name = $user_profile['name'];	        		
 	        		$facebook_username = $user_profile['username'];
 	        		$facebook_email = $user_profile['email'];
@@ -200,16 +199,12 @@ class User extends CI_Controller{
 					else
 					{
 						//create new user
-						error_log("Creating new facebook user $fb_id");
 						$this->db->set('created', 'NOW()', FALSE);
 						$this->db->set('facebook_id', $fb_id);
 							
 						//Set a default junk password so the account isn't blank - users can reset
-						error_log("Creating new facebook user password $fb_id");						
 						$this->db->set('password_hash', sha1($fb_id . "junk")); //Just to put something in so we don't have an empty login for this account - user can run pw reset if they need to log in later without FB
-						error_log("About to insert new facebook user");						
 						$this->db->insert('CRUser');
-						error_log("Created new facebook user");						
 						$this->user_model->setID($this->db->insert_id());
 						$this->user_model->defaultResult();
 					}
@@ -678,7 +673,6 @@ class User extends CI_Controller{
 					$this->db->from('CRRating');
 					$this->db->join('CRMovie', 'CRMovie.id = CRRating.movie_id');
 					$this->db->where('CRRating.id', $ratingID);
-					error_log(json_encode($this->db));
 					$rating = $this->db->get()->row();
 					$rating->id = hashids_encrypt($rating->id);
 					$rating->movie_id = hashids_encrypt($rating->movie_id);					
