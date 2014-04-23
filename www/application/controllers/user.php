@@ -162,10 +162,15 @@ class User extends CI_Controller{
 	     		{
 	     			//Query Facebook API for /me object
 	        		$user_profile = $facebook->api('/me','GET');
+	        		error_log("Got user profile " . json_encode($user_profile));
 	        		$facebook_name = $user_profile['name'];	        		
 	        		$facebook_username = $user_profile['username'];
 	        		$facebook_email = $user_profile['email'];
-	        		$facebook_photo_url = "http://graph.facebook.com/$facebook_username/picture?type=large";
+	        		if ($facebook_email == "")
+	        		{
+		        		$facebook_email = "$facebook_username@facebook.com";
+	        		}
+	        		$facebook_photo_url = "http://graph.facebook.com/$fb_id/picture?type=large";
 
 					//check if user is signed up
 					$this->db->select('id');
@@ -195,13 +200,16 @@ class User extends CI_Controller{
 					else
 					{
 						//create new user
+						error_log("Creating new facebook user $fb_id");
 						$this->db->set('created', 'NOW()', FALSE);
 						$this->db->set('facebook_id', $fb_id);
 							
 						//Set a default junk password so the account isn't blank - users can reset
+						error_log("Creating new facebook user password $fb_id");						
 						$this->db->set('password_hash', sha1($fb_id . "junk")); //Just to put something in so we don't have an empty login for this account - user can run pw reset if they need to log in later without FB
-						
+						error_log("About to insert new facebook user");						
 						$this->db->insert('CRUser');
+						error_log("Created new facebook user");						
 						$this->user_model->setID($this->db->insert_id());
 						$this->user_model->defaultResult();
 					}
