@@ -171,9 +171,12 @@ class User extends CI_Controller{
 	        		}
 	        		$facebook_photo_url = "http://graph.facebook.com/$fb_id/picture?type=large";
 
+					error_log("Facebook login for $facebook_token : " . json_encode($user_profile));
+
 					//check if user is signed up
 					$this->db->select('id');
 					$this->db->where('facebook_id', $fb_id);
+					$this->db->or_where('email', $facebook_email);					
 					$query = $this->db->get('CRUser');
 					$user = $query->row();
 
@@ -183,12 +186,13 @@ class User extends CI_Controller{
 					$this->db->set('facebook_username', $facebook_username);
 					$this->db->set('photo_url', $facebook_photo_url);
 					$this->db->set('modified', 'NOW()', FALSE);
+					$this->db->set('facebook_id', $fb_id);
 					
 					//If user exists, update it 
 					if($user)
 					{
 						//Update user account details (FB may have changed)
-						$this->db->where('facebook_id', $fb_id);
+						$this->db->where('id', $user->id);
 						$this->db->update('CRUser');
 					
 						//fetch user details
@@ -200,7 +204,6 @@ class User extends CI_Controller{
 					{
 						//create new user
 						$this->db->set('created', 'NOW()', FALSE);
-						$this->db->set('facebook_id', $fb_id);
 							
 						//Set a default junk password so the account isn't blank - users can reset
 						$this->db->set('password_hash', sha1($fb_id . "junk")); //Just to put something in so we don't have an empty login for this account - user can run pw reset if they need to log in later without FB
