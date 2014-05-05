@@ -16,6 +16,64 @@ class Ratings extends CI_Controller
 		$this->load->model('push_model');		
 	}
 	
+	private function messageForRating($userName, $rating, $originalRating = NULL)
+	{
+		$message = NULL;
+		
+		//Basic rating 
+		switch($rating)
+		{
+			case 1: $message = $userName . " recommends:"; break;
+			case 2: $message = $userName . " does not recommend:"; break;
+			case 3: $message = $userName . " sent you an invite to:"; break;						
+			case 4: $message = $userName . " scraplisted:"; break;						
+		}
+		
+		//If not a reply, bail
+		if ($originalRating == NULL)
+		{
+			return $message;
+		}
+		
+		switch($originalRating)
+		{
+             case 1: //CRMovieActionRecommend:
+             {
+                 switch ($rating)
+                 {
+					 case 1: $message = $userName . " agreed and liked:"; break;
+					 case 2: $message = $userName . " disagreed and disliked:"; break;
+					 case 3: $message = $userName . " took note and watchlisted:"; break;
+					 case 4: $message = $userName . " ignored your recommendation and rejected:"; break;							 							 							 
+                 }
+                 break;
+             }
+             case 2: //CRMovieActionDontRecommend:
+             {
+                 switch ($rating)
+                 {
+					 case 1: $message = $userName . " disagreed and liked:"; break;
+					 case 2: $message = $userName . " agreed and disliked:"; break;
+					 case 3: $message = $userName . " ignored your warning and watchlisted:"; break;
+					 case 4: $message = $userName . " took note and rejected:"; break;							 							 							 
+                 }
+                 break;
+             }
+             case 3: //CRMovieActionWatchList:
+             {
+                 switch ($rating)
+                 {
+					 case 1: $message = $userName . " watched and recommended:"; break;
+					 case 2: $message = $userName . " watched and did not recommend:"; break;
+					 case 3: $message = $userName . " accepted your invitation to watch:"; break;
+					 case 4: $message = $userName . " was not interested in watching:"; break;							 							 							 
+                 }
+                 break;
+             }					
+		}
+		return $message;
+	}
+	
 	function notifyFriendsForRating($friends, $rating_id)
 	{
 		error_log("Notifying friends for rating $rating_id:.".json_encode($friends));
@@ -37,14 +95,8 @@ class Ratings extends CI_Controller
 
 		//Set up the notification tyoe and message
 		$notification_type = "invite";
-		$message = NULL;
-		switch($rating->rating)
-		{
-			case 1: $message = $user->name . " recommends:"; break;
-			case 2: $message = $user->name . " does not recommend:"; break;
-			case 3: $message = $user->name . " sent you an invite to:"; break;						
-		}
-			
+		$message = $this->messageForRating($user->name, $rating->rating);
+		
 		//Loop and notify friends
 		foreach($friends as $friendHashedID)
 		{
@@ -63,53 +115,9 @@ class Ratings extends CI_Controller
 			$originalRating = $this->db->get()->row();
 			if($originalRating)
 			{
-				/*	
-	 	User rating values:	    
-	    CRMovieActionNone, 0
-	    CRMovieActionRecommend, 1
-	    CRMovieActionDontRecommend, 2
-	    CRMovieActionWatchList, 3
-	    CRMovieActionScrapPile 4 */
-			
-
 				//User did send us a rating first - frame the reply
 				$notification_type = "reply";
-				switch($originalRating->rating)
-				{
-                     case 1: //CRMovieActionRecommend:
-                     {
-                         switch ($rating->rating)
-                         {
-							 case 1: $message = $user->name . " agreed and liked:"; break;
-							 case 2: $message = $user->name . " disagreed and disliked:"; break;
-							 case 3: $message = $user->name . " took note and watchlisted:"; break;
-							 case 4: $message = $user->name . " ignored your recommendation and rejected:"; break;							 							 							 
-                         }
-                         break;
-                     }
-                     case 2: //CRMovieActionDontRecommend:
-                     {
-                         switch ($rating->rating)
-                         {
-							 case 1: $message = $user->name . " disagreed and liked:"; break;
-							 case 2: $message = $user->name . " agreed and disliked:"; break;
-							 case 3: $message = $user->name . " ignored your warning and watchlisted:"; break;
-							 case 4: $message = $user->name . " took note and rejected:"; break;							 							 							 
-                         }
-                         break;
-                     }
-                     case 3: //CRMovieActionWatchList:
-                     {
-                         switch ($rating->rating)
-                         {
-							 case 1: $message = $user->name . " watched and recommended:"; break;
-							 case 2: $message = $user->name . " watched and did not recommend:"; break;
-							 case 3: $message = $user->name . " accepted your invitation to watch:"; break;
-							 case 4: $message = $user->name . " was not interested in watching:"; break;							 							 							 
-                         }
-                         break;
-                     }						
-				}
+				$message = $this->messageForRating($user->name, $rating->rating, $originalRating->rating);
 			}
 			
 			//Add a CRNotification
@@ -161,7 +169,7 @@ class Ratings extends CI_Controller
 			//Get user's device
 			$this->db->where('device_vendor_id', $this->input->get_request_header('Critter-device', TRUE));
 			$device = $this->db->get('CRDevice')->row();
-		
+			
 			//Find existing rating for user and movie
 			$rating_id = NULL;
 			$user_id = hashids_decrypt($hashedUserID);
@@ -186,6 +194,7 @@ class Ratings extends CI_Controller
 			else
 			{
 				//Update existing rating
+				$rating = $query->row();
 				$rating_id = $query->row()->id;
 				$this->db->where('id', $rating_id);
 				$this->db->set('rating', $this->post->rating);
@@ -194,6 +203,53 @@ class Ratings extends CI_Controller
 				if (array_key_exists("notified_dvd", $this->post)) $this->db->set('notified_dvd', $this->post->notified_dvd);	
 				$this->db->set('modified', 'NOW()', FALSE);				
 				$this->db->update('CRRating');
+				
+				//Look up movie
+				$this->db->from('CRMovie');
+				$this->db->where('id', $rating->movie_id);
+				$movie = $this->db->get()->row();
+						
+				//Look up user
+				$this->db->from('CRUser');
+				$this->db->where('id', $rating->user_id);
+				$user = $this->db->get()->row();				
+				
+				//Loop and update any existing notifications that are tied to this rating, to handle changes
+				$this->db->from('CRNotification');
+				$this->db->where('rating_id', $rating_id);
+				foreach($this->db->get()->result() as $notification)
+				{
+					
+					//Set new message
+					$message = $this->messageForRating($user->name, $this->post->rating);
+					
+					//If this is a scraplist rating, we want to hide the notification
+					if ($this->post->rating == 4)
+					{
+						$this->db->set('is_viewed', TRUE);		
+					}
+						
+					//If this friend already sent _us_ a notification on this movie, we need to frame this as a reply
+					$this->db->select('CRRating.*');
+					$this->db->from('CRNotification');
+					$this->db->join('CRRating', 'CRNotification.rating_id=CRRating.id');
+					$this->db->join('CRMovie', 'CRRating.movie_id=CRMovie.id');
+					$this->db->where('CRNotification.from_user_id', $notification->to_user_id);
+					$this->db->where('CRNotification.to_user_id', $user->id);
+					$this->db->where('CRNotification.notification_type','invite');
+					$this->db->where('CRRating.movie_id',$movie->id);
+					$originalRating = $this->db->get()->row();
+					if($originalRating)
+					{
+						$message = $this->messageForRating($user->name, $this->post->rating, $originalRating->rating);
+					}				
+					
+					//Update the notification
+					$this->db->where('id', $notification->id);
+					$this->db->set('message', $message);
+					$this->db->set("modified", "NOW()", FALSE);			
+					$this->db->update('CRNotification');
+				}
 			}
 			
 			//Add action to analytics
