@@ -120,7 +120,10 @@ class Movie_model extends CR_Model {
 					$this->setTMSRootID($movie_info->tms_root_id);
 				}
 			}
-			$this->fetchTMSData();
+			else
+			{
+				$this->fetchTMSData();
+			}
 			
 			//Fetch Trailer Details
 			//Check to see if this movie is in the database and has a Youtube Trailer ID. If so, we will set this as the Youtube Trailer ID.
