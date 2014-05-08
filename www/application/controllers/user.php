@@ -11,14 +11,6 @@ class User extends CI_Controller{
 		$this->load->model('user_model');
 		$this->load->model('push_model');		
 		$this->post = json_decode(file_get_contents('php://input'));
-		 /* get all the Mixpanel files */
-        $this->mixpanel_dir = $_SERVER['DOCUMENT_ROOT'].'/application/third_party/mixpanel-php/lib/';
-		$this->_mixpanel_req();
-		$this->mp = Mixpanel::getInstance($this->config->item('mixpanel_project_token'));
-	}
-	
-	private function _mixpanel_req(){
-		require_once $this->mixpanel_dir.'Mixpanel.php';
 	}
 	
 	//Create new Account
@@ -39,9 +31,6 @@ class User extends CI_Controller{
 			
 			//Associate device
 			$this->associateDeviceWithUser();
-			
-			//Track the user sign up
-			$this->mp->track("User Signed Up", array("label" => "sign-up"));
 
 			//finally, generate the default result
 			$this->user_model->defaultResult();
