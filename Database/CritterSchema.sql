@@ -195,10 +195,10 @@ CREATE TABLE IF NOT EXISTS `mydb`.`CRRating` (
   `notified_box_office` TINYINT(1) NOT NULL DEFAULT 0,
   `notified_dvd` TINYINT(1) NOT NULL DEFAULT 0,
   `rating` INT NOT NULL DEFAULT 0,
+  `super` TINYINT(1) NOT NULL DEFAULT 0,
   `comments` TEXT NULL,
   `created` DATETIME NOT NULL,
   `modified` DATETIME NOT NULL,
-  `super` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   INDEX `fk_CRRating_CRUser1_idx` (`user_id` ASC),
   INDEX `fk_CRRating_CRMovie1_idx` (`movie_id` ASC),
@@ -302,6 +302,40 @@ CREATE TABLE IF NOT EXISTS `mydb`.`CRNetflix` (
   CONSTRAINT `fk_CRNetflix_CRMovie1`
     FOREIGN KEY (`movie_id`)
     REFERENCES `mydb`.`CRMovie` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`CRGenre`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`CRGenre` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(255) NULL,
+  PRIMARY KEY (`id`),
+  INDEX `genreNameIDX` (`name` ASC))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`CRGenreMovie`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`CRGenreMovie` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `movie_id` INT UNSIGNED NOT NULL,
+  `genre_id` INT UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_CRGenreMovie_CRMovie1_idx` (`movie_id` ASC),
+  INDEX `fk_CRGenreMovie_CRGenre1_idx` (`genre_id` ASC),
+  CONSTRAINT `fk_CRGenreMovie_CRMovie1`
+    FOREIGN KEY (`movie_id`)
+    REFERENCES `mydb`.`CRMovie` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_CRGenreMovie_CRGenre1`
+    FOREIGN KEY (`genre_id`)
+    REFERENCES `mydb`.`CRGenre` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
