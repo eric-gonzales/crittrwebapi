@@ -154,6 +154,8 @@ class User extends CI_Controller{
 	        		$facebook_name = $user_profile['name'];	        		
 	        		$facebook_username = $user_profile['username'];
 	        		$facebook_email = $user_profile['email'];
+					$facebook_gender = $user_profile['gender'];
+					
 	        		if ($facebook_email == "")
 	        		{
 		        		$facebook_email = "$facebook_username@facebook.com";
@@ -176,6 +178,7 @@ class User extends CI_Controller{
 					$this->db->set('photo_url', $facebook_photo_url);
 					$this->db->set('modified', 'NOW()', FALSE);
 					$this->db->set('facebook_id', $fb_id);
+					$this->db->set('gender', $facebook_gender);
 					
 					//If user exists, update it 
 					if($user)
