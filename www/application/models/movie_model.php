@@ -166,6 +166,10 @@ class Movie_model extends CR_Model {
 				$this->db->set('created', 'NOW()', FALSE);
 				$this->db->insert('CRMovie');
 				$this->setID($this->db->insert_id());
+				
+				//Add genres
+				$this->load->model('genre_model');				
+				$this->genre_model->addGenresToMovie($this->getID(), $this->getRTDetails()->genres);
 			}
 			
 			//Setting Result

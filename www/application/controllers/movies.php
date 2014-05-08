@@ -11,6 +11,7 @@ class Movies extends CI_Controller
 	{
 		parent::__construct();
 		$this->load->model('movies_model');
+		$this->load->model('genre_model');		
 		
 		//load cache driver
 		$this->load->driver('cache');
@@ -389,4 +390,31 @@ class Movies extends CI_Controller
 			}
 		}
 	}
+	
+	public function fixgenres()
+	{
+		$this->db->from('CRMovie');
+		$this->db->order_by('rotten_tomatoes_id');
+		$query = $this->db->get()->result();
+		foreach($query as $movie)
+		{
+			error_log("MOVIE: " . $movie->rotten_tomatoes_id);
+			$cacheKey = "CRMovie_" . $movie->rotten_tomatoes_id;
+			$result = $result = $this->cache->memcached->get($cacheKey);	
+			$movie_id = hashids_decrypt($result["id"]);
+			
+			//See if we have genres
+			$this->db->from('CRGenreMovie');
+			$this->db->where('movie_id', $movie_id);
+			$genres = $this->db->get();
+			if ($genres->num_rows() == 0)
+			{
+				error_log("Adding genres to $movie_id: " . json_encode($result["genres"]));
+			
+				//Add them
+				$this->genre_model->addGenresToMovie($movie_id, $result["genres"]);				
+			}
+			
+		}
+	}	
 }
