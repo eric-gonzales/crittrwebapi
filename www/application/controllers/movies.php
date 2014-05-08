@@ -274,12 +274,23 @@ class Movies extends CI_Controller
 			$this->_response();
 			return;
 		}
+		
+		//Get the POST
+		$posted = json_decode(file_get_contents('php://input'));
+		$genres = $posted->genres;
 	
 		//Set up the query to get all unrated movies (paged, because this is a big one that can return a lot)
-		$user_id = hashids_decrypt($hashedUserID);
+		$user_id = intval(hashids_decrypt($hashedUserID));
 		$results = array();
 		$this->db->from('CRMovie');
-		$this->db->join('CRRating', "CRMovie.id = CRRating.movie_id AND CRRating.user_id=$user_id", 'left outer');
+		$this->db->where("`id` NOT IN (select movie_id from CRRating where user_id=$user_id)", NULL, FALSE);
+		
+		//Add genre filters?
+		if ($genres)
+		{
+			$this->db->where("`id` IN (select movie_id from CRGenreMovie b join CRGenre c on b.genre_id=c.id where c.name in ('" . implode("','", $genres) . "'))", NULL, FALSE);
+		}
+		
 		$this->db->order_by('box_office_release_date', 'DESC');
 		$this->db->limit($limit);
 		$this->db->offset($offset);
