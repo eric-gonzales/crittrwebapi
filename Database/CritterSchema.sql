@@ -198,6 +198,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`CRRating` (
   `comments` TEXT NULL,
   `created` DATETIME NOT NULL,
   `modified` DATETIME NOT NULL,
+  `super` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   INDEX `fk_CRRating_CRUser1_idx` (`user_id` ASC),
   INDEX `fk_CRRating_CRMovie1_idx` (`movie_id` ASC),

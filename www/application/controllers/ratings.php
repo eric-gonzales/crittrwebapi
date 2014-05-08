@@ -184,6 +184,7 @@ class Ratings extends CI_Controller
 				$this->db->set('user_id', $user_id);
 				$this->db->set('movie_id', $movie_id);
 				$this->db->set('rating', $this->post->rating);
+				if (array_key_exists("super_modifier", $this->post)) $this->db->set('super', $this->post->super_modifier);
 				if (array_key_exists("comment", $this->post)) $this->db->set('comments', $this->post->comment);
 				if (array_key_exists("notified_box_office", $this->post)) $this->db->set('notified_box_office', $this->post->notified_box_office);
 				if (array_key_exists("notified_dvd", $this->post)) $this->db->set('notified_dvd', $this->post->notified_dvd);					$this->db->set('created', 'NOW()', FALSE);
@@ -198,6 +199,7 @@ class Ratings extends CI_Controller
 				$rating_id = $query->row()->id;
 				$this->db->where('id', $rating_id);
 				$this->db->set('rating', $this->post->rating);
+				if (array_key_exists("super_modifier", $this->post)) $this->db->set('super', $this->post->super_modifier);			
 				if (array_key_exists("comment", $this->post)) $this->db->set('comments', $this->post->comment);
 				if (array_key_exists("notified_box_office", $this->post)) $this->db->set('notified_box_office', $this->post->notified_box_office);
 				if (array_key_exists("notified_dvd", $this->post)) $this->db->set('notified_dvd', $this->post->notified_dvd);	
