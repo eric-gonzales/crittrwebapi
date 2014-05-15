@@ -501,12 +501,21 @@ class Movie_model extends CR_Model {
 		$cacheKey = 'critter_rating_'.$this->getRottenTomatoesID();
 		$rating = $this->cache->memcached->get($cacheKey);
 		if(!$rating)
-		{		
+		{
+			//Count superlikes
+			$this->db->from('CRRating');
+			$this->db->join('CRMovie', 'CRMovie.id = CRRating.movie_id');			
+			$this->db->where('CRMovie.rotten_tomatoes_id', $this->getRottenTomatoesID());
+			$this->db->where('CRRating.rating', 1);
+			$this->db->where('CRRating.super', 1);
+			$superLikeCount = $this->db->count_all_results();			
+				
 			//Count likes
 			$this->db->from('CRRating');
 			$this->db->join('CRMovie', 'CRMovie.id = CRRating.movie_id');			
 			$this->db->where('CRMovie.rotten_tomatoes_id', $this->getRottenTomatoesID());
 			$this->db->where('CRRating.rating', 1);
+			$this->db->where('CRRating.super', 0);			
 			$likeCount = $this->db->count_all_results();
 			
 			//Count dislikes
@@ -514,12 +523,24 @@ class Movie_model extends CR_Model {
 			$this->db->join('CRMovie', 'CRMovie.id = CRRating.movie_id');			
 			$this->db->where('CRMovie.rotten_tomatoes_id', $this->getRottenTomatoesID());
 			$this->db->where('CRRating.rating', 2);
+			$this->db->where('CRRating.super', 0);			
 			$dislikeCount = $this->db->count_all_results();
+
+			//Count superhates
+			$this->db->from('CRRating');
+			$this->db->join('CRMovie', 'CRMovie.id = CRRating.movie_id');			
+			$this->db->where('CRMovie.rotten_tomatoes_id', $this->getRottenTomatoesID());
+			$this->db->where('CRRating.rating', 2);
+			$this->db->where('CRRating.super', 1);			
+			$superHateCount = $this->db->count_all_results();
 			
 			//Calculate average
-			if ($likeCount + $dislikeCount > 0)
+			$ratingCount = $superLikeCount + $likeCount + $dislikeCount + $superHateCount;
+			if ($ratingCount > 0)
 			{
-				$rating = (($likeCount / ($likeCount + $dislikeCount)) * 100);
+				$sum = ($superLikeCount * 3) + ($likeCount * 2) + ($dislikeCount * 1) + ($superHateCount * 0);
+				$average = $sum / $ratingCount;
+				$rating = (($average / 3) * 100);
 			}
 			else
 			{
