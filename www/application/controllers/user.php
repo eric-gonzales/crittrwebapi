@@ -621,6 +621,7 @@ class User extends CI_Controller{
 			if ($this->post->email) $this->db->set('email', $this->post->email);
 			if ($this->post->password) $this->db->set('password_hash', $this->phpass->hash($this->post->password));
 			if ($this->post->push_enabled) $this->db->set('push_enabled', $this->post->push_enabled);
+			if ($this->post->push_watchlist_enabled) $this->db->set('push_watchlist_enabled', $this->post->push_watchlist_enabled);			
 			$this->db->where('id', $user_id);
 			$this->db->update('CRUser');
 		}
