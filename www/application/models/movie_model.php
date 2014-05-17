@@ -544,7 +544,7 @@ class Movie_model extends CR_Model {
 			}
 			else
 			{
-				$rating = 0;
+				$rating = -1;
 			}
 		
 			//Update cache
