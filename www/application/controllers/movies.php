@@ -102,6 +102,12 @@ class Movies extends CI_Controller
 	//Fetch Box Office Movies
 	public function boxoffice($limit, $countryCode)
 	{
+		//Substitutions
+		if (strtoupper($countryCode) == "GB")
+		{
+			$countryCode = @"UK";
+		}
+	
 		//Sanity check
 		if ($limit === NULL || $countryCode === NULL)
 		{
@@ -121,6 +127,12 @@ class Movies extends CI_Controller
 	//Fetch Opening Movies for User
 	public function opening($hashedUserID, $limit, $countryCode)
 	{
+		//Substitutions
+		if (strtoupper($countryCode) == "GB")
+		{
+			$countryCode = @"UK";
+		}
+	
 		//Sanity check
 		if ($hashedUserID === NULL || $limit === NULL || $countryCode === NULL)
 		{
@@ -139,6 +151,12 @@ class Movies extends CI_Controller
 	//Fetch Upcoming Movies for User
 	public function upcoming($hashedUserID, $limit, $page, $countryCode)
 	{
+		//Substitutions
+		if (strtoupper($countryCode) == "GB")
+		{
+			$countryCode = @"UK";
+		}
+	
 		//Sanity check
 		if ($hashedUserID === NULL || $limit === NULL || $countryCode === NULL)
 		{
@@ -156,6 +174,12 @@ class Movies extends CI_Controller
 	//Fetch New Release DVDs for User
 	public function newreleasedvds($hashedUserID, $limit, $page, $countryCode)
 	{
+		//Substitutions
+		if (strtoupper($countryCode) == "GB")
+		{
+			$countryCode = @"UK";
+		}
+	
 		//Sanity check
 		if ($hashedUserID === NULL || $limit === NULL || $countryCode === NULL)
 		{
@@ -173,6 +197,12 @@ class Movies extends CI_Controller
 	//Fetch Current Release DVDs for User
 	public function currentdvds($hashedUserID, $limit, $page, $countryCode)
 	{
+		//Substitutions
+		if (strtoupper($countryCode) == "GB")
+		{
+			$countryCode = @"UK";
+		}
+	
 		//Sanity check
 		if ($hashedUserID === NULL || $limit === NULL || $countryCode === NULL)
 		{
@@ -190,6 +220,12 @@ class Movies extends CI_Controller
 	//Fetch Upcoming DVDs for User
 	public function upcomingdvds($hashedUserID, $limit, $page, $countryCode)
 	{
+		//Substitutions
+		if (strtoupper($countryCode) == "GB")
+		{
+			$countryCode = @"UK";
+		}
+	
 		//Sanity check
 		if ($hashedUserID === NULL || $limit === NULL || $countryCode === NULL)
 		{
