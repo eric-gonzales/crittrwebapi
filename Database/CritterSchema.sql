@@ -73,6 +73,8 @@ CREATE TABLE IF NOT EXISTS `mydb`.`CRUser` (
   `push_watchlist_enabled` VARCHAR(45) NOT NULL DEFAULT '1',
   `birthday` DATETIME NULL,
   `gender` VARCHAR(1) NULL,
+  `education` TEXT NULL,
+  `location` TEXT NULL,
   `created` DATETIME NOT NULL,
   `modified` DATETIME NOT NULL,
   PRIMARY KEY (`id`),
