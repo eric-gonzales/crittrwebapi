@@ -16,6 +16,20 @@ class Ratings extends CI_Controller
 		$this->load->model('push_model');		
 	}
 	
+	public function critterRatingForMovie($rottenTomatoesID)
+	{
+		if ($rottenTomatoesID != NULL)
+		{
+			$rating = $this->ratings_model->critterRatingForMovie($rottenTomatoesID);
+			$this->ratings_model->setResult($rating);
+		}
+		else
+		{
+			$this->_generateError('Required Fields Missing', $this->config->item('error_required_fields'));
+		}
+		$this->_response();
+	}
+	
 	private function messageForRating($userName, $rating, $originalRating = NULL)
 	{
 		$message = NULL;
