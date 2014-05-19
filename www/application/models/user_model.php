@@ -72,6 +72,7 @@ class User_model extends CR_Model {
 			'url_ratingusermovie' => $this->config->item('base_url').'ratings',
 			'url_ratingallmovie' => $this->config->item('base_url').'ratings/all',
 			'url_ratingalluser' => $this->config->item('base_url').'ratings/user',
+			'url_ratingforRTID' => $this->config->item('base_url').'ratings/critterRatingForMovie',
 		));
 	}
 	

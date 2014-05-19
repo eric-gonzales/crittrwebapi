@@ -18,6 +18,7 @@ class Ratings extends CI_Controller
 	
 	public function critterRatingForMovie($rottenTomatoesID)
 	{
+		$this->output->set_header("Cache-Control: max-age=300");
 		if ($rottenTomatoesID != NULL)
 		{
 			$rating = $this->ratings_model->critterRatingForMovie($rottenTomatoesID);
