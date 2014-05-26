@@ -155,6 +155,7 @@ class User extends CI_Controller{
 	        		$facebook_username = $user_profile['username'];
 	        		$facebook_email = $user_profile['email'];
 					$facebook_gender = $user_profile['gender'];
+					$facebook_birthday = $user_profile['birthday'];
 					
 	        		if ($facebook_email == "")
 	        		{
@@ -179,6 +180,26 @@ class User extends CI_Controller{
 					$this->db->set('modified', 'NOW()', FALSE);
 					$this->db->set('facebook_id', $fb_id);
 					$this->db->set('gender', $facebook_gender);
+					
+					$facebook_education = '';
+					if(array_key_exists('education', $user_profile)){
+						foreach($user_profile['education'] as $school){
+							error_log($school['type']);
+							$facebook_education = $school['type'];
+						}
+					}
+					
+					$facebook_location = '';
+					if(array_key_exists('location', $user_profile)){
+						foreach($user_profile['location'] as $loc){
+							error_log($loc['id']);
+							$facebook_location = $loc['id'];
+						}
+					}
+					
+					$this->db->set('education', $facebook_education);
+					$this->db->set('location', $facebook_location);
+					$this->db->set('birthday', date('Y-m-d H:i:s', strtotime(stripslashes($facebook_birthday))));
 					
 					//If user exists, update it 
 					if($user)
