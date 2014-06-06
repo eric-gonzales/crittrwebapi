@@ -168,7 +168,8 @@ class User_model extends CR_Model {
 		$this->db->set('token', $tok);
 		$this->db->set('user_id', $this->getID());
 		$this->db->insert('CREmailToken');
-		$reset_url = 'http://request.crittermovies.com/?a='.sha1('resetmypassword').'&t='.$tok;
+		$hashedUserID = hashids_encrypt($this->getID());
+		$reset_url = 'http://request.crittermovies.com/?a='.sha1('resetmypassword').'&t='.$tok.'&u='.$hashedUserID;
 		$address = $this->getEmail();
 		$to  = $address;
 		$subject = 'Password Reset';
