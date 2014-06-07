@@ -5,7 +5,7 @@ class Authenticator{
 	 */
 	public function auth(){
 		if(php_sapi_name() != 'cli'){
-			define('CRITTER_SECRET', 'ff8347fskjqd823e2dh2fds');
+			define('CRITTER_SECRET', 'ff834fd344jkh7fskjqd823e2dh2fds');
 			$headers = getallheaders();
 			if(empty($headers)){
 				$this->fail();
