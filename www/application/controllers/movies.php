@@ -299,6 +299,41 @@ class Movies extends CI_Controller
 		$this->movies_model->setResult($results);
 		$this->_response();
 	}
+	
+	//Fetch Curated Movie queue for User
+	public function curated($hashedUserID, $limit, $offset)
+	{
+		//Sanity check
+		if ($hashedUserID === NULL || $limit === NULL || $offset === NULL)
+		{
+			$this->_generateError('Required Fields Missing', $this->config->item('error_required_fields'));		
+			$this->_response();
+			return;
+		}
+		
+		//Set up the query to get all curated unrated movies (paged, because this is a big one that can return a lot)
+		$user_id = intval(hashids_decrypt($hashedUserID));
+		$results = array();
+		$this->db->from('CRMovie');
+		$this->db->where('priority IS NOT NULL');		
+		$this->db->where("`id` NOT IN (select movie_id from CRRating where user_id=$user_id)", NULL, FALSE);
+		$this->db->order_by('priority', 'ASC');
+		$this->db->limit($limit);
+		$this->db->offset($offset);
+		$movie_stmt = $this->db->get();
+			
+		//Build results
+		foreach($movie_stmt->result() as $movie)
+		{
+			$result = array();
+			$movieModel = new Movie_model($movie->rotten_tomatoes_id);
+			$result = $movieModel->getResult();
+			array_push($results, $result);
+		}		
+
+		$this->movies_model->setResult($results);
+		$this->_response();
+	}	
 
 	//Fetch Unrated Movies for User
 	public function unrated($hashedUserID, $limit, $offset)

@@ -183,7 +183,8 @@ CREATE TABLE IF NOT EXISTS `mydb`.`CRMovie` (
   `created` DATETIME NOT NULL,
   `modified` DATETIME NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE INDEX `rotten_tomatoes_id_UNIQUE` (`rotten_tomatoes_id` ASC))
+  UNIQUE INDEX `rotten_tomatoes_id_UNIQUE` (`rotten_tomatoes_id` ASC),
+  INDEX `priority` (`priority` ASC))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
