@@ -184,21 +184,17 @@ class User extends CI_Controller{
 					$facebook_education = '';
 					if(array_key_exists('education', $user_profile)){
 						foreach($user_profile['education'] as $school){
-							error_log($school['type']);
 							$facebook_education = $school['type'];
 						}
 					}
 					
 					$facebook_location = '';
 					if(array_key_exists('location', $user_profile)){
-						foreach($user_profile['location'] as $loc){
-							error_log($loc['id']);
-							$facebook_location = $loc['id'];
-						}
+							$facebook_location = $user_profile['location']['id'];
 					}
 					
 					$this->db->set('education', $facebook_education);
-					$this->db->set('location', $facebook_location);
+				//	$this->db->set('location', $facebook_location);
 					$this->db->set('birthday', date('Y-m-d H:i:s', strtotime(stripslashes($facebook_birthday))));
 					
 					//If user exists, update it 
