@@ -376,6 +376,11 @@ class User extends CI_Controller{
 			$this->_response();				
 			return;
 		}
+		
+		//Look up the user
+		$this->db->from('CRUser');
+		$this->db->where('id', $user_id);
+		$user = $this->db->get()->row();		
 	
 		//Build the list of matching people
 		$this->db->select(array('id','name','facebook_id','facebook_username','photo_url'));
