@@ -1,6 +1,7 @@
 <?php
 	//Rotten Tomatoes API Key
-	$config['rotten_tomatoes_api_key'] = "yytapgjcae7pu4j42dwmmmg5";
+//	$config['rotten_tomatoes_api_key'] = "yytapgjcae7pu4j42dwmmmg5";
+	$config['rotten_tomatoes_api_key'] = "62dehgp4t8xfun2f3sgtsf6e";
 	$config['rotten_tomatoes_cache_seconds'] = 60 * 60 * 24;
 	$config['rotten_tomatoes_search_url'] = 'http://api.rottentomatoes.com/api/public/v1.0/movies.json?apikey=%1$s&q=%2$s&page_limit=%3$d&page=%4$s';
 	$config['rotten_tomatoes_movie_url'] = 'http://api.rottentomatoes.com/api/public/v1.0/movies/%1$s.json?apikey=%2$s';
