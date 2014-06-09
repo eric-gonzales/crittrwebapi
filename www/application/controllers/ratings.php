@@ -108,13 +108,13 @@ class Ratings extends CI_Controller
 		$this->db->where('id', $rating->user_id);
 		$user = $this->db->get()->row();
 
-		//Set up the notification tyoe and message
-		$notification_type = "invite";
-		$message = $this->messageForRating($user->name, $rating->rating);
-		
 		//Loop and notify friends
 		foreach($friends as $friendHashedID)
 		{
+			//Set up the notification tyoe and message
+			$notification_type = "invite";
+			$message = $this->messageForRating($user->name, $rating->rating);
+		
 			//Get the friend id
 			$friend_id = hashids_decrypt($friendHashedID);
 			
