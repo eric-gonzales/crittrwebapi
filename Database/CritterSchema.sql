@@ -2,6 +2,9 @@ SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
+-- -----------------------------------------------------
+-- Schema mydb
+-- -----------------------------------------------------
 CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci ;
 USE `mydb` ;
 
@@ -71,6 +74,14 @@ CREATE TABLE IF NOT EXISTS `mydb`.`CRUser` (
   `tutorials_shown` TINYINT(1) NOT NULL DEFAULT 0,
   `push_enabled` TINYINT(1) NOT NULL DEFAULT 1,
   `push_watchlist_enabled` VARCHAR(45) NOT NULL DEFAULT '1',
+  `vod_att` TINYINT(1) NOT NULL DEFAULT 0,
+  `vod_charter` TINYINT(1) NOT NULL DEFAULT 0,
+  `vod_comcast` TINYINT(1) NOT NULL DEFAULT 0,
+  `vod_cox` TINYINT(1) NOT NULL DEFAULT 0,
+  `vod_dish` TINYINT(1) NOT NULL DEFAULT 0,
+  `vod_directv` TINYINT(1) NOT NULL DEFAULT 0,
+  `vod_twc` TINYINT(1) NOT NULL DEFAULT 0,
+  `vod_verizon` TINYINT(1) NOT NULL DEFAULT 0,
   `birthday` DATETIME NULL,
   `gender` VARCHAR(1) NULL,
   `education` TEXT NULL,
@@ -169,6 +180,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`CRMovie` (
   `rotten_tomatoes_id` VARCHAR(45) NOT NULL,
   `itunes_id` VARCHAR(45) NULL,
   `imdb_id` VARCHAR(45) NULL,
+  `netflix_id` VARCHAR(45) NULL,
   `tmdb_id` VARCHAR(45) NULL,
   `tms_root_id` VARCHAR(45) NULL,
   `tms_movie_id` VARCHAR(45) NULL,
@@ -178,6 +190,14 @@ CREATE TABLE IF NOT EXISTS `mydb`.`CRMovie` (
   `dvd_release_date` DATETIME NULL,
   `tmdb_poster_path` VARCHAR(255) NULL,
   `youtube_trailer_id` VARCHAR(45) NULL,
+  `on_att` TINYINT(1) NOT NULL DEFAULT 0,
+  `on_charter` TINYINT(1) NOT NULL DEFAULT 0,
+  `on_comcast` TINYINT(1) NOT NULL DEFAULT 0,
+  `on_cox` TINYINT(1) NOT NULL DEFAULT 0,
+  `on_dish` TINYINT(1) NOT NULL DEFAULT 0,
+  `on_directv` TINYINT(1) NOT NULL DEFAULT 0,
+  `on_twc` TINYINT(1) NOT NULL DEFAULT 0,
+  `on_verizon` TINYINT(1) NOT NULL DEFAULT 0,
   `priority` INT NULL,
   `critter_rating` INT NOT NULL DEFAULT 0,
   `created` DATETIME NOT NULL,
