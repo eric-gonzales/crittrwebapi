@@ -30,7 +30,15 @@ class Movie_model extends CR_Model {
 	private $tms_trailer_image_details;
 	private $netflix_link;
 	private $amazon_details;
-	private $youtube_trailer_id;	
+	private $youtube_trailer_id;
+	private $on_att;
+	private $on_charter;
+	private $on_comcast;
+	private $on_cox;
+	private $on_directv;
+	private $on_dish;
+	private $on_twc;
+	private $on_verizon;
 	
 	//Construct from RT ID
 	public function __construct($rotten_tomatoes_id)
@@ -140,6 +148,20 @@ class Movie_model extends CR_Model {
 			//Amazon Results 
 			$this->fetchAmazonOnlineVideo();
 			
+			//Video On Demand
+			if($inDB){
+				$this->setOnAtt($movie_info->on_att);
+				$this->setOnCharter($movie_info->on_charter);
+				$this->setOnComcast($movie_info->on_comcast);
+				$this->setOnCox($movie_info->on_cox);
+				$this->setOnDirectv($movie_info->on_directv);
+				$this->setOnDish($movie_info->on_dish);
+				$this->setOnTwc($movie_info->on_twc);
+				$this->setOnVerizon($movie_info->on_verizon);
+			}
+			else{
+				
+			}
 			//Database Operations
 			$this->db->set('rotten_tomatoes_id', $this->getRottenTomatoesID());
 			$this->db->set('itunes_id', $this->getiTunesID());
@@ -184,6 +206,14 @@ class Movie_model extends CR_Model {
 				'rotten_tomatoes_id' => $this->getRottenTomatoesID(),
 				'rotten_tomatoes_critics_score' => $this->getRTDetails()->ratings->critics_score,
 				'mpaa_rating' => $this->getRTDetails()->mpaa_rating,
+				'on_att' => $this->getOnAtt(),
+				'on_charter' => $this->getOnCharter(),
+				'on_comcast' => $this->getOnComcast(),
+				'on_cox' => $this->getOnCox(),
+				'on_directv' => $this->getOnDirectv(),
+				'on_dish' => $this->getOnDish(),
+				'on_twc' => $this->getOnTwc(),
+				'on_verizon' => $this->getOnVerizon(),
 				'original_image_url' => $this->getRTDetails()->posters->original,
 				'poster_path' => $this->getTMDBPosterPath(),
 				'release_date_dvd' => $this->getDVDReleaseDate(),
@@ -759,4 +789,63 @@ class Movie_model extends CR_Model {
 		
 		return $info;
 	}
+	
+	public function getOnAtt(){
+		return $this->att;
+	}
+	
+	public function setOnAtt($id){
+		$this->on_att = $id;
+	}
+	public function getOnCharter(){
+		return $this->on_charter;
+	}
+	
+	public function setOnCharter($id){
+		$this->on_charter = $id;
+	}
+	public function getOnComcast(){
+		return $this->on_comcast;
+	}
+	
+	public function setOnComcast($id){
+		$this->on_comcast = $id;
+	}
+	public function getOnCox(){
+		return $this->on_cox;
+	}
+	
+	public function setOnCox($id){
+		$this->on_cox = $id;
+	}
+	public function getOnDirectv(){
+		return $this->on_directv;
+	}
+	
+	public function setOnDirectv($id){
+		$this->on_directv = $id;
+	}
+	public function getOnDish(){
+		return $this->on_dish;
+	}
+	
+	public function setOnDish($id){
+		$this->on_dish = $id;
+	}
+	
+	public function getOnTwc(){
+		return $this->on_twc;
+	}
+	
+	public function setOnTwc($id){
+		$this->on_twc = $id;
+	}
+	public function getOnVerizon(){
+		return $this->on_verizon;
+	}
+	
+	public function setOnVerizon($id){
+		$this->on_verizon = $id;
+	}
+	
 }

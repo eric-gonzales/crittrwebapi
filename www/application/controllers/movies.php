@@ -427,6 +427,7 @@ class Movies extends CI_Controller
 	
 	public function warmcache()
 	{
+		ini_set('memory_limit', '2048M');
 		$this->db->from('CRMovie');
 		$this->db->order_by('box_office_release_date', 'DESC');
 		$query = $this->db->get();
