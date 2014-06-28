@@ -427,14 +427,29 @@ class Movies extends CI_Controller
 	
 	public function warmcache()
 	{
-		ini_set('memory_limit', '2048M');
-		$this->db->from('CRMovie');
-		$this->db->order_by('box_office_release_date', 'DESC');
-		$query = $this->db->get();
-		foreach($query->result() as $movie)
+		$hasMovies = TRUE;
+		$limit = 1000;
+		$offset = 0;
+		
+		while ($hasMovies)
 		{
-			echo "Warming cache: " . $movie->title . " \n";
-			$movieModel = new Movie_model($movie->rotten_tomatoes_id);
+			//Set up the query
+			$this->db->from('CRMovie');
+			$this->db->order_by('box_office_release_date', 'DESC');
+			$this->db->limit($limit, $offset);
+			
+			//Execute
+			$query = $this->db->get();
+			$movies = $query->result();
+			$hasMovies = count($movies) > 0;
+			$offset += $limit;
+
+			//Process the movies
+			foreach($query->result() as $movie)
+			{
+				echo "Warming cache: " . $movie->title . " \n";
+				$movieModel = new Movie_model($movie->rotten_tomatoes_id);
+			}
 		}
 	}
 	
