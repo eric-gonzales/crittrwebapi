@@ -2,3 +2,7 @@
 *.DS_Store
 .DS_Store
 HTTPClient Tests/
+_test
+download
+includes
+www/application/logs
