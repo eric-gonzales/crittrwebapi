@@ -430,8 +430,10 @@ class Movies extends CI_Controller
 		$hasMovies = TRUE;
 		$limit = 1000;
 		$offset = 0;
+		$cached = 0;
+		$maxCached = $this->config->item('rotten_tomatoes_daily_threshold') / 2;
 		
-		while ($hasMovies)
+		while ($hasMovies && ($cached < $maxCached))
 		{
 			//Set up the query
 			$this->db->from('CRMovie');
@@ -449,6 +451,7 @@ class Movies extends CI_Controller
 			{
 				echo "Warming cache: " . $movie->title . " \n";
 				$movieModel = new Movie_model($movie->rotten_tomatoes_id);
+				$cached++;
 			}
 		}
 	}

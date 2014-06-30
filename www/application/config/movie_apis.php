@@ -11,6 +11,7 @@
 	$config['rotten_tomatoes_new_dvds_url'] = 'http://api.rottentomatoes.com/api/public/v1.0/lists/dvds/new_releases.json?apikey=%1$s&page_limit=%2$s&page=%3$s&country=%4$s';
 	$config['rotten_tomatoes_current_dvds_url'] = 'http://api.rottentomatoes.com/api/public/v1.0/lists/dvds/current_releases.json?apikey=%1$s&page_limit=%2$s&page=%3$s&country=%4$s';
 	$config['rotten_tomatoes_upcoming_dvds_url'] = 'http://api.rottentomatoes.com/api/public/v1.0/lists/dvds/upcoming.json?apikey=%1$s&page_limit=%2$s&page=%3$s&country=%4$s';
+	$config['rotten_tomatoes_daily_threshold'] = 50000;
 	
 	//The Movie DB API
 	$config['tmdb_api_key'] = "1e0e9eb6323a33a3b940f6720a2915f1";
