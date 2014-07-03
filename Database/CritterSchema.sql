@@ -182,33 +182,6 @@ CREATE TABLE IF NOT EXISTS `mydb`.`CRMovie` (
   `dvd_release_date` DATETIME NULL,
   `tmdb_poster_path` VARCHAR(255) NULL,
   `youtube_trailer_id` VARCHAR(45) NULL,
-  `on_amazon_prime` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_att` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_charter` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_cinemax` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_comcast` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_cox` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_crackle` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_dish` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_directv` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_hbo` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_hitbliss` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_hulu` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_hulu_plus` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_max` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_mgo` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_netflix_ca` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_netflix_uk` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_netflix_us` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_popcornflix` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_redbox` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_snagfilms` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_spiritclips` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_targettickets` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_twc` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_verizon` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_vudu` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_youtube` TINYINT(1) NOT NULL DEFAULT 0,
   `priority` INT NULL,
   `critter_rating` INT NOT NULL DEFAULT 0,
   `created` DATETIME NOT NULL,
@@ -412,6 +385,40 @@ CREATE TABLE IF NOT EXISTS `mydb`.`CRProviderImport` (
   `on_popcornflix` TINYINT(1) NOT NULL DEFAULT 0,
   `netflix_id` VARCHAR(255) NULL,
   PRIMARY KEY (`id`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`CRVODProvider`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`CRVODProvider` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`CRMovieVOD`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`CRMovieVOD` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `movie_id` INT UNSIGNED NOT NULL,
+  `vod_id` INT UNSIGNED NOT NULL,
+  `view_url` VARCHAR(255) NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_CRMovieVOD_CRMovie1_idx` (`movie_id` ASC),
+  INDEX `fk_CRMovieVOD_CRVODProvider1_idx` (`vod_id` ASC),
+  CONSTRAINT `fk_CRMovieVOD_CRMovie1`
+    FOREIGN KEY (`movie_id`)
+    REFERENCES `mydb`.`CRMovie` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_CRMovieVOD_CRVODProvider1`
+    FOREIGN KEY (`vod_id`)
+    REFERENCES `mydb`.`CRVODProvider` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
