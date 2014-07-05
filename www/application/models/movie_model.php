@@ -558,7 +558,7 @@ class Movie_model extends CR_Model {
 	public function fetchNetflixOnlineVideo(){
 		$releaseYear = $this->getRTDetails()->year;
 		$this->db->select('netflix_id');
-		$query = $this->db->get_where('CRNetflix', array('title' => $this->getTitle(), 'release_year' => $releaseYear, 'season' => 0), 1);
+		$query = $this->db->get_where('CRNetflix', array('title' => $this->getTitle(), 'release_year' => $releaseYear, 'season' => 0, 'avail_us' => 1), 1);
 		if($query->num_rows() > 0){
 			$result = $query->row();
 			if($result->netflix_id != ''){
