@@ -70,6 +70,7 @@ class User_model extends CR_Model {
 			'url_moviebycritterid' => $this->config->item('base_url').'movies/get',
 			'url_moviebyrottentomatoesid' => $this->config->item('base_url').'movies/rottentomatoes',			
 			'url_ratingupdate' => $this->config->item('base_url').'ratings/update/'.$hashedUserID,
+			'url_ratingdelete' => $this->config->item('base_url').'ratings/delete/'.$hashedUserID,			
 			'url_ratingusermovie' => $this->config->item('base_url').'ratings',
 			'url_ratingallmovie' => $this->config->item('base_url').'ratings/all',
 			'url_ratingalluser' => $this->config->item('base_url').'ratings/user',
