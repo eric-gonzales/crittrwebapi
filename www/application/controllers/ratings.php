@@ -176,6 +176,25 @@ class Ratings extends CI_Controller
 		}
 	}
 	
+	//Clear Movie Rating for User
+	function delete($hashedUserID, $hashedMovieID)
+	{
+		$user_id = hashids_decrypt($hashedUserID);
+		$movie_id = hashids_decrypt($hashedMovieID);			
+		if($user_id != NULL && $movie_id != null)
+		{
+			$this->db->where('user_id', $user_id);
+			$this->db->where('movie_id', $movie_id);
+			$this->db->limit(1); //Just in case
+			$this->db->delete('CRRating');			
+		}
+		else
+		{
+			$this->_generateError('Required Fields Missing', $this->config->item('error_required_fields'));
+		}
+		$this->_response();
+	}
+	
 	//Update Movie Rating for User
 	function update($hashedUserID)
 	{
