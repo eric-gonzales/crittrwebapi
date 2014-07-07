@@ -7,6 +7,7 @@
 
 class Movie_model extends CR_Model {
 	private $id;
+	private $available_services;
 	private $rotten_tomatoes_id;
 	private $itunes_id;
 	private $imdb_id;
@@ -170,6 +171,9 @@ class Movie_model extends CR_Model {
 			
 			//Video On Demand
 			if($inDB){
+				$this->fetchAvailableServices();
+				
+				//**begin deprecated setters**//
 				$this->setOnAtt($movie_info->on_att);
 				$this->setOnCharter($movie_info->on_charter);
 				$this->setOnComcast($movie_info->on_comcast);
@@ -198,6 +202,7 @@ class Movie_model extends CR_Model {
 				$this->setOnTargettickets($movie_info->on_targettickets);
 				$this->setOnVudu($movie_info->on_vudu);
 				$this->setOnYoutube($movie_info->on_youtube);
+				//**end deprecated setters**//
 			}
 
 			
@@ -237,6 +242,7 @@ class Movie_model extends CR_Model {
 			$result = array
 			(
 				'id' => hashids_encrypt($this->getID()),
+				'available_services' => $this->getAvailableServices(),
 				'critter_rating' => $this->getCritterRating(),
 				'hashtag' => $this->getHashtag(),
 				'imdb_id' => $this->getIMDBID(),
@@ -245,6 +251,7 @@ class Movie_model extends CR_Model {
 				'rotten_tomatoes_id' => $this->getRottenTomatoesID(),
 				'rotten_tomatoes_critics_score' => $this->getRTDetails()->ratings->critics_score,
 				'mpaa_rating' => $this->getRTDetails()->mpaa_rating,
+				//**begin legacy data**//
 				'on_amazon_prime' => $this->getOnAmazonPrime(),
 				'on_att' => $this->getOnAtt(),
 				'on_charter' => $this->getOnCharter(),
@@ -273,6 +280,7 @@ class Movie_model extends CR_Model {
 				'on_verizon' => $this->getOnVerizon(),
 				'on_vudu' => $this->getOnVudu(),
 				'on_youtube' => $this->getOnYoutube(),
+				//**end legacy data*//
 				'original_image_url' => $this->getRTDetails()->posters->original,
 				'poster_path' => $this->getTMDBPosterPath(),
 				'release_date_dvd' => $this->getDVDReleaseDate(),
@@ -283,9 +291,9 @@ class Movie_model extends CR_Model {
 				'tmdb_id' => $this->getTMDBID(),
 				'tms_root_id' => $this->getTMSRootID(),
 				'tms_movie_id' => $this->getTMSMovieID(),
-				'url_string_amazon' => $this->getAmazonDetails()["DetailPageURL"],
+				'url_string_amazon' => $this->getAmazonDetails()["DetailPageURL"], //legacy
 				'url_string_imdb' => "http://www.imdb.com/title/" . $this->getIMDBID(),
-				'url_string_netflix' => $this->getNetflixLink(),
+				'url_string_netflix' => $this->getNetflixLink(), //legacy
 				'url_string_rottentomatoes' => $this->getRTDetails()->links->alternate,
 				'year' => $this->getRTDetails()->year,
 				'youTubeTrailerID' => $this->getYouTubeTrailerID(),
@@ -584,6 +592,19 @@ class Movie_model extends CR_Model {
 		$rating = $this->ratings_model->critterRatingForMovie($this->getRottenTomatoesID());
 		$this->setCritterRating($rating);
 	}
+
+	public function fetchAvailableServices(){
+		$services = array();
+		$query = $this->db->get_where('CRMovieVOD', array('movie_id' => $this->getID()));
+		foreach($query->result() as $movie_vod){
+			$vod_query = $this->db->get_where('CRVODProvider', array('id' => $movie_vod->vod_id), 1);
+			$vod_provider = $vod_query->row();
+			$vod_provider_name = str_replace(' ', '_', str_replace('-', '', strtolower($vod_provider->name)));
+			$services[$vod_provider_name]['app_url'] = $movie_vod->app_url;
+			$services[$vod_provider_name]['view_url'] = $movie_vod->view_url;
+		}
+		$this->setAvailableServices($services);
+	}
 	
 	public function makeHashtag($string){
 		return '#'.preg_replace("/[^a-z0-9]+/", "",strtolower($string));
@@ -796,6 +817,14 @@ class Movie_model extends CR_Model {
 		$this->netflix_link = $link;
 	}
 	
+	public function getAvailableServices(){
+		return $this->available_services;
+	}
+	
+	public function setAvailableServices($services){
+		$this->available_services = $services;
+	}
+	
 	public function _getCachedData($url, $expiration, $mode = '')
 	{
 		$result = $this->cache->memcached->get($url);
@@ -848,6 +877,9 @@ class Movie_model extends CR_Model {
 		
 		return $info;
 	}
+	
+	
+	//***begin legacy functions***//
 	
 	public function getOnAtt(){
 		return $this->att;
