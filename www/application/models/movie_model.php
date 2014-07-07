@@ -3,6 +3,7 @@
  * Movie Model
  * @author Eric Gonzales <eric@crittermovies.com>
  * @copyright 2014 Critter
+ * TODO: remove legacy properties/functions
  */
 
 class Movie_model extends CR_Model {
@@ -600,8 +601,18 @@ class Movie_model extends CR_Model {
 			$vod_query = $this->db->get_where('CRVODProvider', array('id' => $movie_vod->vod_id), 1);
 			$vod_provider = $vod_query->row();
 			$vod_provider_name = str_replace(' ', '_', str_replace('-', '', strtolower($vod_provider->name)));
-			$services[$vod_provider_name]['app_url'] = $movie_vod->app_url;
-			$services[$vod_provider_name]['view_url'] = $movie_vod->view_url;
+			//For Amazon Prime, we want to use the Amazon URL
+			if($movie_vod->vod_id == 2){
+				$services[$vod_provider_name]['view_url'] = $this->getAmazonDetails()["DetailPageURL"];
+			}
+			else{
+				$services[$vod_provider_name]['app_url'] = $movie_vod->app_url;
+				$services[$vod_provider_name]['view_url'] = $movie_vod->view_url;
+			}
+		}
+		//Add Amazon URL
+		if($this->getAmazonDetails()["DetailPageURL"] != ''){
+			$services['amazon']['view_url'] = $this->getAmazonDetails()["DetailPageURL"];
 		}
 		$this->setAvailableServices($services);
 	}
