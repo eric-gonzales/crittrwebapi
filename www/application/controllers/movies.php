@@ -437,7 +437,8 @@ class Movies extends CI_Controller
 		{
 			//Set up the query
 			$this->db->from('CRMovie');
-			$this->db->order_by('box_office_release_date', 'DESC');
+			$this->db->where('priority IS NOT NULL', NULL);			
+			$this->db->order_by('priority', 'ASC');
 			$this->db->limit($limit, $offset);
 			
 			//Execute
