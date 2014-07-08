@@ -603,16 +603,22 @@ class Movie_model extends CR_Model {
 			$vod_provider_name = str_replace(' ', '_', str_replace('-', '', strtolower($vod_provider->name)));
 			//For Amazon Prime, we want to use the Amazon URL
 			if($movie_vod->vod_id == 2){
-				$services[$vod_provider_name]['view_url'] = $this->getAmazonDetails()["DetailPageURL"];
+				$arr = array( 'name' => 'amazon_prime', 'view_url' => $this->getAmazonDetails()["DetailPageURL"]);
+				array_push($services, $arr);
 			}
 			else{
-				$services[$vod_provider_name]['app_url'] = $movie_vod->app_url;
-				$services[$vod_provider_name]['view_url'] = $movie_vod->view_url;
+				$arr = array( 
+					'name' => $vod_provider_name,
+					'app_url' => $movie_vod->app_url,
+					'view_url' => $movie_vod->app_url
+				);
+				array_push($services, $arr);
 			}
 		}
 		//Add Amazon URL
 		if($this->getAmazonDetails()["DetailPageURL"] != ''){
-			$services['amazon']['view_url'] = $this->getAmazonDetails()["DetailPageURL"];
+			$arr = array( 'name' => 'amazon', 'view_url' => $this->getAmazonDetails()["DetailPageURL"]);
+				array_push($services, $arr);
 		}
 		$this->setAvailableServices($services);
 	}
