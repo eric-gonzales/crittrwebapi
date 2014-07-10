@@ -610,7 +610,7 @@ class Movie_model extends CR_Model {
 				$arr = array( 
 					'name' => $vod_provider_name,
 					'app_url' => str_replace('/', '\/', $movie_vod->app_url),
-					'view_url' => str_replace('/', '\/', $movie_vod->app_url)
+					'view_url' => str_replace('/', '\/', $movie_vod->view_url)
 				);
 				array_push($services, $arr);
 			}
