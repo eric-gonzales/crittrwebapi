@@ -2,9 +2,6 @@ SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
--- -----------------------------------------------------
--- Schema mydb
--- -----------------------------------------------------
 CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci ;
 USE `mydb` ;
 
@@ -202,6 +199,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`CRMovie` (
   `on_netflix_us` TINYINT(1) NOT NULL DEFAULT 0,
   `on_popcornflix` TINYINT(1) NOT NULL DEFAULT 0,
   `on_redbox` TINYINT(1) NOT NULL DEFAULT 0,
+  `on_showtime` TINYINT(1) NOT NULL DEFAULT '0',
   `on_snagfilms` TINYINT(1) NOT NULL DEFAULT 0,
   `on_spiritclips` TINYINT(1) NOT NULL DEFAULT 0,
   `on_targettickets` TINYINT(1) NOT NULL DEFAULT 0,
@@ -209,9 +207,9 @@ CREATE TABLE IF NOT EXISTS `mydb`.`CRMovie` (
   `on_verizon` TINYINT(1) NOT NULL DEFAULT 0,
   `on_vudu` TINYINT(1) NOT NULL DEFAULT 0,
   `on_youtube` TINYINT(1) NOT NULL DEFAULT 0,
-  `priority` INT NULL,
   `critter_rating` INT NOT NULL DEFAULT 0,
   `created` DATETIME NOT NULL,
+  `priority` INT NULL,
   `modified` DATETIME NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `rotten_tomatoes_id_UNIQUE` (`rotten_tomatoes_id` ASC),
@@ -224,28 +222,24 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `mydb`.`CRRating`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`CRRating` (
-  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `user_id` INT UNSIGNED NOT NULL,
   `movie_id` INT UNSIGNED NOT NULL,
   `notified_box_office` TINYINT(1) NOT NULL DEFAULT 0,
   `notified_dvd` TINYINT(1) NOT NULL DEFAULT 0,
   `rating` INT NOT NULL DEFAULT 0,
+  `star_rating` INT(11) NOT NULL DEFAULT '0',
   `super` TINYINT(1) NOT NULL DEFAULT 0,
   `comments` TEXT NULL,
   `created` DATETIME NOT NULL,
   `modified` DATETIME NOT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE INDEX `uniqueratingsbyuser_idx` (`user_id` ASC, `movie_id` ASC),
   INDEX `fk_CRRating_CRUser1_idx` (`user_id` ASC),
   INDEX `fk_CRRating_CRMovie1_idx` (`movie_id` ASC),
-  UNIQUE INDEX `uniqueratingsbyuser_idx` (`user_id` ASC, `movie_id` ASC),
   CONSTRAINT `fk_CRRating_CRUser1`
     FOREIGN KEY (`user_id`)
     REFERENCES `mydb`.`CRUser` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_CRRating_CRMovie1`
-    FOREIGN KEY (`movie_id`)
-    REFERENCES `mydb`.`CRMovie` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -277,11 +271,6 @@ CREATE TABLE IF NOT EXISTS `mydb`.`CRNotification` (
   CONSTRAINT `fk_CRNotification_CRUser2`
     FOREIGN KEY (`to_user_id`)
     REFERENCES `mydb`.`CRUser` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_CRNotification_CRRating1`
-    FOREIGN KEY (`rating_id`)
-    REFERENCES `mydb`.`CRRating` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -320,6 +309,47 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
+-- Table `mydb`.`CRVODProvider`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`CRVODProvider` (
+  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 35
+DEFAULT CHARACTER SET = utf8
+COLLATE = utf8_general_ci;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`CRMovieVOD`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`CRMovieVOD` (
+  `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `movie_id` INT(10) UNSIGNED NOT NULL,
+  `vod_id` INT(10) UNSIGNED NOT NULL,
+  `view_url` VARCHAR(255) NULL DEFAULT NULL,
+  `app_url` VARCHAR(255) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_CRMovieVOD_CRMovie1_idx` (`movie_id` ASC),
+  INDEX `fk_CRMovieVOD_CRVODProvider1_idx` (`vod_id` ASC),
+  CONSTRAINT `fk_CRMovieVOD_CRMovie1`
+    FOREIGN KEY (`movie_id`)
+    REFERENCES `mydb`.`CRMovie` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_CRMovieVOD_CRVODProvider1`
+    FOREIGN KEY (`vod_id`)
+    REFERENCES `mydb`.`CRVODProvider` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+AUTO_INCREMENT = 21580
+DEFAULT CHARACTER SET = utf8
+COLLATE = utf8_general_ci;
+
+
+-- -----------------------------------------------------
 -- Table `mydb`.`CRNetflix`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`CRNetflix` (
@@ -333,12 +363,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`CRNetflix` (
   `avail_ca` TINYINT NULL DEFAULT 0,
   `avail_uk` TINYINT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
-  INDEX `fk_CRNetflix_CRMovie1_idx` (`movie_id` ASC),
-  CONSTRAINT `fk_CRNetflix_CRMovie1`
-    FOREIGN KEY (`movie_id`)
-    REFERENCES `mydb`.`CRMovie` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+  INDEX `fk_CRNetflix_CRMovie1_idx` (`movie_id` ASC))
 ENGINE = InnoDB;
 
 
@@ -363,11 +388,6 @@ CREATE TABLE IF NOT EXISTS `mydb`.`CRGenreMovie` (
   PRIMARY KEY (`id`),
   INDEX `fk_CRGenreMovie_CRMovie1_idx` (`movie_id` ASC),
   INDEX `fk_CRGenreMovie_CRGenre1_idx` (`genre_id` ASC),
-  CONSTRAINT `fk_CRGenreMovie_CRMovie1`
-    FOREIGN KEY (`movie_id`)
-    REFERENCES `mydb`.`CRMovie` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
   CONSTRAINT `fk_CRGenreMovie_CRGenre1`
     FOREIGN KEY (`genre_id`)
     REFERENCES `mydb`.`CRGenre` (`id`)
@@ -377,42 +397,63 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`CRProviderImport`
+-- Table `mydb`.`CRVODImport`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`CRProviderImport` (
-  `id` INT NOT NULL,
+CREATE TABLE IF NOT EXISTS `mydb`.`CRVODImport` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
   `title` TEXT NOT NULL,
-  `year` YEAR NULL,
-  `on_att` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_comcast` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_directv` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_dish` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_verizon` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_charter` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_cox` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_twc` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_netflix_us` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_netflix_ca` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_netflix_uk` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_vudu` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_hulu` TINYINT(1) NOT NULL DEFAULT 0 COMMENT '	',
-  `on_hbo` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_cinemax` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_redbox` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_youtube` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_crackle` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_targettickets` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_amazon_primt` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_hulu_plus` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_max` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_spiritclips` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_mgo` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_hitbliss` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_snagfilms` TINYINT(1) NOT NULL DEFAULT 0,
-  `on_popcornflix` TINYINT(1) NOT NULL DEFAULT 0,
-  `netflix_id` VARCHAR(255) NULL,
+  `year` YEAR NULL DEFAULT NULL,
+  `netflix_id` VARCHAR(255) NULL DEFAULT NULL,
+  `on_att` TINYINT(1) NOT NULL DEFAULT '0',
+  `on_comcast` TINYINT(1) NOT NULL DEFAULT '0',
+  `on_directv` TINYINT(1) NOT NULL DEFAULT '0',
+  `on_dish` TINYINT(1) NOT NULL DEFAULT '0',
+  `on_verizon` TINYINT(1) NOT NULL DEFAULT '0',
+  `on_charter` TINYINT(1) NOT NULL DEFAULT '0',
+  `on_cox` TINYINT(1) NOT NULL DEFAULT '0',
+  `on_twc` TINYINT(1) NOT NULL DEFAULT '0',
+  `on_vudu` TINYINT(1) NOT NULL DEFAULT '0',
+  `on_hulu` TINYINT(1) NOT NULL DEFAULT '0' COMMENT '	',
+  `on_hbo` TINYINT(1) NOT NULL DEFAULT '0',
+  `on_cinemax` TINYINT(1) NOT NULL DEFAULT '0',
+  `on_redbox` TINYINT(1) NOT NULL DEFAULT '0',
+  `on_youtube` TINYINT(1) NOT NULL DEFAULT '0',
+  `on_crackle` TINYINT(1) NOT NULL DEFAULT '0',
+  `on_targettickets` TINYINT(1) NOT NULL DEFAULT '0',
+  `on_amazon_prime` TINYINT(1) NOT NULL DEFAULT '0',
+  `on_hulu_plus` TINYINT(1) NOT NULL DEFAULT '0',
+  `on_showtime` TINYINT(1) NOT NULL DEFAULT '0',
+  `on_spiritclips` TINYINT(1) NOT NULL DEFAULT '0',
+  `on_mgo` TINYINT(1) NOT NULL DEFAULT '0',
+  `on_hitbliss` TINYINT(1) NOT NULL DEFAULT '0',
+  `on_snagfilms` TINYINT(1) NOT NULL DEFAULT '0',
+  `on_popcornflix` TINYINT(1) NOT NULL DEFAULT '0',
+  `on_netflix` TINYINT(1) NOT NULL DEFAULT '0',
+  `alt_title` TEXT NOT NULL,
+  `needs_processing` TINYINT(1) NOT NULL DEFAULT '0',
+  `on_netflix_ca` TINYINT(1) NOT NULL DEFAULT '0',
+  `on_netflix_uk` TINYINT(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`))
-ENGINE = InnoDB;
+ENGINE = InnoDB
+AUTO_INCREMENT = 37527
+DEFAULT CHARACTER SET = utf8
+COLLATE = utf8_general_ci;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`CRVODMapping`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`CRVODMapping` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `term` TEXT NOT NULL,
+  `mapping` TEXT NOT NULL,
+  `year` YEAR NULL DEFAULT NULL,
+  `created` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 1235
+DEFAULT CHARACTER SET = utf8
+COLLATE = utf8_general_ci;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
