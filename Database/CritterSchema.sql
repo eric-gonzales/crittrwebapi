@@ -208,8 +208,8 @@ CREATE TABLE IF NOT EXISTS `mydb`.`CRMovie` (
   `on_vudu` TINYINT(1) NOT NULL DEFAULT 0,
   `on_youtube` TINYINT(1) NOT NULL DEFAULT 0,
   `critter_rating` INT NOT NULL DEFAULT 0,
-  `created` DATETIME NOT NULL,
   `priority` INT NULL,
+  `created` DATETIME NOT NULL,
   `modified` DATETIME NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `rotten_tomatoes_id_UNIQUE` (`rotten_tomatoes_id` ASC),
@@ -224,7 +224,7 @@ DEFAULT CHARACTER SET = utf8;
 CREATE TABLE IF NOT EXISTS `mydb`.`CRRating` (
   `id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `user_id` INT UNSIGNED NOT NULL,
-  `movie_id` INT UNSIGNED NOT NULL,
+  `movie_id` INT(10) UNSIGNED NOT NULL,
   `notified_box_office` TINYINT(1) NOT NULL DEFAULT 0,
   `notified_dvd` TINYINT(1) NOT NULL DEFAULT 0,
   `rating` INT NOT NULL DEFAULT 0,
@@ -237,6 +237,11 @@ CREATE TABLE IF NOT EXISTS `mydb`.`CRRating` (
   UNIQUE INDEX `uniqueratingsbyuser_idx` (`user_id` ASC, `movie_id` ASC),
   INDEX `fk_CRRating_CRUser1_idx` (`user_id` ASC),
   INDEX `fk_CRRating_CRMovie1_idx` (`movie_id` ASC),
+  CONSTRAINT `fk_CRRating_CRMovie1`
+    FOREIGN KEY (`movie_id`)
+    REFERENCES `mydb`.`CRMovie` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
   CONSTRAINT `fk_CRRating_CRUser1`
     FOREIGN KEY (`user_id`)
     REFERENCES `mydb`.`CRUser` (`id`)
@@ -263,6 +268,11 @@ CREATE TABLE IF NOT EXISTS `mydb`.`CRNotification` (
   INDEX `fk_CRNotification_CRUser1_idx` (`from_user_id` ASC),
   INDEX `fk_CRNotification_CRUser2_idx` (`to_user_id` ASC),
   INDEX `fk_CRNotification_CRRating1_idx` (`rating_id` ASC),
+  CONSTRAINT `fk_CRNotification_CRRating1`
+    FOREIGN KEY (`rating_id`)
+    REFERENCES `mydb`.`CRRating` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
   CONSTRAINT `fk_CRNotification_CRUser1`
     FOREIGN KEY (`from_user_id`)
     REFERENCES `mydb`.`CRUser` (`id`)
@@ -333,14 +343,14 @@ CREATE TABLE IF NOT EXISTS `mydb`.`CRMovieVOD` (
   PRIMARY KEY (`id`),
   INDEX `fk_CRMovieVOD_CRMovie1_idx` (`movie_id` ASC),
   INDEX `fk_CRMovieVOD_CRVODProvider1_idx` (`vod_id` ASC),
-  CONSTRAINT `fk_CRMovieVOD_CRMovie1`
-    FOREIGN KEY (`movie_id`)
-    REFERENCES `mydb`.`CRMovie` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
   CONSTRAINT `fk_CRMovieVOD_CRVODProvider1`
     FOREIGN KEY (`vod_id`)
     REFERENCES `mydb`.`CRVODProvider` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_CRMovieVOD_CRMovie1`
+    FOREIGN KEY (`movie_id`)
+    REFERENCES `mydb`.`CRMovie` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -363,12 +373,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`CRNetflix` (
   `avail_ca` TINYINT NULL DEFAULT 0,
   `avail_uk` TINYINT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
-  INDEX `fk_CRNetflix_CRMovie1_idx1` (`movie_id` ASC),
-  CONSTRAINT `fk_CRNetflix_CRMovie1`
-    FOREIGN KEY (`movie_id`)
-    REFERENCES `mydb`.`CRMovie` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+  INDEX `fk_CRNetflix_CRMovie1_idx` (`movie_id` ASC))
 ENGINE = InnoDB;
 
 
@@ -391,8 +396,8 @@ CREATE TABLE IF NOT EXISTS `mydb`.`CRGenreMovie` (
   `movie_id` INT UNSIGNED NOT NULL,
   `genre_id` INT UNSIGNED NOT NULL,
   PRIMARY KEY (`id`),
+  INDEX `fk_CRGenreMovie_CRMovie1_idx` (`movie_id` ASC),
   INDEX `fk_CRGenreMovie_CRGenre1_idx` (`genre_id` ASC),
-  INDEX `fk_CRGenreMovie_CRMovie1_idx1` (`movie_id` ASC),
   CONSTRAINT `fk_CRGenreMovie_CRGenre1`
     FOREIGN KEY (`genre_id`)
     REFERENCES `mydb`.`CRGenre` (`id`)
@@ -464,6 +469,38 @@ ENGINE = InnoDB
 AUTO_INCREMENT = 1235
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_general_ci;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`CRVODNotifications`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`CRVODNotifications` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `movie_id` INT UNSIGNED NOT NULL,
+  `vod_id` INT(10) UNSIGNED NOT NULL,
+  `user_id` INT UNSIGNED NOT NULL,
+  `created` DATETIME NOT NULL,
+  `modified` DATETIME NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_CRVODNotifications_CRMovie1_idx` (`movie_id` ASC),
+  INDEX `fk_CRVODNotifications_CRVODProvider1_idx` (`vod_id` ASC),
+  INDEX `fk_CRVODNotifications_CRUser1_idx` (`user_id` ASC),
+  CONSTRAINT `fk_CRVODNotifications_CRMovie1`
+    FOREIGN KEY (`movie_id`)
+    REFERENCES `mydb`.`CRMovie` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_CRVODNotifications_CRVODProvider1`
+    FOREIGN KEY (`vod_id`)
+    REFERENCES `mydb`.`CRVODProvider` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_CRVODNotifications_CRUser1`
+    FOREIGN KEY (`user_id`)
+    REFERENCES `mydb`.`CRUser` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
