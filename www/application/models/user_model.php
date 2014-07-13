@@ -15,6 +15,7 @@ class User_model extends CR_Model {
 	private $notifications;
 	private $friends;
 	private $devices;
+	private $vodproviders;
 	
 	/**
      * Default constructor
@@ -46,6 +47,7 @@ class User_model extends CR_Model {
 			'user' => $this->fetchUser($this->getID()),
 			'friends' => $this->getFriends(),
 			'notifications' => $this->getNotifications(),
+			'vodproviders' => $this->getVODProviders(),
 			'url_profilephoto' => $this->config->item('base_url').'user/photo/'.$hashedUserID,
 			'url_updateuserprofile' => $this->config->item('base_url').'user/update/'.$hashedUserID,
 			'url_addfriend' => $this->config->item('base_url').'user/addfriend/'.$hashedUserID,
@@ -159,6 +161,30 @@ class User_model extends CR_Model {
 	}
 	
 	/*
+	 * Fetch VOD Providers
+	 */
+	public function fetchVODProviders()
+	{
+		$providers = array();
+		$query = $this->db->get_where('CRUserVOD', array('user_id' => $this->getID()));
+		if($query->num_rows > 0)
+		{
+			foreach($query->result() as $row)
+			{
+				$result = $this->db->get_where('CRVODProvider', array('id' => $row->id), 1);
+				$row = $result->row();
+				$providers[] = array
+				(
+					'id' => hashids_encrypt($row->id),
+					'name' => $providers->name,
+					'identifier' => $providers->identifier
+				);
+			}
+		}
+		$this->setVODProviders($providers);
+	}
+	
+	/*
 	 * Email token
 	 */
 	public function newEmailToken(){
@@ -255,6 +281,14 @@ class User_model extends CR_Model {
 	
 	public function getFriends(){
 		return $this->friends;
+	}
+
+	public function setVODProviders($vodproviders){
+		$this->vodproviders = $vodproviders;
+	}
+	
+	public function getVODProviders(){
+		return $this->vodproviders;
 	}
 	
 	public function setDevices($devices){

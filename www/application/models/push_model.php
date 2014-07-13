@@ -18,6 +18,38 @@ class Push_model extends CR_Model
 		}
 	}
 	
+	public function queuePushForUser($user_id, $message, $notification_id, $incrementBadge = TRUE)
+	{
+		//set a push notification to each device linked to the user
+		$this->db->select('CRDevice.*');						
+		$this->db->from('CRDevice');
+		$this->db->join('CRDeviceUser', 'CRDevice.id = CRDeviceUser.device_id');
+		$this->db->where('CRDeviceUser.user_id', $user_id);
+		$this->db->where('CRDevice.push_token IS NOT NULL');						
+		$query = $this->db->get();
+		foreach ($query->result() as $device)
+		{
+			//increment badge value
+			$badge = $device->badge_count;
+			if ($incrementBadge)
+			{
+				$badge = $device->badge_count + 1;
+				$this->db->where('id', $device->id);
+				$this->db->set('badge_count', $badge);
+				$this->db->update('CRDevice');
+			}
+			
+			//now create push notification
+			$this->db->set('device_id', $device->id);
+			$this->db->set('message', $message);
+			$this->db->set('notification_id', $notification_id);							
+			$this->db->set('badge', $badge);
+			$this->db->set('created', 'NOW()', FALSE);
+			$this->db->set('modified', 'NOW()', FALSE);														
+			$this->db->insert('CRPushNotification');
+		}		
+	}	
+	
 	public function send()
 	{
 		$this->db->select('CRPushNotification.*, CRDevice.push_token');

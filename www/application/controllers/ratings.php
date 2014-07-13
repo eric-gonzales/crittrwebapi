@@ -147,29 +147,7 @@ class Ratings extends CI_Controller
 			$notification_id = $this->db->insert_id();
 
 			//set a push notification to each device linked to the friend
-			$this->db->select('CRDevice.*');						
-			$this->db->from('CRDevice');
-			$this->db->join('CRDeviceUser', 'CRDevice.id = CRDeviceUser.device_id');
-			$this->db->where('CRDeviceUser.user_id', $friend_id);
-			$this->db->where('CRDevice.push_token IS NOT NULL');			
-			$query = $this->db->get();
-			foreach ($query->result() as $device)
-			{
-				//increment badge value
-				$badge = $device->badge_count + 1;
-				$this->db->where('id', $device->id);
-				$this->db->set('badge_count', $badge);
-				$this->db->update('CRDevice');
-				
-				//now create push notification
-				$this->db->set('device_id', $device->id);
-				$this->db->set('message', $message . "\n" . $movie->title);
-				$this->db->set('notification_id', $notification_id);							
-				$this->db->set('badge', $badge);
-				$this->db->set('created', 'NOW()', FALSE);
-				$this->db->set('modified', 'NOW()', FALSE);														
-				$this->db->insert('CRPushNotification');
-			}
+			$this->push_model->queuePushForUser($friend_id, $message, $notification_id);			
 			
 			//Send pending pushes now - we may change this to a cron and remove this call later, but for now send ASAP.
 			$this->push_model->send();

@@ -207,6 +207,7 @@ class User extends CI_Controller{
 						//fetch user details
 						$this->user_model->setID($user->id);
 						$this->user_model->fetchFriends();
+						$this->user_model->fetchVODProviders();								
 						$this->user_model->defaultResult();
 					}
 					else
@@ -262,6 +263,7 @@ class User extends CI_Controller{
 				//set the proper result for the user
 				$this->user_model->setID($cr_user->id);
 				$this->user_model->fetchFriends();
+				$this->user_model->fetchVODProviders();				
 				$this->user_model->defaultResult();
 				
 				//Associate device
@@ -454,29 +456,7 @@ class User extends CI_Controller{
 					$notification_id = $this->db->insert_id();
 
 					//set a push notification to each device linked to the friend
-					$this->db->select('CRDevice.*');						
-					$this->db->from('CRDevice');
-					$this->db->join('CRDeviceUser', 'CRDevice.id = CRDeviceUser.device_id');
-					$this->db->where('CRDeviceUser.user_id', $friend_id);
-					$this->db->where('CRDevice.push_token IS NOT NULL');						
-					$query = $this->db->get();
-					foreach ($query->result() as $device)
-					{
-						//increment badge value
-						$badge = $device->badge_count + 1;
-						$this->db->where('id', $device->id);
-						$this->db->set('badge_count', $badge);
-						$this->db->update('CRDevice');
-						
-						//now create push notification
-						$this->db->set('device_id', $device->id);
-						$this->db->set('message', $message);
-						$this->db->set('notification_id', $notification_id);							
-						$this->db->set('badge', $badge);
-						$this->db->set('created', 'NOW()', FALSE);
-						$this->db->set('modified', 'NOW()', FALSE);														
-						$this->db->insert('CRPushNotification');
-					}
+					$this->push_model->queuePushForUser($friend_id, $message, $notification_id);
 					
 					//Send pending pushes now - we may change this to a cron and remove this call later, but for now send ASAP.
 					$this->push_model->send();
@@ -545,29 +525,7 @@ class User extends CI_Controller{
 					$notification_id = $this->db->insert_id();
 
 					//set a push notification to each device linked to the friend
-					$this->db->select('CRDevice.*');						
-					$this->db->from('CRDevice');
-					$this->db->join('CRDeviceUser', 'CRDevice.id = CRDeviceUser.device_id');
-					$this->db->where('CRDeviceUser.user_id', $friend_id);
-					$this->db->where('CRDevice.push_token IS NOT NULL');						
-					$query = $this->db->get();
-					foreach ($query->result() as $device)
-					{
-						//increment badge value
-						$badge = $device->badge_count + 1;
-						$this->db->where('id', $device->id);
-						$this->db->set('badge_count', $badge);
-						$this->db->update('CRDevice');
-						
-						//now create push notification
-						$this->db->set('device_id', $device->id);
-						$this->db->set('message', $message);
-						$this->db->set('notification_id', $notification_id);							
-						$this->db->set('badge', $badge);
-						$this->db->set('created', 'NOW()', FALSE);
-						$this->db->set('modified', 'NOW()', FALSE);														
-						$this->db->insert('CRPushNotification');
-					}
+					$this->push_model->queuePushForUser($friend_id, $message, $notification_id);
 					
 					//Send pending pushes now - we may change this to a cron and remove this call later, but for now send ASAP.
 					$this->push_model->send();
@@ -646,6 +604,30 @@ class User extends CI_Controller{
 			if ($this->post->push_watchlist_enabled) $this->db->set('push_watchlist_enabled', $this->post->push_watchlist_enabled);			
 			$this->db->where('id', $user_id);
 			$this->db->update('CRUser');
+			
+			//Update user's VOD providers
+			if ($this->post->vodproviders)
+			{
+				$this->updateVODProviders($user_id, $this->post->vodproviders);
+				//Delete existing choices
+				$this->db->where('id', $user_id);
+				$this->db->delete('CRUserVOD');
+				
+				//Loop and insert new choices
+				foreach ($this->post->vodproviders as $provider_identifier)
+				{
+					//Look it up
+					$this->db->where('identifier', $provider_identifier);
+					$this->db->from('CRVODProvider');
+					$vod = $this->db->get()->row();
+					if ($vod)
+					{
+						$this->db->set('user_id', $user_id);
+						$this->db->set('vod_id', $vod->id);
+						$this->db->insert('CRUserVOD');
+					}
+				}
+			}
 		}
 		else
 		{
