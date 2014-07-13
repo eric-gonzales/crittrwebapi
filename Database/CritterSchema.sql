@@ -473,9 +473,9 @@ COLLATE = utf8_general_ci;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`CRVODNotifications`
+-- Table `mydb`.`CRVODNotification`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`CRVODNotifications` (
+CREATE TABLE IF NOT EXISTS `mydb`.`CRVODNotification` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `movie_id` INT UNSIGNED NOT NULL,
   `vod_id` INT(10) UNSIGNED NOT NULL,
