@@ -608,9 +608,8 @@ class User extends CI_Controller{
 			//Update user's VOD providers
 			if ($this->post->vodproviders)
 			{
-				$this->updateVODProviders($user_id, $this->post->vodproviders);
 				//Delete existing choices
-				$this->db->where('id', $user_id);
+				$this->db->where('user_id', $user_id);
 				$this->db->delete('CRUserVOD');
 				
 				//Loop and insert new choices
