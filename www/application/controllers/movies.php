@@ -11,7 +11,8 @@ class Movies extends CI_Controller
 	{
 		parent::__construct();
 		$this->load->model('movies_model');
-		$this->load->model('genre_model');		
+		$this->load->model('genre_model');	
+		$this->load->model('push_model');				
 		
 		//load cache driver
 		$this->load->driver('cache');
@@ -469,7 +470,8 @@ class Movies extends CI_Controller
 			//Set up the query
 			$this->db->from('CRMovie');
 			$this->db->where('box_office_release_date IS NOT NULL', NULL);			
-			$this->db->where('box_office_release_date < NOW()', NULL);						
+			$this->db->where('box_office_release_date < NOW()', NULL);		
+			$this->db->where('id in (select movie_id from CRRating where rating=3 and notified_box_office=0)', NULL);			
 			$this->db->order_by('box_office_release_date', 'ASC');
 			$this->db->limit($movielimit, $movieoffset);
 			
@@ -477,7 +479,7 @@ class Movies extends CI_Controller
 			$query = $this->db->get();
 			$movies = $query->result();
 			$hasMovies = count($movies) > 0;
-			$offset += $limit;
+			$movieoffset += $movielimit;
 
 			//Process the movies
 			foreach($movies as $movie)
@@ -501,7 +503,7 @@ class Movies extends CI_Controller
 					$query = $this->db->get();
 					$watchers = $query->result();
 					$hasWatchers = count($watchers) > 0;
-					$offset += $limit;
+					$watcherOffset += $watcherlimit;
 					
 					//Process the watchers
 					foreach($watchers as $rating)
@@ -509,7 +511,8 @@ class Movies extends CI_Controller
 						//Get the user
 						$this->db->from('CRUser');
 						$this->db->where('id', $rating->user_id);
-						$user = $this->db->get()->row();	
+						$user = $this->db->get()->row();
+						echo "Notifying user " . json_encode($user);
 															
 						//Insert a CRNotification for this user
 						$message = 'is now playing in the Box Office!';
@@ -524,14 +527,14 @@ class Movies extends CI_Controller
 						$notification_id = $this->db->insert_id();						
 						
 						//Queue a push for this notification
-						if ($user->push_watchlist_enabled)
+						if ($user->push_watchlist_enabled == 1)
 						{
 							$pushMessage = $movie->title . " " . $message;
-							queuePushForUser($rating->user_id, $pushMessage, $notification_id);
+							$this->push_model->queuePushForUser($rating->user_id, $pushMessage, $notification_id);
 						}
 						
 						//Mark this rating as watched
-						$this->db->set('notified_box_office', TRUE);
+						$this->db->set('notified_box_office', 1);
 						$this->db->where('id', $rating->id);
 						$this->db->update('CRRating');
 					}					
@@ -556,6 +559,7 @@ class Movies extends CI_Controller
 			$this->db->from('CRMovie');
 			$this->db->where('dvd_release_date IS NOT NULL', NULL);			
 			$this->db->where('dvd_release_date < NOW()', NULL);						
+			$this->db->where('id in (select movie_id from CRRating where rating=3)', NULL);			
 			$this->db->order_by('dvd_release_date', 'ASC');
 			$this->db->limit($movielimit, $movieoffset);
 			
@@ -563,15 +567,15 @@ class Movies extends CI_Controller
 			$query = $this->db->get();
 			$movies = $query->result();
 			$hasMovies = count($movies) > 0;
-			$offset += $limit;
+			$movieoffset += $movielimit;
 
 			//Process the movies
 			foreach($movies as $movie)
 			{
-				echo "Notifying OnDemand Office watchlist for: " . $movie->title . " \n";
-				
 				//Get the available VOD services
+				$this->db->select("CRMovieVOD.*");
 				$this->db->where('movie_id', $movie->id);
+				$this->db->join('CRVODProvider', 'CRVODProvider.id = CRMovieVOD.vod_id');
 				$this->db->order_by('name', 'ASC');
 				$this->db->from('CRMovieVOD');
 				$query = $this->db->get();
@@ -593,12 +597,13 @@ class Movies extends CI_Controller
 						$this->db->where('notified_dvd', 0);
 					}
 					$this->db->limit($watcherlimit, $watcheroffset);
+					//echo "Processing " . $movie->title . " for VOD providers: " . json_encode($vodProviders);
 					
 					//Execute
 					$query = $this->db->get();
 					$watchers = $query->result();
 					$hasWatchers = count($watchers) > 0;
-					$offset += $limit;
+					$watcheroffset += $watcherlimit;
 					
 					//Process the watchers
 					foreach($watchers as $rating)
@@ -606,10 +611,7 @@ class Movies extends CI_Controller
 						//Get the user
 						$this->db->from('CRUser');
 						$this->db->where('id', $rating->user_id);
-						$user = $this->db->get()->row();					
-						
-						//Set base message
-						$message = 'is now available on DVD and On Demand!';
+						$user = $this->db->get()->row();		
 						
 						//Check for matching VOD providers
 						$matchingVODProviders = array();
@@ -618,14 +620,27 @@ class Movies extends CI_Controller
 							//Get the user's VOD providers that we haven't already notified on for this movie
 							$movie_id = $movie->id;
 							$user_id = $rating->user_id;
-							$sql = "select a.* from CRVODProvider a " .
-								   "join CRMovieVOD b on a.id=b.vod_id " .
-								   "join CRUserVOD c on a.id=c.vod_id" .
-								   "where b.movie_id = $movie_id AND " .
-								   "a.id not in (select vod_id from CRVODNotification where movie_id=$movie_id and user_id=$user_id) " .
+							$sql = "select a.* from CRVODProvider a ".
+								   "join CRMovieVOD b on a.id=b.vod_id and b.movie_id=$movie_id " . 
+								   "join CRUserVOD c on a.id=c.vod_id and c.user_id=$user_id ".
+								   "where a.id not in (select vod_id from CRVODNotification where movie_id=$movie_id and user_id=$user_id) " .
 								   "order by a.name ASC";
 							$query = $this->db->query($sql);
-							$matchingVODProviders = $query->result();
+							$userProviders = $query->result();
+							
+							//Get the list of this user's providers that matches the ones in the movie's providers
+							foreach($userProviders as $userProvider)
+							{
+								echo "User provider for " . $user->name . " :" . $userProvider->name . "\n";
+								foreach($vodProviders as $vodProvider)
+								{
+									if ($vodProvider->vod_id == $userProvider->id)
+									{
+										echo "MATCHED!\n";
+										array_push($matchingVODProviders, $userProvider);
+									}
+								}
+							}
 							
 							//If we have matching VOD providers, change the message.
 							//Examples:
@@ -653,14 +668,19 @@ class Movies extends CI_Controller
 									}
 								}
 							}
+							if ($counter == 0)
+							{
+								$message = 'is now available on DVD and On Demand';
+							}
 							$message .= "!";
 						}
 
 						//If the user has no matching VOD providers, and we've already done the generic notification, skip him
-						if (count($matchingVODProviders) == 0 && $rating->notified_dvd)
+						if (count($matchingVODProviders) == 0 && $rating->notified_dvd == 1)
 						{
 							continue;
 						}
+						echo "Notifying OnDemand Office watchlist for: " . $movie->title . " \n " . $message . "\n";
 					
 						//Insert a CRNotification for this user
 						$this->db->set('from_user_id', $rating->user_id);
@@ -677,7 +697,7 @@ class Movies extends CI_Controller
 						if ($user->push_watchlist_enabled)
 						{
 							$pushMessage = $movie->title . " " . $message;
-							queuePushForUser($rating->user_id, $pushMessage, $notification_id);
+							$this->push_model->queuePushForUser($rating->user_id, $pushMessage, $notification_id);
 						}
 						
 						//Mark this rating as notified
@@ -689,7 +709,7 @@ class Movies extends CI_Controller
 						foreach($matchingVODProviders as $provider)
 						{
 							$this->db->set('movie_id', $movie->id);						
-							$this->db->set('user_id', $rating->id);
+							$this->db->set('user_id', $rating->user_id);
 							$this->db->set('vod_id', $provider->id);
 							$this->db->set('created', 'NOW()', FALSE);
 							$this->db->set('modified', 'NOW()', FALSE);
