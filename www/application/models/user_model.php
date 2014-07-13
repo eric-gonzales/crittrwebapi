@@ -166,21 +166,21 @@ class User_model extends CR_Model {
 	public function fetchVODProviders()
 	{
 		$providers = array();
-		$query = $this->db->get_where('CRUserVOD', array('user_id' => $this->getID()));
-		if($query->num_rows > 0)
+		$this->db->where('user_id', $this->getID());
+		$query = $this->db->get('CRUserVOD');
+		foreach($query->result() as $row)
 		{
-			foreach($query->result() as $row)
-			{
-				$result = $this->db->get_where('CRVODProvider', array('id' => $row->id), 1);
-				$row = $result->row();
-				$providers[] = array
-				(
-					'id' => hashids_encrypt($row->id),
-					'name' => $providers->name,
-					'identifier' => $providers->identifier
-				);
-			}
+			$this->db->where('id', $row->vod_id);
+			$vodQuery = $this->db->get('CRVODProvider');			
+			$vod = $vodQuery->row();
+			$providers[] = array
+			(
+				'id' => hashids_encrypt($vod->id),
+				'name' => $vod->name,
+				'identifier' => $vod->identifier
+			);
 		}
+
 		$this->setVODProviders($providers);
 	}
 	
