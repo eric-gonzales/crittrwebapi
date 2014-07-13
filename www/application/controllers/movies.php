@@ -448,13 +448,260 @@ class Movies extends CI_Controller
 			$offset += $limit;
 
 			//Process the movies
-			foreach($query->result() as $movie)
+			foreach($movies as $movie)
 			{
 				echo "Warming cache: " . $movie->title . " \n";
 				$movieModel = new Movie_model($movie->rotten_tomatoes_id);
 				$cached++;
 			}
 		}
+	}
+	
+	public function process_boxoffice_watchlists()
+	{
+		//Get movies where box office date has passed
+		$hasMovies = TRUE;		
+		$movielimit = 1000;
+		$movieoffset = 0;
+		
+		while ($hasMovies)
+		{
+			//Set up the query
+			$this->db->from('CRMovie');
+			$this->db->where('box_office_release_date IS NOT NULL', NULL);			
+			$this->db->where('box_office_release_date < NOW()', NULL);						
+			$this->db->order_by('box_office_release_date', 'ASC');
+			$this->db->limit($movielimit, $movieoffset);
+			
+			//Execute
+			$query = $this->db->get();
+			$movies = $query->result();
+			$hasMovies = count($movies) > 0;
+			$offset += $limit;
+
+			//Process the movies
+			foreach($movies as $movie)
+			{
+				echo "Notifying Box Office watchlist for: " . $movie->title . " \n";
+				
+				$hasWatchers = TRUE;
+				$watcherlimit = 1000;
+				$watcheroffset = 0;
+				
+				while ($hasWatchers)
+				{
+					//Find users watching it we haven't notified yet
+					$this->db->from('CRRating');
+					$this->db->where('movie_id', $movie->id);
+					$this->db->where('rating', 3); //3 - watchlist
+					$this->db->where('notified_box_office', 0);
+					$this->db->limit($watcherlimit, $watcheroffset);
+					
+					//Execute
+					$query = $this->db->get();
+					$watchers = $query->result();
+					$hasWatchers = count($watchers) > 0;
+					$offset += $limit;
+					
+					//Process the watchers
+					foreach($watchers as $rating)
+					{
+						//Get the user
+						$this->db->from('CRUser');
+						$this->db->where('id', $rating->user_id);
+						$user = $this->db->get()->row();	
+															
+						//Insert a CRNotification for this user
+						$message = 'is now playing in the Box Office!';
+						$this->db->set('from_user_id', $rating->user_id);
+						$this->db->set('to_user_id', $rating->user_id);
+						$this->db->set('rating_id', $rating->id);						
+						$this->db->set('notification_type', 'watchlist');
+						$this->db->set('message', $message);
+						$this->db->set('created', 'NOW()', FALSE);
+						$this->db->set('modified', 'NOW()', FALSE);
+						$this->db->insert('CRNotification');
+						$notification_id = $this->db->insert_id();						
+						
+						//Queue a push for this notification
+						if ($user->push_watchlist_enabled)
+						{
+							$pushMessage = $movie->title . " " . $message;
+							queuePushForUser($rating->user_id, $pushMessage, $notification_id);
+						}
+						
+						//Mark this rating as watched
+						$this->db->set('notified_box_office', TRUE);
+						$this->db->where('id', $rating->id);
+						$this->db->update('CRRating');
+					}					
+				}
+			}
+		}
+		
+		//Send all queued pushes
+		$this->push_model->send();
+	}
+
+	public function process_ondemand_watchlists()
+	{
+		//Get movies where box office date has passed
+		$hasMovies = TRUE;		
+		$movielimit = 1000;
+		$movieoffset = 0;
+		
+		while ($hasMovies)
+		{
+			//Set up the query
+			$this->db->from('CRMovie');
+			$this->db->where('dvd_release_date IS NOT NULL', NULL);			
+			$this->db->where('dvd_release_date < NOW()', NULL);						
+			$this->db->order_by('dvd_release_date', 'ASC');
+			$this->db->limit($movielimit, $movieoffset);
+			
+			//Execute
+			$query = $this->db->get();
+			$movies = $query->result();
+			$hasMovies = count($movies) > 0;
+			$offset += $limit;
+
+			//Process the movies
+			foreach($movies as $movie)
+			{
+				echo "Notifying OnDemand Office watchlist for: " . $movie->title . " \n";
+				
+				//Get the available VOD services
+				$this->db->where('movie_id', $movie->id);
+				$this->db->order_by('name', 'ASC');
+				$this->db->from('CRMovieVOD');
+				$query = $this->db->get();
+				$vodProviders = $query->result();
+				
+				//Get the watchers
+				$hasWatchers = TRUE;
+				$watcherlimit = 1000;
+				$watcheroffset = 0;
+				
+				while ($hasWatchers)
+				{
+					//Find users watching it we haven't notified yet
+					$this->db->from('CRRating');
+					$this->db->where('movie_id', $movie->id);
+					$this->db->where('rating', 3); //3 - watchlist
+					if (count($vodProviders) == 0)
+					{
+						$this->db->where('notified_dvd', 0);
+					}
+					$this->db->limit($watcherlimit, $watcheroffset);
+					
+					//Execute
+					$query = $this->db->get();
+					$watchers = $query->result();
+					$hasWatchers = count($watchers) > 0;
+					$offset += $limit;
+					
+					//Process the watchers
+					foreach($watchers as $rating)
+					{
+						//Get the user
+						$this->db->from('CRUser');
+						$this->db->where('id', $rating->user_id);
+						$user = $this->db->get()->row();					
+						
+						//Set base message
+						$message = 'is now available on DVD and On Demand!';
+						
+						//Check for matching VOD providers
+						$matchingVODProviders = array();
+						if (count($vodProviders) > 0)
+						{
+							//Get the user's VOD providers that we haven't already notified on for this movie
+							$movie_id = $movie->id;
+							$user_id = $rating->user_id;
+							$sql = "select a.* from CRVODProvider a " .
+								   "join CRMovieVOD b on a.id=b.vod_id " .
+								   "join CRUserVOD c on a.id=c.vod_id" .
+								   "where b.movie_id = $movie_id AND " .
+								   "a.id not in (select vod_id from CRVODNotification where movie_id=$movie_id and user_id=$user_id) " .
+								   "order by a.name ASC";
+							$query = $this->db->query($sql);
+							$matchingVODProviders = $query->result();
+							
+							//If we have matching VOD providers, change the message.
+							//Examples:
+							//"Movie is now available on Netflix!"
+							//"Movie is now available on Amazon, iTunes, and Netflix!"
+							//"Movie is now available on Amazon and iTunes!"
+							$message = 'is now available on ';
+							$counter = 0;
+							foreach($matchingVODProviders as $provider)
+							{
+								$counter++;
+								if ($counter == 1)
+								{
+									$message .= $provider->name;
+								}
+								else
+								{
+									if ($counter < count($matchingVODProviders))
+									{
+										$message .= ", " . $provider->name;
+									}
+									else
+									{
+										$message .= " and " . $provider->name;
+									}
+								}
+							}
+							$message .= "!";
+						}
+
+						//If the user has no matching VOD providers, and we've already done the generic notification, skip him
+						if (count($matchingVODProviders) == 0 && $rating->notified_dvd)
+						{
+							continue;
+						}
+					
+						//Insert a CRNotification for this user
+						$this->db->set('from_user_id', $rating->user_id);
+						$this->db->set('to_user_id', $rating->user_id);
+						$this->db->set('rating_id', $rating->id);												
+						$this->db->set('notification_type', 'watchlist');
+						$this->db->set('message', $message);
+						$this->db->set('created', 'NOW()', FALSE);
+						$this->db->set('modified', 'NOW()', FALSE);
+						$this->db->insert('CRNotification');
+						$notification_id = $this->db->insert_id();						
+						
+						//Queue a push for this notification
+						if ($user->push_watchlist_enabled)
+						{
+							$pushMessage = $movie->title . " " . $message;
+							queuePushForUser($rating->user_id, $pushMessage, $notification_id);
+						}
+						
+						//Mark this rating as notified
+						$this->db->set('notified_dvd', TRUE);
+						$this->db->where('id', $rating->id);
+						$this->db->update('CRRating');
+						
+						//Mark the VOD notifications
+						foreach($matchingVODProviders as $provider)
+						{
+							$this->db->set('movie_id', $movie->id);						
+							$this->db->set('user_id', $rating->id);
+							$this->db->set('vod_id', $provider->id);
+							$this->db->set('created', 'NOW()', FALSE);
+							$this->db->set('modified', 'NOW()', FALSE);
+							$this->db->insert('CRVODNotification');							
+						}
+					}					
+				}
+			}
+		}
+		
+		//Send all queued pushes
+		$this->push_model->send();
 	}
 	
 	public function import($filename)
