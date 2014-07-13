@@ -504,6 +504,29 @@ CREATE TABLE IF NOT EXISTS `mydb`.`CRVODNotifications` (
 ENGINE = InnoDB;
 
 
+-- -----------------------------------------------------
+-- Table `mydb`.`CRUserVOD`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`CRUserVOD` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_id` INT UNSIGNED NOT NULL,
+  `vod_id` INT(10) UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_CRUserVOD_CRUser1_idx` (`user_id` ASC),
+  INDEX `fk_CRUserVOD_CRVODProvider1_idx` (`vod_id` ASC),
+  CONSTRAINT `fk_CRUserVOD_CRUser1`
+    FOREIGN KEY (`user_id`)
+    REFERENCES `mydb`.`CRUser` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_CRUserVOD_CRVODProvider1`
+    FOREIGN KEY (`vod_id`)
+    REFERENCES `mydb`.`CRVODProvider` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
