@@ -600,7 +600,7 @@ class Movie_model extends CR_Model {
 		foreach($query->result() as $movie_vod){
 			$vod_query = $this->db->get_where('CRVODProvider', array('id' => $movie_vod->vod_id), 1);
 			$vod_provider = $vod_query->row();
-			$vod_provider_name = str_replace(' ', '_', str_replace('-', '', strtolower($vod_provider->name)));
+			$vod_provider_name = $vod_provider->identifier;
 			//For Amazon Prime, we want to use the Amazon URL
 			if($movie_vod->vod_id == 2){
 				$arr = array( 'name' => 'amazon_prime', 'view_url' => $this->getAmazonDetails()["DetailPageURL"]);
