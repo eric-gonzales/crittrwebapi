@@ -350,6 +350,7 @@ class Movies extends CI_Controller
 		//Get the POST
 		$posted = json_decode(file_get_contents('php://input'));
 		$genres = $posted->genres;
+		$vodproviders = $posted->vodproviders;
 	
 		//Set up the query to get all unrated movies (paged, because this is a big one that can return a lot)
 		$user_id = intval(hashids_decrypt($hashedUserID));
@@ -361,6 +362,12 @@ class Movies extends CI_Controller
 		if ($genres)
 		{
 			$this->db->where("`id` IN (select movie_id from CRGenreMovie b join CRGenre c on b.genre_id=c.id where c.name in ('" . implode("','", $genres) . "'))", NULL, FALSE);
+		}
+		
+		//Add VOD filters?
+		if ($vodproviders)
+		{
+			$this->db->where("`id` IN (select movie_id from CRMovieVOD d join CRVODProvider e on d.vod_id=e.id where e.identifier in ('" . implode("','", $vodproviders) . "'))", NULL, FALSE);
 		}
 		
 		$this->db->order_by('box_office_release_date', 'DESC');
