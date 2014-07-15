@@ -637,7 +637,6 @@ class Movies extends CI_Controller
 							//Get the list of this user's providers that matches the ones in the movie's providers
 							foreach($userProviders as $userProvider)
 							{
-								echo "User provider for " . $user->name . " :" . $userProvider->name . "\n";
 								foreach($vodProviders as $vodProvider)
 								{
 									if ($vodProvider->vod_id == $userProvider->id)
