@@ -628,7 +628,6 @@ class Movies extends CI_Controller
 							$movie_id = $movie->id;
 							$user_id = $rating->user_id;
 							$sql = "select a.* from CRVODProvider a ".
-								   "join CRMovieVOD b on a.id=b.vod_id and b.movie_id=$movie_id " . 
 								   "join CRUserVOD c on a.id=c.vod_id and c.user_id=$user_id ".
 								   "where a.id not in (select vod_id from CRVODNotification where movie_id=$movie_id and user_id=$user_id) " .
 								   "order by a.name ASC";
