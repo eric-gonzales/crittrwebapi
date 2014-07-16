@@ -3,7 +3,6 @@
  * Movie Model
  * @author Eric Gonzales <eric@crittermovies.com>
  * @copyright 2014 Critter
- * TODO: remove legacy properties/functions
  */
 
 class Movie_model extends CR_Model {
@@ -30,37 +29,8 @@ class Movie_model extends CR_Model {
 	private $tmdb_trailer_details;
 	private $tms_trailer_details;
 	private $tms_trailer_image_details;
-	private $netflix_link;
 	private $amazon_details;
 	private $youtube_trailer_id;
-	private $on_att;
-	private $on_charter;
-	private $on_comcast;
-	private $on_cox;
-	private $on_directv;
-	private $on_dish;
-	private $on_twc;
-	private $on_verizon;
-	private $on_amazon_prime;
-	private $on_cinemax;
-	private $on_crackle;
-	private $on_hbo;
-	private $on_hitbliss;
-	private $on_hulu;
-	private $on_hulu_plus;
-	private $on_max;
-	private $on_mgo;
-	private $on_netflix_ca;
-	private $on_netflix_uk;
-	private $on_netflix_us;
-	private $on_popcornflix;
-	private $on_redbox;
-	private $on_showtime;
-	private $on_snagflilms;
-	private $on_spiritclips;
-	private $on_targettickets;
-	private $on_vudu;
-	private $on_youtube;
 	
 	//Construct from RT ID
 	public function __construct($rotten_tomatoes_id)
@@ -163,49 +133,14 @@ class Movie_model extends CR_Model {
 			else{
 				$this->fetchTrailerDetails();
 			}
-			
-			//Netflix Link
-			$this->fetchNetflixOnlineVideo();
-			
+						
 			//Amazon Results 
 			$this->fetchAmazonOnlineVideo();
 			
 			//Video On Demand
 			if($inDB){
 				$this->fetchAvailableServices();
-				
-				//**begin deprecated setters**//
-				$this->setOnAtt($movie_info->on_att);
-				$this->setOnCharter($movie_info->on_charter);
-				$this->setOnComcast($movie_info->on_comcast);
-				$this->setOnCox($movie_info->on_cox);
-				$this->setOnDirectv($movie_info->on_directv);
-				$this->setOnDish($movie_info->on_dish);
-				$this->setOnTwc($movie_info->on_twc);
-				$this->setOnVerizon($movie_info->on_verizon);
-				$this->setOnAmazonPrime($movie_info->on_amazon_prime);
-				$this->setOnCinemax($movie_info->on_cinemax);
-				$this->setOnCrackle($movie_info->on_crackle);
-				$this->setOnHBO($movie_info->on_hbo);
-				$this->setOnHitbliss($movie_info->on_hitbliss);
-				$this->setOnHulu($movie_info->on_hulu);
-				$this->setOnHuluPlus($movie_info->on_hulu_plus);
-				$this->setOnMax($movie_info->on_max);
-				$this->setOnMgo($movie_info->on_mgo);
-				$this->setOnNetflixCA($movie_info->on_netflix_ca);
-				$this->setOnNetflixUK($movie_info->on_netflix_uk);
-				$this->setOnNetflixUS($movie_info->on_netflix_us);
-				$this->setOnPopcornflix($movie_info->on_popcornflix);
-				$this->setOnRedbox($movie_info->on_redbox);
-				$this->setOnShowtime($movie_info->on_showtime);
-				$this->setOnSnagfilms($movie_info->on_snagfilms);
-				$this->setOnSpiritclips($movie_info->on_spiritclips);
-				$this->setOnTargettickets($movie_info->on_targettickets);
-				$this->setOnVudu($movie_info->on_vudu);
-				$this->setOnYoutube($movie_info->on_youtube);
-				//**end deprecated setters**//
 			}
-
 			
 			//Database Operations
 			$this->db->set('rotten_tomatoes_id', $this->getRottenTomatoesID());
@@ -252,36 +187,6 @@ class Movie_model extends CR_Model {
 				'rotten_tomatoes_id' => $this->getRottenTomatoesID(),
 				'rotten_tomatoes_critics_score' => $this->getRTDetails()->ratings->critics_score,
 				'mpaa_rating' => $this->getRTDetails()->mpaa_rating,
-				//**begin legacy data**//
-				'on_amazon_prime' => $this->getOnAmazonPrime(),
-				'on_att' => $this->getOnAtt(),
-				'on_charter' => $this->getOnCharter(),
-				'on_cinemax' => $this->getOnCinemax(),
-				'on_comcast' => $this->getOnComcast(),
-				'on_cox' => $this->getOnCox(),
-				'on_crackle' => $this->getOnCrackle(),
-				'on_directv' => $this->getOnDirectv(),
-				'on_dish' => $this->getOnDish(),
-				'on_hbo' => $this->getOnHBO(),
-				'on_hulu' => $this->getOnHulu(),
-				'on_hulu_plus' => $this->getOnHuluPlus(),
-				'on_max' => $this->getOnMax(),
-				'on_mgo' => $this->getOnMgo(),
-				'on_netflix_ca' => $this->getOnNetflixCA(),
-				'on_netflix_uk' => $this->getOnNetflixUK(),
-				'on_netflix_us' => $this->getOnNetflixUS(),
-				'on_popcornflix' => $this->getOnPopcornflix(),
-				'on_redbox' => $this->getOnRedbox(),
-				'on_showtime' => $this->getOnShowtime(),
-				'on_snagfilms' => $this->getOnSnagfilms(),
-				'on_spiritclips' => $this->getOnSpiritclips(),
-				'on_targettickets' => $this->getOnTargettickets(),
-				'on_hitbliss' => $this->getOnHitbliss(),
-				'on_twc' => $this->getOnTwc(),
-				'on_verizon' => $this->getOnVerizon(),
-				'on_vudu' => $this->getOnVudu(),
-				'on_youtube' => $this->getOnYoutube(),
-				//**end legacy data*//
 				'original_image_url' => $this->getRTDetails()->posters->original,
 				'poster_path' => $this->getTMDBPosterPath(),
 				'release_date_dvd' => $this->getDVDReleaseDate(),
@@ -294,7 +199,6 @@ class Movie_model extends CR_Model {
 				'tms_movie_id' => $this->getTMSMovieID(),
 				'url_string_amazon' => $this->getAmazonDetails()["DetailPageURL"], //legacy
 				'url_string_imdb' => "http://www.imdb.com/title/" . $this->getIMDBID(),
-				'url_string_netflix' => $this->getNetflixLink(), //legacy
 				'url_string_rottentomatoes' => $this->getRTDetails()->links->alternate,
 				'year' => $this->getRTDetails()->year,
 				'youTubeTrailerID' => $this->getYouTubeTrailerID(),
@@ -564,18 +468,6 @@ class Movie_model extends CR_Model {
 		$this->setTMSDetails($finalRes);
 	}
 
-	public function fetchNetflixOnlineVideo(){
-		$releaseYear = $this->getRTDetails()->year;
-		$this->db->select('netflix_id');
-		$query = $this->db->get_where('CRNetflix', array('title' => $this->getTitle(), 'release_year' => $releaseYear, 'season' => 0, 'avail_us' => 1), 1);
-		if($query->num_rows() > 0){
-			$result = $query->row();
-			if($result->netflix_id != ''){
-				$this->setNetflixLink($this->config->item('netflix_base_url').$result->netflix_id);
-			}
-		}
-	}
-	
 	public function fetchAmazonOnlineVideo(){
 		$title = $this->getTitle();
 		$releaseYear = $this->getRTDetails()->year;
@@ -826,14 +718,6 @@ class Movie_model extends CR_Model {
 		$this->amazon_details = $details;
 	}
 	
-	public function getNetflixLink(){
-		return $this->netflix_link;
-	}
-	
-	public function setNetflixLink($link){
-		$this->netflix_link = $link;
-	}
-	
 	public function getAvailableServices(){
 		return $this->available_services;
 	}
@@ -893,230 +777,5 @@ class Movie_model extends CR_Model {
 		}
 		
 		return $info;
-	}
-	
-	
-	//***begin legacy functions***//
-	
-	public function getOnAtt(){
-		return $this->att;
-	}
-	
-	public function setOnAtt($id){
-		$this->on_att = $id;
-	}
-	public function getOnCharter(){
-		return $this->on_charter;
-	}
-	
-	public function setOnCharter($id){
-		$this->on_charter = $id;
-	}
-	public function getOnComcast(){
-		return $this->on_comcast;
-	}
-	
-	public function setOnComcast($id){
-		$this->on_comcast = $id;
-	}
-	
-	public function getOnCox(){
-		return $this->on_cox;
-	}
-	
-	public function setOnCox($id){
-		$this->on_cox = $id;
-	}
-	
-	public function getOnDirectv(){
-		return $this->on_directv;
-	}
-	
-	public function setOnDirectv($id){
-		$this->on_directv = $id;
-	}
-	
-	public function getOnDish(){
-		return $this->on_dish;
-	}
-	
-	public function setOnDish($id){
-		$this->on_dish = $id;
-	}
-	
-	public function getOnTwc(){
-		return $this->on_twc;
-	}
-	
-	public function setOnTwc($id){
-		$this->on_twc = $id;
-	}
-	
-	public function getOnVerizon(){
-		return $this->on_verizon;
-	}
-	
-	public function setOnVerizon($id){
-		$this->on_verizon = $id;
-	}
-	
-	public function getOnAmazonPrime(){
-		return $this->on_amazon_prime;
-	}
-	
-	public function setOnAmazonPrime($id){
-		$this->on_amazon_prime = $id;
-	}
-	
-	public function getOnCinemax(){
-		return $this->on_cinemax;
-	}
-	
-	public function setOnCinemax($id){
-		$this->on_cinemax = $id;
-	}
-	
-	public function getOnCrackle(){
-		return $this->on_crackle;
-	}
-	
-	public function setOnCrackle($id){
-		$this->on_crackle = $id;
-	}
-	
-	public function getOnHBO(){
-		return $this->on_hbo;
-	}
-	
-	public function setOnHBO($id){
-		$this->on_hbo = $id;
-	}
-	
-	public function getOnHitbliss(){
-		return $this->on_hitbliss;
-	}
-	
-	public function setOnHitbliss($id){
-		$this->on_hitbliss = $id;
-	}
-	
-	public function getOnHulu(){
-		return $this->on_hulu;
-	}
-	
-	public function setOnHulu($id){
-		$this->on_hulu = $id;
-	}
-	
-	public function getOnHuluPlus(){
-		return $this->on_hulu_plus;
-	}
-	
-	public function setOnHuluPlus($id){
-		$this->on_hulu_plus = $id;
-	}
-	
-	public function getOnMax(){
-		return $this->on_max;
-	}
-	
-	public function setOnMax($id){
-		$this->on_max = $id;
-	}
-	
-	public function getOnMgo(){
-		return $this->on_mgo;
-	}
-	
-	public function setOnMgo($id){
-		$this->on_mgo = $id;
-	}
-	
-	public function getOnNetflixCA(){
-		return $this->on_netflix_ca;
-	}
-	
-	public function setOnNetflixCA($id){
-		$this->on_netflix_ca = $id;
-	}
-	
-	public function getOnNetflixUK(){
-		return $this->on_netflix_uk;
-	}
-	
-	public function setOnNetflixUK($id){
-		$this->on_netflix_uk = $id;
-	}
-	
-	public function getOnNetflixUS(){
-		return $this->on_netflix_us;
-	}
-	
-	public function setOnNetflixUS($id){
-		$this->on_netflix_us = $id;
-	}
-	
-	public function getOnPopcornflix(){
-		return $this->on_popcornflix;
-	}
-	
-	public function setOnPopcornflix($id){
-		$this->on_popcornflix = $id;
-	}
-	
-	public function getOnRedbox(){
-		return $this->on_redbox;
-	}
-	
-	public function setOnRedbox($id){
-		$this->on_redbox = $id;
-	}
-	
-	public function getOnShowtime(){
-		return $this->on_showtime;
-	}
-	
-	public function setOnShowtime($id){
-		$this->on_showtime = $id;
-	}
-	
-	public function getOnSnagfilms(){
-		return $this->on_snagflilms;
-	}
-	
-	public function setOnSnagfilms($id){
-		$this->on_snagflilms = $id;
-	}
-	
-	public function getOnSpiritclips(){
-		return $this->on_spiritclips;
-	}
-	
-	public function setOnSpiritclips($id){
-		$this->on_spiritclips = $id;
-	}
-	
-	public function getOnTargettickets(){
-		return $this->on_targettickets;
-	}
-	
-	public function setOnTargettickets($id){
-		$this->on_targettickets = $id;
-	}
-	
-	public function getOnVudu(){
-		return $this->on_vudu;
-	}
-	
-	public function setOnVudu($id){
-		$this->on_vudu = $id;
-	}
-	
-	public function getOnYoutube(){
-		return $this->on_youtube;
-	}
-	
-	public function setOnYoutube($id){
-		$this->on_youtube = $id;
 	}
 }
