@@ -335,7 +335,7 @@ class Ratings extends CI_Controller
 		{
 			//Set up the query
 			$user_id = hashids_decrypt($hashedUserID);
-			$this->db->select('CRRating.*, CRMovie.title, CRMovie.hashtag, CRMovie.rotten_tomatoes_id, CRMovie.tmdb_poster_path');			
+			$this->db->select('CRRating.*, CRMovie.title, CRMovie.hashtag, CRMovie.rotten_tomatoes_id, CRMovie.tmdb_poster_path, CRMovie.box_office_release_date, CRMovie.dvd_release_date');			
 			$this->db->from('CRRating');
 			$this->db->join('CRMovie', 'CRMovie.id = CRRating.movie_id');
 			$this->db->where('user_id', $user_id);
