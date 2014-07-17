@@ -2,6 +2,9 @@ SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
+-- -----------------------------------------------------
+-- Schema mydb
+-- -----------------------------------------------------
 CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci ;
 USE `mydb` ;
 
@@ -334,24 +337,6 @@ COLLATE = utf8_general_ci;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`CRNetflix`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `mydb`.`CRNetflix` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `movie_id` INT UNSIGNED NOT NULL,
-  `title` VARCHAR(255) NULL,
-  `release_year` YEAR NULL,
-  `season` INT NULL DEFAULT 0,
-  `netflix_id` VARCHAR(100) NULL,
-  `avail_us` TINYINT NULL DEFAULT 0,
-  `avail_ca` TINYINT NULL DEFAULT 0,
-  `avail_uk` TINYINT NULL DEFAULT 0,
-  PRIMARY KEY (`id`),
-  INDEX `fk_CRNetflix_CRMovie1_idx` (`movie_id` ASC))
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
 -- Table `mydb`.`CRGenre`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`CRGenre` (
@@ -392,36 +377,9 @@ CREATE TABLE IF NOT EXISTS `mydb`.`CRVODImport` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `title` TEXT NOT NULL,
   `year` YEAR NULL DEFAULT NULL,
-  `netflix_id` VARCHAR(255) NULL DEFAULT NULL,
-  `on_att` TINYINT(1) NOT NULL DEFAULT '0',
-  `on_comcast` TINYINT(1) NOT NULL DEFAULT '0',
-  `on_directv` TINYINT(1) NOT NULL DEFAULT '0',
-  `on_dish` TINYINT(1) NOT NULL DEFAULT '0',
-  `on_verizon` TINYINT(1) NOT NULL DEFAULT '0',
-  `on_charter` TINYINT(1) NOT NULL DEFAULT '0',
-  `on_cox` TINYINT(1) NOT NULL DEFAULT '0',
-  `on_twc` TINYINT(1) NOT NULL DEFAULT '0',
-  `on_vudu` TINYINT(1) NOT NULL DEFAULT '0',
-  `on_hulu` TINYINT(1) NOT NULL DEFAULT '0' COMMENT '	',
-  `on_hbo` TINYINT(1) NOT NULL DEFAULT '0',
-  `on_cinemax` TINYINT(1) NOT NULL DEFAULT '0',
-  `on_redbox` TINYINT(1) NOT NULL DEFAULT '0',
-  `on_youtube` TINYINT(1) NOT NULL DEFAULT '0',
-  `on_crackle` TINYINT(1) NOT NULL DEFAULT '0',
-  `on_targettickets` TINYINT(1) NOT NULL DEFAULT '0',
-  `on_amazon_prime` TINYINT(1) NOT NULL DEFAULT '0',
-  `on_hulu_plus` TINYINT(1) NOT NULL DEFAULT '0',
-  `on_showtime` TINYINT(1) NOT NULL DEFAULT '0',
-  `on_spiritclips` TINYINT(1) NOT NULL DEFAULT '0',
-  `on_mgo` TINYINT(1) NOT NULL DEFAULT '0',
-  `on_hitbliss` TINYINT(1) NOT NULL DEFAULT '0',
-  `on_snagfilms` TINYINT(1) NOT NULL DEFAULT '0',
-  `on_popcornflix` TINYINT(1) NOT NULL DEFAULT '0',
-  `on_netflix` TINYINT(1) NOT NULL DEFAULT '0',
   `alt_title` TEXT NOT NULL,
-  `needs_processing` TINYINT(1) NOT NULL DEFAULT '0',
-  `on_netflix_ca` TINYINT(1) NOT NULL DEFAULT '0',
-  `on_netflix_uk` TINYINT(1) NOT NULL DEFAULT '0',
+  `provider` INT(11) NOT NULL DEFAULT '0',
+  `needs_processing` TINYINT(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 37527
