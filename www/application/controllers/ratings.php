@@ -147,7 +147,7 @@ class Ratings extends CI_Controller
 			$notification_id = $this->db->insert_id();
 
 			//set a push notification to each device linked to the friend
-			$this->push_model->queuePushForUser($friend_id, $movie->title . " " . $message, $notification_id);			
+			$this->push_model->queuePushForUser($friend_id, $message . " " . $movie->title, $notification_id);			
 			
 			//Send pending pushes now - we may change this to a cron and remove this call later, but for now send ASAP.
 			$this->push_model->send();
