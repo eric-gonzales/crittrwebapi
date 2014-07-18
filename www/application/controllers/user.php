@@ -347,7 +347,7 @@ class User extends CI_Controller{
 		$photo_data = base64_decode($this->post->photo);
 				
 		//Save it to S3
-		$fileKey = md5($photo_data) . ".jpg";
+		$fileKey = md5($hashedUserID) . ".jpg";
 		$bucket = "critterphotos"; //TODO: Read this from a config
 		$client->upload($bucket, $fileKey, $photo_data, 'private');
 		
