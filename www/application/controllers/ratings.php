@@ -403,7 +403,6 @@ class Ratings extends CI_Controller
 			"AND ((CRRating.comments is not null) ".
 			"OR (CRRating.user_id in (select friend_id from CRFriends where user_id=133))) ".
 			"ORDER BY CRRating.created DESC LIMIT $limit OFFSET $offset";
-			$this->db->query($sql);
 /*
 			$this->db->select('CRRating.*, CRMovie.title, CRMovie.hashtag, CRMovie.rotten_tomatoes_id, CRMovie.tmdb_poster_path, CRUser.name as user_name, CRUser.photo_url as user_photo_url');
 			$this->db->from('CRRating');
