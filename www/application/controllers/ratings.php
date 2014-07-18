@@ -382,12 +382,29 @@ class Ratings extends CI_Controller
 	}
 	
 	//Fetch All Ratings for Movie
-	function all($hashedMovieID, $limit = 100, $offset = 0)
+	function all($hashedUserID, $hashedMovieID, $limit = 100, $offset = 0)
 	{
-		if($hashedMovieID != '')
+		//Parse and sanitize params
+		$movie_id = hashids_decrypt($hashedMovieID);
+		$user_id = hashids_decrypt($hashedUserID);
+		$limit = intval($limit);
+		$offset = intval($offset);
+
+		//Execute
+		if($movie_id && $user_id)
 		{
-			//Set up the query
-			$movie_id = hashids_decrypt($hashedMovieID);
+			//Set up the query - all friend ratings, any anon ratings but only ones with a review
+			$sql = "select CRRating.*, CRMovie.title, CRMovie.hashtag, CRMovie.rotten_tomatoes_id, CRMovie.tmdb_poster_path, ".
+			"CRUser.name as user_name, CRUser.photo_url as user_photo_url ".
+			"from CRRating ".
+			"join CRMovie on CRMovie.id=CRRating.movie_id ".
+			"join CRUser on CRUser.id=CRRating.user_id ".
+			"where CRRating.movie_id=$movie_id AND CRRating.rating in (1,2) ".
+			"AND ((CRRating.comments is not null) ".
+			"OR (CRRating.user_id in (select friend_id from CRFriends where user_id=133))) ".
+			"ORDER BY CRRating.created DESC LIMIT $limit OFFSET $offset";
+			$this->db->query($sql);
+/*
 			$this->db->select('CRRating.*, CRMovie.title, CRMovie.hashtag, CRMovie.rotten_tomatoes_id, CRMovie.tmdb_poster_path, CRUser.name as user_name, CRUser.photo_url as user_photo_url');
 			$this->db->from('CRRating');
 			$this->db->join('CRMovie', 'CRMovie.id = CRRating.movie_id');
@@ -397,9 +414,11 @@ class Ratings extends CI_Controller
 			$this->db->order_by('CRRating.created', 'desc'); //Newest first
 			$this->db->limit($limit);
 			$this->db->offset($offset);
+*/
+
 			
 			//Query and clean up the results
-			$chk_stmt = $this->db->get();
+			$chk_stmt = $this->db->query($sql);
 			$results = $chk_stmt->result();	
 			foreach($results as $rating)
 			{
