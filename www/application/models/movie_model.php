@@ -29,7 +29,6 @@ class Movie_model extends CR_Model {
 	private $tmdb_trailer_details;
 	private $tms_trailer_details;
 	private $tms_trailer_image_details;
-	private $amazon_details;
 	private $youtube_trailer_id;
 	private $was_cached;	
 	
@@ -479,17 +478,6 @@ class Movie_model extends CR_Model {
 		$this->setTMSDetails($finalRes);
 	}
 
-	public function fetchAmazonOnlineVideo(){
-		$title = $this->getTitle();
-		$releaseYear = $this->getRTDetails()->year;
-		if($title != '' && $releaseYear != ''){
-			require_once(dirname(__FILE__).'/../libraries/amazonvideo.php');
-			$amazon_video = new AmazonVideo($this->config->item('aws_key'), $this->config->item('aws_secret'));
-			$result = $amazon_video->search($title, $releaseYear);
-			$this->setAmazonDetails($result);
-		}
-	}
-
 	public function fetchCritterRating()
 	{
 		$this->load->model('ratings_model');						
@@ -504,24 +492,12 @@ class Movie_model extends CR_Model {
 			$vod_query = $this->db->get_where('CRVODProvider', array('id' => $movie_vod->vod_id), 1);
 			$vod_provider = $vod_query->row();
 			$vod_provider_name = $vod_provider->identifier;
-			//For Amazon Prime, we want to use the Amazon URL
-			if($movie_vod->vod_id == 2){
-				$arr = array( 'name' => 'amazon_prime', 'view_url' => $this->getAmazonDetails()["DetailPageURL"]);
-				array_push($services, $arr);
-			}
-			else{
-				$arr = array( 
-					'name' => $vod_provider_name,
-					'app_url' => $movie_vod->app_url,
-					'view_url' => $movie_vod->view_url
-				);
-				array_push($services, $arr);
-			}
-		}
-		//Add Amazon URL
-		if($this->getAmazonDetails()["DetailPageURL"] != ''){
-			$arr = array( 'name' => 'amazon', 'view_url' => $this->getAmazonDetails()["DetailPageURL"]);
-				array_push($services, $arr);
+			$arr = array( 
+				'name' => $vod_provider_name,
+				'app_url' => $movie_vod->app_url,
+				'view_url' => $movie_vod->view_url
+			);
+			array_push($services, $arr);
 		}
 		$this->setAvailableServices($services);
 	}
@@ -719,14 +695,6 @@ class Movie_model extends CR_Model {
 	
 	public function setCritterRating($rating){
 		$this->critter_rating = $rating;
-	}
-	
-	public function getAmazonDetails(){
-		return $this->amazon_details;
-	}
-	
-	public function setAmazonDetails($details){
-		$this->amazon_details = $details;
 	}
 	
 	public function getAvailableServices(){
