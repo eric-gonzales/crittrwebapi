@@ -134,9 +134,6 @@ class Movie_model extends CR_Model {
 				$this->fetchTrailerDetails();
 			}
 						
-			//Amazon Results 
-			$this->fetchAmazonOnlineVideo();
-			
 			//Video On Demand
 			if($inDB){
 				$this->fetchAvailableServices();
@@ -197,7 +194,6 @@ class Movie_model extends CR_Model {
 				'tmdb_id' => $this->getTMDBID(),
 				'tms_root_id' => $this->getTMSRootID(),
 				'tms_movie_id' => $this->getTMSMovieID(),
-				'url_string_amazon' => $this->getAmazonDetails()["DetailPageURL"], //legacy
 				'url_string_imdb' => "http://www.imdb.com/title/" . $this->getIMDBID(),
 				'url_string_rottentomatoes' => $this->getRTDetails()->links->alternate,
 				'year' => $this->getRTDetails()->year,
@@ -207,7 +203,7 @@ class Movie_model extends CR_Model {
 				'genres' => $this->getRTDetails()->genres
 			);			
 			
-			//Save to cache (only caching as long as we cache the rating)
+			//Save to cache
 			$this->cache->memcached->save($cacheKey, $result, $this->config->item('critter_movie_cache_seconds'));
 		}
 		else

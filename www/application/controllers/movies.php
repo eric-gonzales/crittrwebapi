@@ -242,7 +242,7 @@ class Movies extends CI_Controller
 	}		
 	
 	//Movie Search
-	public function search($searchTerm, $limit = 20, $page = 1)
+	public function search($searchTerm, $limit = 10, $page = 1)
 	{
 		//Sanity check
 		if ($searchTerm === NULL)
