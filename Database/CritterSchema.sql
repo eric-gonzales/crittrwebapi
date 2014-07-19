@@ -2,9 +2,6 @@ SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
--- -----------------------------------------------------
--- Schema mydb
--- -----------------------------------------------------
 CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci ;
 USE `mydb` ;
 
@@ -80,6 +77,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`CRUser` (
   `location` TEXT NULL,
   `created` DATETIME NOT NULL,
   `modified` DATETIME NOT NULL,
+  `active` TINYINT(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (`id`),
   INDEX `email_idx` (`email` ASC),
   INDEX `facebook_id_idx` (`facebook_id` ASC),
@@ -453,6 +451,39 @@ CREATE TABLE IF NOT EXISTS `mydb`.`CRUserVOD` (
   CONSTRAINT `fk_CRUserVOD_CRVODProvider1`
     FOREIGN KEY (`vod_id`)
     REFERENCES `mydb`.`CRVODProvider` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`CRUserReport`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`CRUserReport` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `reporting_user_id` INT UNSIGNED NOT NULL,
+  `reported_user_id` INT UNSIGNED NOT NULL,
+  `rating_id` INT(10) UNSIGNED NULL,
+  `created` DATETIME NOT NULL,
+  `modified` DATETIME NOT NULL,
+  `reviewed` TINYINT(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  INDEX `fk_CRUserReport_CRUser1_idx` (`reporting_user_id` ASC),
+  INDEX `fk_CRUserReport_CRUser2_idx` (`reported_user_id` ASC),
+  INDEX `fk_CRUserReport_CRRating1_idx` (`rating_id` ASC),
+  CONSTRAINT `fk_CRUserReport_CRUser1`
+    FOREIGN KEY (`reporting_user_id`)
+    REFERENCES `mydb`.`CRUser` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_CRUserReport_CRUser2`
+    FOREIGN KEY (`reported_user_id`)
+    REFERENCES `mydb`.`CRUser` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_CRUserReport_CRRating1`
+    FOREIGN KEY (`rating_id`)
+    REFERENCES `mydb`.`CRRating` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;

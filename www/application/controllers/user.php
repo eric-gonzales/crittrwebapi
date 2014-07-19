@@ -710,6 +710,7 @@ class User extends CI_Controller{
 			$this->db->from('CRUser');
 			$this->db->select(array('id','name','facebook_id','photo_url'));
 			$this->db->like('name', urldecode($searchText));
+			$this->db->where('active', 1);
 			$this->db->limit(100);
 			$result = $this->db->get()->result();
 			foreach($result as $user)
@@ -719,6 +720,34 @@ class User extends CI_Controller{
 
 			$this->user_model->setID($user_id);
 			$this->user_model->setResult($result);
+		}		
+		else
+		{
+			$this->_generateError('Required Fields Missing', $this->config->item('error_required_fields'));
+		}
+		$this->_response();
+	}
+	
+	function report($hashedUserID, $hashedUserIDToReport, $hashedRatingID=NULL)
+	{
+		$user_id = hashids_decrypt($hashedUserID);
+		$report_user_id = hashids_decrypt($hashedUserIDToReport);		
+		$rating_id = hashids_decrypt($hashedRatingID);		
+		if ($user_id && $report_user_id)
+		{
+			//Insert the user report
+			$this->db->set('reporting_user_id', $user_id);
+			$this->db->set('reported_user_id', $report_user_id);
+			if ($rating_id != NULL) $this->db->set('rating_id', $rating_id);
+			$this->db->set('created', 'NOW()', FALSE);
+			$this->db->set('modified', 'NOW()', FALSE);						
+			$this->db->insert('CRUserReport');
+			
+			//Flag this user inactive - they can still use the app but won't show up in user searches or reviews
+			$this->db->set('active',0);
+			$this->db->where('id', $report_user_id);
+			$this->db->set('modified', 'NOW()', FALSE);						
+			$this->db->update('CRUser');
 		}		
 		else
 		{
