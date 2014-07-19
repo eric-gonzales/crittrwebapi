@@ -42,6 +42,8 @@
 	$config['netflix_base_url'] = 'http://www.netflix.com/WiPlayer?movieid=';
 	
 	//Critter
-	$config['critter_movie_cache_seconds'] = 60 * 60 * 24;	
-	$config['critter_rating_cache_seconds'] = 60 * 15; //Will recalc every 15 mins
+	$config['critter_warmcache_hourly_max'] = 1000;				    //Max movies to cache per hour
+	$config['critter_movie_cache_seconds'] = 60 * 60 * 24;			//Cache new/upcoming/current movies 24hrs
+	$config['critter_old_movie_cache_seconds'] = 60 * 60 * 24 * 14; //Cache old movies two weeks
+	$config['critter_rating_cache_seconds'] = 60 * 15; 			    //Will recalc every 15 mins
 ?>

@@ -31,6 +31,7 @@ class Movie_model extends CR_Model {
 	private $tms_trailer_image_details;
 	private $amazon_details;
 	private $youtube_trailer_id;
+	private $was_cached;	
 	
 	//Construct from RT ID
 	public function __construct($rotten_tomatoes_id)
@@ -203,11 +204,25 @@ class Movie_model extends CR_Model {
 				'genres' => $this->getRTDetails()->genres
 			);			
 			
+			//Determine time to cache - anything older than current year gets the long cache time
+			$cacheTime = $this->config->item('critter_movie_cache_seconds');
+			$releaseYear = $this->getRTDetails()->year;
+			$thisYear = date('Y');
+			if ($releaseYear != NULL && $releaseYear < $thisYear)
+			{
+				$title = $this->getTitle();
+				error_log("Caching movie $title for longer period, $releaseYear < $thisYear");
+				$cacheTime = $this->config->item('critter_old_movie_cache_seconds');	
+			}
+			
 			//Save to cache
-			$this->cache->memcached->save($cacheKey, $result, $this->config->item('critter_movie_cache_seconds'));
+			$this->cache->memcached->save($cacheKey, $result, $cacheTime);
 		}
 		else
 		{
+			//Cached
+			$this->setWasCached(TRUE);
+		
 			//(Potentially) update the calculated critter rating - they refresh every 15 mins where the movie itself refreshes every 24 hrs.
 			$result['critter_rating'] = $this->getCritterRating();
 		}
@@ -720,6 +735,14 @@ class Movie_model extends CR_Model {
 	
 	public function setAvailableServices($services){
 		$this->available_services = $services;
+	}
+
+	public function getWasCached(){
+		return $this->was_cached;
+	}
+	
+	public function setWasCached($cached){
+		$this->was_cached = $cached;
 	}
 	
 	public function _getCachedData($url, $expiration, $mode = '')

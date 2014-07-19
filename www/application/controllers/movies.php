@@ -439,8 +439,9 @@ class Movies extends CI_Controller
 		$limit = 1000;
 		$offset = 0;
 		$cached = 0;
-		$maxCached = $this->config->item('rotten_tomatoes_daily_threshold') / 2;
+		$maxCached = $this->config->item('critter_warmcache_hourly_max');
 		
+		//First warm all the priority movies
 		while ($hasMovies && ($cached < $maxCached))
 		{
 			//Set up the query
@@ -458,9 +459,42 @@ class Movies extends CI_Controller
 			//Process the movies
 			foreach($movies as $movie)
 			{
-				echo "Warming cache: " . $movie->title . " \n";
 				$movieModel = new Movie_model($movie->rotten_tomatoes_id);
-				$cached++;
+				if ($movieModel->getWasCached() == FALSE)
+				{
+					echo "Warmed cache: " . $movie->title . " \n";
+					$cached++;
+				}
+			}
+		}
+
+		//Next warm everything else
+		$hasMovies = TRUE;
+		$limit = 1000;
+		$offset = 0;
+		while ($hasMovies && ($cached < $maxCached))
+		{
+			//Set up the query
+			$this->db->from('CRMovie');
+			$this->db->where('priority IS NULL', NULL);			
+			$this->db->order_by('box_office_release_date', 'DESC');
+			$this->db->limit($limit, $offset);
+			
+			//Execute
+			$query = $this->db->get();
+			$movies = $query->result();
+			$hasMovies = count($movies) > 0;
+			$offset += $limit;
+
+			//Process the movies
+			foreach($movies as $movie)
+			{
+				$movieModel = new Movie_model($movie->rotten_tomatoes_id);
+				if ($movieModel->getWasCached() == FALSE)
+				{
+					echo "Warmed cache: " . $movie->title . " \n";				
+					$cached++;
+				}
 			}
 		}
 	}
