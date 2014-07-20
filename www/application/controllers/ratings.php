@@ -401,7 +401,7 @@ class Ratings extends CI_Controller
 			"join CRUser on CRUser.id=CRRating.user_id AND CRUser.active=1 ".
 			"where CRRating.movie_id=$movie_id AND CRRating.rating in (1,2) ".
 			"AND ((CRRating.comments is not null) ".
-			"OR (CRRating.user_id in (select friend_id from CRFriends where user_id=133))) ".
+			"OR (CRRating.user_id in (select friend_id from CRFriends where user_id=$user_id))) ".
 			"ORDER BY CRRating.created DESC LIMIT $limit OFFSET $offset";
 /*
 			$this->db->select('CRRating.*, CRMovie.title, CRMovie.hashtag, CRMovie.rotten_tomatoes_id, CRMovie.tmdb_poster_path, CRUser.name as user_name, CRUser.photo_url as user_photo_url');
