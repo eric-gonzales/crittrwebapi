@@ -230,7 +230,7 @@ DEFAULT CHARACTER SET = utf8;
 CREATE TABLE IF NOT EXISTS `mydb`.`CRNotification` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `notification_type` VARCHAR(45) NOT NULL,
-  `from_user_id` INT UNSIGNED NOT NULL,
+  `from_user_id` INT UNSIGNED NULL,
   `to_user_id` INT UNSIGNED NOT NULL,
   `rating_id` INT UNSIGNED NULL,
   `is_viewed` TINYINT(1) NOT NULL DEFAULT 0,

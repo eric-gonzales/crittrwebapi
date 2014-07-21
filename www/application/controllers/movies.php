@@ -722,7 +722,6 @@ class Movies extends CI_Controller
 						echo "Notifying OnDemand Office watchlist for: " . $movie->title . " \n " . $message . "\n";
 					
 						//Insert a CRNotification for this user
-						$this->db->set('from_user_id', $rating->user_id);
 						$this->db->set('to_user_id', $rating->user_id);
 						$this->db->set('rating_id', $rating->id);												
 						$this->db->set('notification_type', 'watchlist');
