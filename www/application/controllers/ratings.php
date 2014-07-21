@@ -199,7 +199,8 @@ class Ratings extends CI_Controller
 				if (array_key_exists("super_modifier", $this->post)) $this->db->set('super', $this->post->super_modifier);
 				if (array_key_exists("comment", $this->post)) $this->db->set('comments', $this->post->comment);
 				if (array_key_exists("notified_box_office", $this->post)) $this->db->set('notified_box_office', $this->post->notified_box_office);
-				if (array_key_exists("notified_dvd", $this->post)) $this->db->set('notified_dvd', $this->post->notified_dvd);					$this->db->set('created', 'NOW()', FALSE);
+				if (array_key_exists("notified_dvd", $this->post)) $this->db->set('notified_dvd', $this->post->notified_dvd);					
+				$this->db->set('created', 'NOW()', FALSE);
 				$this->db->set('modified', 'NOW()', FALSE);				
 				$this->db->insert('CRRating');
 				$rating_id = $this->db->insert_id();
