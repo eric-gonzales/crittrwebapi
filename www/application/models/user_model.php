@@ -198,7 +198,7 @@ class User_model extends CR_Model {
 		$this->db->set('user_id', $this->getID());
 		$this->db->insert('CREmailToken');
 		$hashedUserID = hashids_encrypt($this->getID());
-		$reset_url = 'http://request.crittermovies.com/?a='.sha1('resetmypassword').'&t='.$tok.'&u='.$hashedUserID;
+		$reset_url = 'http://crittrmovies.com/forgotpassword/index.php?a='.sha1('resetmypassword').'&t='.$tok.'&u='.$hashedUserID;
 		$address = $this->getEmail();
 		$to  = $address;
 		$subject = 'Password Reset';
@@ -263,7 +263,7 @@ class User_model extends CR_Model {
 	public function setPhotoURL($photo_url){
 		$this->photo_url = $photo_url;
 	}
-	
+
 	public function getPhotoURL(){
 		return $this->photo_url;
 	}
