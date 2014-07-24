@@ -83,7 +83,8 @@ CREATE TABLE IF NOT EXISTS `mydb`.`CRUser` (
   INDEX `facebook_id_idx` (`facebook_id` ASC),
   INDEX `username_idx` (`name` ASC),
   UNIQUE INDEX `email_UNIQUE` (`email` ASC),
-  UNIQUE INDEX `facebook_id_UNIQUE` (`facebook_id` ASC))
+  UNIQUE INDEX `facebook_id_UNIQUE` (`facebook_id` ASC),
+  INDEX `name_idx` (`name` ASC))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
