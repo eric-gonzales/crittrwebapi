@@ -82,9 +82,12 @@ class Ratings_model extends CR_Model
 			$this->cache->memcached->save($cacheKey, $rating, $this->config->item('critter_rating_cache_seconds'));
 			
 			//update db record
-			$this->db->where('rotten_tomatoes_id', $rottenTomatoesID);
-			$this->db->set('critter_rating', $rating);
-			$this->db->update('CRMovie');
+			if ($rating != -1)
+			{
+				$this->db->where('rotten_tomatoes_id', $rottenTomatoesID);
+				$this->db->set('critter_rating', $rating);
+				$this->db->update('CRMovie');
+			}
 		}
 		return $rating;
 	}
