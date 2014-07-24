@@ -354,18 +354,30 @@ class Ratings extends CI_Controller
 			foreach($results as $rating)
 			{
 				//Fetch the VOD links
-				$this->db->select('CRVODProvider.identifier, CRMovieVOD.view_url, CRMovieVOD.app_url');
-				$this->db->from('CRMovieVOD');				
-				$this->db->join('CRVODProvider', 'CRMovieVOD.vod_id=CRVODProvider.id');
-				$this->db->where('CRMovieVOD.movie_id', $rating->movie_id);
-				$vodLinks = $this->db->get()->result();
+				$vodCacheKey = "VOD_" . $rating->movie_id;
+				$vodLinks = $this->cache->memcached->get($vodCacheKey);
+				if (!$vodLinks)
+				{
+					$this->db->select('CRVODProvider.identifier, CRMovieVOD.view_url, CRMovieVOD.app_url');
+					$this->db->from('CRMovieVOD');				
+					$this->db->join('CRVODProvider', 'CRMovieVOD.vod_id=CRVODProvider.id');
+					$this->db->where('CRMovieVOD.movie_id', $rating->movie_id);
+					$vodLinks = $this->db->get()->result();
+					$this->cache->memcached->save($vodCacheKey, $vodLinks, 60*60*12);
+				}
 				
 				//Fetch the genres
-				$this->db->select('CRGenre.name');
-				$this->db->from('CRGenreMovie');				
-				$this->db->join('CRGenre', 'CRGenreMovie.genre_id=CRGenre.id');
-				$this->db->where('CRGenreMovie.movie_id', $rating->movie_id);
-				$genres = $this->db->get()->result();
+				$genreCacheKey = "GENRES_" . $rating->movie_id;
+				$genres = $this->cache->memcached->get($genreCacheKey);
+				if (!$genres)
+				{
+					$this->db->select('CRGenre.name');
+					$this->db->from('CRGenreMovie');				
+					$this->db->join('CRGenre', 'CRGenreMovie.genre_id=CRGenre.id');
+					$this->db->where('CRGenreMovie.movie_id', $rating->movie_id);
+					$genres = $this->db->get()->result();
+					$this->cache->memcached->save($genreCacheKey, $genres, 60*60*12);
+				}
 			
 				$rating->id = hashids_encrypt($rating->id);
 				$rating->user_id = hashids_encrypt($rating->user_id);
