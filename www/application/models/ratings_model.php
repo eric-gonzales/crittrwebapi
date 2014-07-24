@@ -71,7 +71,7 @@ class Ratings_model extends CR_Model
 			{
 				$sum = ($superLikeCount * 3) + ($likeCount * 2) + ($dislikeCount * 1) + ($superHateCount * 0);
 				$average = $sum / $ratingCount;
-				$rating = (($average / 3) * 100);
+				$rating = intval((($average / 3) * 100));
 			}
 			else
 			{
