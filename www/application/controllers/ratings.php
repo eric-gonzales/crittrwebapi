@@ -340,7 +340,7 @@ class Ratings extends CI_Controller
 			$this->db->from('CRRating');
 			$this->db->join('CRMovie', 'CRMovie.id = CRRating.movie_id');
 			$this->db->where('user_id', $user_id);
-			$this->db->order_by('CRRating.created', 'asc'); //creation order
+			$this->db->order_by('CRRating.modified', 'ASC'); //creation order
 			
 			//Add filter on modified field if present
 			if ($modifiedSinceDateTime)
