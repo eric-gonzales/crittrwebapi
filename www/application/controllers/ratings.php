@@ -408,7 +408,7 @@ class Ratings extends CI_Controller
 		{
 			//Set up the query - all friend ratings, any anon ratings but only ones with a review
 			$sql = "select CRRating.*, CRMovie.title, CRMovie.hashtag, CRMovie.rotten_tomatoes_id, CRMovie.tmdb_poster_path, ".
-			"CRUser.name as user_name, CRUser.photo_url as user_photo_url ".
+			"CRUser.name as user_name, CRUser.photo_url as user_photo_url, CRMovie.critter_rating, CRMovie.itunes_id ".
 			"from CRRating ".
 			"join CRMovie on CRMovie.id=CRRating.movie_id ".
 			"join CRUser on CRUser.id=CRRating.user_id AND CRUser.active=1 ".
