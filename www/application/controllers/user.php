@@ -130,6 +130,8 @@ class User extends CI_Controller{
 		$facebook_token = $this->post->facebook_token;
 		if($facebook_token != '')
 		{
+			error_log("Starting Facebook Login");
+		
 			//load facebook library
 			$this->load->library('facebook');
 			$facebook = new Facebook(array(
@@ -139,8 +141,10 @@ class User extends CI_Controller{
 			));
 			
 			//set access token
+			error_log("Contacting Facebook");
 			$facebook->setAccessToken($facebook_token);
 			$fb_id = $facebook->getUser();
+			error_log("Contacted Facebook: $fb_id");
 			
 			//check if valid facebook id
 			if($fb_id)
@@ -163,7 +167,7 @@ class User extends CI_Controller{
 	        		}
 	        		$facebook_photo_url = "http://graph.facebook.com/$fb_id/picture?type=large";
 
-					error_log("Facebook login for $facebook_token : " . json_encode($user_profile));
+					//error_log("Facebook login for $facebook_token : " . json_encode($user_profile));
 
 					//check if user is signed up
 					$this->db->select('id');
