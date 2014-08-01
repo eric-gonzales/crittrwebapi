@@ -232,6 +232,7 @@ class Ratings extends CI_Controller
 				//Loop and update any existing notifications that are tied to this rating, to handle changes
 				$this->db->from('CRNotification');
 				$this->db->where('rating_id', $rating_id);
+				$this->db->where('notification_type !=', 'watchlist');
 				foreach($this->db->get()->result() as $notification)
 				{
 					
